@@ -1,0 +1,10 @@
+rootProject.name = 'workoutassistant'
+include 'training'
+include 'testing'
+include 'training:constructor'
+include 'training:journal'
+include 'training:statistic'
+include 'training:planning'
+include 'training:webclient'
+include 'training:telegramclient'
+
