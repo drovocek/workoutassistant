@@ -1,0 +1,23 @@
+server.port: 9000
+
+spring:
+  application.name: exercise-constructor
+  #  datasource:
+  #    url: jdbc:postgresql://localhost:5432/spring-data-jdbc
+  #    username: postgres
+  #    password: postgres
+  #    driver-class-name: org.postgresql.Driver
+  datasource:
+    url: jdbc:h2:mem:testDB
+    username: postgres
+    password: postgres
+    driver-class-name: org.h2.Driver
+
+springdoc:
+  swagger-ui.path: /
+
+logging:
+  level:
+    root: WARN
+    ru.soft: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG

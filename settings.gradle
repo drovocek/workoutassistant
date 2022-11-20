@@ -7,4 +7,5 @@ include 'training:statistic'
 include 'training:planning'
 include 'training:webclient'
 include 'training:telegramclient'
+include 'app'
 
