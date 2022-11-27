@@ -1,0 +1,1 @@
+docker run --rm --name pg-diploma-docker -e POSTGRES_PASSWORD=pwd -e POSTGRES_USER=usr -e POSTGRES_DB=workoutDB -p 5430:5432 postgres:13

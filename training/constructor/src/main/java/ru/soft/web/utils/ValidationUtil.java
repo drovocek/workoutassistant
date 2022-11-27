@@ -1,6 +1,8 @@
 package ru.soft.web.utils;
 
 import lombok.experimental.UtilityClass;
+import org.springframework.core.NestedExceptionUtils;
+import org.springframework.lang.NonNull;
 import ru.soft.data.model.HasId;
 import ru.soft.web.exception.IllegalRequestDataException;
 
@@ -11,7 +13,7 @@ public class ValidationUtil {
 
     public static void checkNew(HasId bean) {
         if (bean.getId() != null) {
-            throw new IllegalRequestDataException("%s must be new (id=null)".formatted(bean.getClass().getSimpleName()));
+            throw new IllegalRequestDataException("%s must be new (id==null)".formatted(bean.getClass().getSimpleName()));
         }
     }
 
@@ -32,5 +34,11 @@ public class ValidationUtil {
             throw new IllegalRequestDataException("Entity with id=%s not found".formatted(id));
         }
         return obj;
+    }
+
+    @NonNull
+    public static Throwable getRootCause(@NonNull Throwable t) {
+        Throwable rootCause = NestedExceptionUtils.getRootCause(t);
+        return rootCause != null ? rootCause : t;
     }
 }

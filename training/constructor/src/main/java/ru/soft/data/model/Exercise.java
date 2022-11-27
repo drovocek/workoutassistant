@@ -8,21 +8,28 @@ import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
 @Getter
 @Setter
-@ToString
-@Table(name = "EXERCISE")
+@ToString(callSuper = true)
+@Table(name = "exercise")
 public class Exercise extends BaseEntity {
 
-    @Column("TITLE")
+    @NotBlank
+    @Column("title")
     private final String title;
 
-    @Column("DESCRIPTION")
+    @NotBlank
+    @Column("description")
     private final String description;
 
-    @Column("COMPLEXITY")
+    @Min(value = 1)
+    @Max(value = 10)
+    @Column("complexity")
     private final Integer complexity;
 
     @Builder
@@ -39,5 +46,10 @@ public class Exercise extends BaseEntity {
         this.title = title;
         this.description = description;
         this.complexity = complexity;
+    }
+
+    @Override
+    public BaseEntity newWithId(UUID id) {
+        return new Exercise(id, true, this.getTitle(), this.getDescription(), this.getComplexity());
     }
 }
