@@ -1,8 +1,8 @@
-package ru.soft.data.model;
+package ru.soft.data;
 
 import java.util.UUID;
 
 public interface HasId {
 
-    UUID getId();
+    UUID id();
 }

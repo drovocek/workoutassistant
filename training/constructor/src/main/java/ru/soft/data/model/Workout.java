@@ -1,22 +1,27 @@
 package ru.soft.data.model;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 import ru.soft.data.BaseEntity;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
 @ToString(callSuper = true)
-@Table(name = "exercise")
-public class Exercise extends BaseEntity {
+@Table(name = "workout")
+public class Workout extends BaseEntity {
+
+    @NotNull
+    @MappedCollection(idColumn = "workout_round_id")
+    private final Set<WorkoutRound> workoutRounds;
 
     @NotBlank
     @Column("title")
@@ -26,35 +31,30 @@ public class Exercise extends BaseEntity {
     @Column("description")
     private final String description;
 
-    @Min(value = 1)
-    @Max(value = 10)
-    @Column("complexity")
-    private final int complexity;
-
-    @Builder
-    public Exercise(UUID id, boolean isNew, String title, String description, int complexity) {
-        super(id, isNew);
+    @PersistenceCreator
+    public Workout(UUID id, Set<WorkoutRound> workoutRounds, String title, String description) {
+        super(id, false);
+        this.workoutRounds = workoutRounds;
         this.title = title;
         this.description = description;
-        this.complexity = complexity;
     }
 
-    @PersistenceCreator
-    public Exercise(UUID id, String title, String description, int complexity) {
-        super(id, false);
+    @Builder
+    public Workout(UUID id, boolean isNew, Set<WorkoutRound> workoutRounds, String title, String description) {
+        super(id, isNew);
+        this.workoutRounds = workoutRounds;
         this.title = title;
         this.description = description;
-        this.complexity = complexity;
     }
 
     @Override
     public BaseEntity newWithId(UUID id) {
-        return Exercise.builder()
+        return Workout.builder()
                 .id(id)
                 .isNew(true)
                 .title(this.title())
                 .description(this.description())
-                .complexity(this.complexity())
+                .workoutRounds(this.workoutRounds())
                 .build();
     }
 }

@@ -3,7 +3,7 @@ package ru.soft.web.utils;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
-import ru.soft.data.model.HasId;
+import ru.soft.data.HasId;
 import ru.soft.web.exception.IllegalRequestDataException;
 
 import java.util.UUID;
@@ -12,13 +12,13 @@ import java.util.UUID;
 public class ValidationUtil {
 
     public static void checkNew(HasId bean) {
-        if (bean.getId() != null) {
+        if (bean.id() != null) {
             throw new IllegalRequestDataException("%s must be new (id==null)".formatted(bean.getClass().getSimpleName()));
         }
     }
 
     public static void checkNotNew(HasId bean) {
-        if (bean.getId() == null) {
+        if (bean.id() == null) {
             throw new IllegalRequestDataException("%s must be not new (id!=null)".formatted(bean.getClass().getSimpleName()));
         }
     }

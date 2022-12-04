@@ -1,46 +1,59 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.7.5'
+    id 'org.springframework.boot' version "$springBootVersion"
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id "com.github.johnrengelman.shadow" version "7.1.2" apply false
 }
 
 allprojects {
+    apply plugin: 'java-library' //https://reflectoring.io/gradle-pollution-free-dependencies/
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.springframework.boot'
+
     group "ru.soft"
     version = '0.0.1-SNAPSHOT'
     sourceCompatibility = '17'
 
     repositories {
-        mavenLocal()
         mavenCentral()
+        maven { url "https://repo.spring.io/milestone" }
     }
 
-    apply plugin: "io.spring.dependency-management"
     dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+            mavenBom "org.testcontainers:testcontainers-bom:$testcontainersVersion"
+        }
         dependencies {
-            imports {
-                mavenBom "org.springframework.boot:spring-boot-dependencies:2.7.5"
-                //mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
-            }
-
-            dependency("org.projectlombok:lombok:$lombokVersion")
-            dependency("org.springdoc:springdoc-openapi-ui:$springdocVersion")
+            dependency "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion"
         }
     }
-//
-//    configurations.all {
-//        resolutionStrategy {
-//            failOnVersionConflict()
-//        }
-//        resolutionStrategy {
-//            force("javax.servlet:servlet-api:2.4")
-//            force("commons-logging:commons-logging:1.1.1")
-//            force("commons-lang:commons-lang:2.5")
-//            force("org.codehaus.jackson:jackson-core-asl:1.8.8")
-//            force("org.codehaus.jackson:jackson-mapper-asl:1.8.3")
-//            force("org.codehaus.jettison:jettison:1.1")
-//            force("net.java.dev.jna:jna:5.8.0")
-//            force("com.google.errorprone:error_prone_annotations:2.7.1")
-//        }
-//    }
+
+    dependencies {
+        implementation 'ch.qos.logback:logback-classic'
+
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+    }
+
+    compileJava.options.encoding = 'UTF-8'
+
+    tasks.withType(JavaCompile) {
+        options.with {
+            encoding = 'UTF-8'
+        }
+    }
 }

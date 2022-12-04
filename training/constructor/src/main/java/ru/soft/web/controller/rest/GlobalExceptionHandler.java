@@ -2,12 +2,12 @@ package ru.soft.web.controller.rest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.postgresql.util.PSQLException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
-import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.BindingResult;
@@ -27,31 +27,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private final ErrorAttributes errorAttributes;
+    @Autowired
+    private ErrorAttributes errorAttributes;
 
     @ExceptionHandler(AppException.class)
-    private ResponseEntity<?> appException(WebRequest request, AppException ex) {
+    public ResponseEntity<?> appException(WebRequest request, AppException ex) {
         log.error("ApplicationException: {}", ex.getMessage());
-        return createResponseEntity(request, ex.getOptions(), null, ex.getStatus());
-    }
-
-    @ExceptionHandler(value = DbActionExecutionException.class)
-    public ResponseEntity<?> dbException(DbActionExecutionException ex, WebRequest request) {
-        String message = null;
-        Throwable rootCause = ValidationUtil.getRootCause(ex);
-        if (rootCause instanceof PSQLException) {
-            String dbMessage = rootCause.getMessage();
-            if (dbMessage.contains("constraint")) {
-                message = dbMessage;
-                log.error("Db constraint exception: {}", message);
-            }
-        }
-        return createResponseEntity(request, ErrorAttributeOptions.defaults(), message, HttpStatus.UNPROCESSABLE_ENTITY);
+        return createResponseEntity(request, ex.getOptions(), null, ex.getStatusCode());
     }
 
     @NonNull
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(
+            @NonNull Exception ex, Object body, @NonNull HttpHeaders headers, @NonNull HttpStatusCode statusCode, @NonNull WebRequest request) {
+        log.error("Exception", ex);
+        super.handleExceptionInternal(ex, body, headers, statusCode, request);
+        return createResponseEntity(request, ErrorAttributeOptions.of(), ValidationUtil.getRootCause(ex).getMessage(), statusCode);
+    }
+
+    @NonNull
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            @NonNull HttpHeaders headers, @NonNull HttpStatusCode statusCode, @NonNull WebRequest request) {
         return handleBindingErrors(ex.getBindingResult(), request);
     }
 
@@ -63,14 +61,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> ResponseEntity<T> createResponseEntity(WebRequest request, ErrorAttributeOptions options, String msg, HttpStatus status) {
+    protected <T> ResponseEntity<T> createResponseEntity(WebRequest request, ErrorAttributeOptions options, String msg, HttpStatusCode statusCode) {
         Map<String, Object> body = errorAttributes.getErrorAttributes(request, options);
         if (msg != null) {
             body.put("message", msg);
         }
-        body.put("status", status.value());
-        body.put("error", status.getReasonPhrase());
-
-        return (ResponseEntity<T>) ResponseEntity.status(status).body(body);
+        body.put("status", statusCode.value());
+        if (statusCode instanceof HttpStatus status) {
+            body.put("error", status.getReasonPhrase());
+        }
+        return (ResponseEntity<T>) ResponseEntity.status(statusCode).body(body);
     }
 }

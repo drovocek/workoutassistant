@@ -1,5 +1,7 @@
 package ru.soft.web.controller.rest;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,8 +13,6 @@ import ru.soft.data.model.Exercise;
 import ru.soft.data.repository.ExerciseRepository;
 import ru.soft.web.to.ExerciseTo;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 import static ru.soft.web.utils.ExerciseUtils.createNewFromTo;
@@ -33,10 +33,10 @@ public class ExerciseRestController {
     private final ExerciseRepository repository;
 
     @GetMapping("/{id}")
-    public ExerciseTo get(@NotNull @PathVariable UUID id) {
+    public ResponseEntity<ExerciseTo> get(@NotNull @PathVariable UUID id) {
         log.info("get by id={}", id);
         Exercise existed = this.repository.getExisted(id);
-        return toTo(existed);
+        return ResponseEntity.ok(toTo(existed));
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -62,7 +62,7 @@ public class ExerciseRestController {
     public void update(@RequestBody @Valid ExerciseTo exerciseTo) {
         log.info("update by {}", exerciseTo);
         checkNotNew(exerciseTo);
-        this.repository.getExisted(exerciseTo.getId());
+        this.repository.getExisted(exerciseTo.id());
         Exercise exercise = createNewFromTo(exerciseTo);
         this.repository.save(exercise);
     }

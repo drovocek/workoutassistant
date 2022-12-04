@@ -1,4 +1,4 @@
-package ru.soft.data.model;
+package ru.soft.data;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +19,13 @@ public abstract class BaseEntity implements Persistable<UUID>, HasId {
     @Id
     @Column("id")
     protected final UUID id;
-
     @Transient
     @AccessType(AccessType.Type.PROPERTY)
     protected final boolean isNew;
+
+    public UUID id() {
+        return this.id;
+    }
 
     @Override
     public boolean isNew() {
