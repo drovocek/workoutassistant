@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+import ru.soft.data.model.snapshot.WorkoutRoundSnapshot;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,16 +25,16 @@ public class WorkoutPlan extends Workout {
     @Column("description")
     private final String description;
 
-    @PersistenceCreator
-    public WorkoutPlan(UUID id, List<WorkoutRound> workoutRounds, String title, String description) {
-        super(id, workoutRounds);
+    @Builder
+    public WorkoutPlan(UUID id, boolean isNew, List<WorkoutRoundSnapshot> workoutRoundSnapshots, String title, String description) {
+        super(id, isNew, workoutRoundSnapshots);
         this.title = title;
         this.description = description;
     }
 
-    @Builder
-    public WorkoutPlan(UUID id, boolean isNew, List<WorkoutRound> workoutRounds, String title, String description) {
-        super(id, isNew, workoutRounds);
+    @PersistenceCreator
+    public WorkoutPlan(UUID id, List<WorkoutRoundSnapshot> workoutRoundSnapshots, String title, String description) {
+        super(id, workoutRoundSnapshots);
         this.title = title;
         this.description = description;
     }
@@ -43,7 +44,7 @@ public class WorkoutPlan extends Workout {
         return WorkoutPlan.builder()
                 .id(id)
                 .isNew(true)
-                .workoutRounds(this.workoutSchemaSnapshot().workoutRounds())
+                .workoutRoundSnapshots(this.workoutSchemaSnapshot().workoutRoundSnapshots())
                 .title(this.title())
                 .description(this.description())
                 .build();

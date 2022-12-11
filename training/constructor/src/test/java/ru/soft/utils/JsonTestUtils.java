@@ -2,7 +2,6 @@ package ru.soft.utils;
 
 import org.postgresql.util.PGobject;
 import ru.soft.data.model.snapshot.ExerciseSnapshot;
-import ru.soft.data.model.snapshot.WorkoutRoundSchemaSnapshot;
 import ru.soft.data.model.snapshot.WorkoutStationSnapshot;
 
 import java.sql.SQLException;
@@ -23,8 +22,8 @@ public final class JsonTestUtils {
         return pGobject;
     }
 
-    public static WorkoutRoundSchemaSnapshot createWorkoutRoundSchema() {
-        return new WorkoutRoundSchemaSnapshot(List.of(
+    public static List<WorkoutStationSnapshot> createWorkoutStationSnapshots() {
+        return List.of(
                 new WorkoutStationSnapshot(
                         new ExerciseSnapshot("title_1", "description_1", 1),
                         3, 0, 100, 20, 1),
@@ -36,6 +35,6 @@ public final class JsonTestUtils {
                         new ExerciseSnapshot("title_3", "description_3", 3),
                         1, 5, 10, 100, 0
                 )
-        ));
+        );
     }
 }

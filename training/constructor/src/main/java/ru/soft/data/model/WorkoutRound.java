@@ -1,5 +1,6 @@
 package ru.soft.data.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Builder;
@@ -10,18 +11,21 @@ import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import ru.soft.data.BaseEntity;
-import ru.soft.data.model.snapshot.WorkoutRoundSchemaSnapshot;
+import ru.soft.data.BaseEntityWithComplexity;
+import ru.soft.data.model.snapshot.WorkoutStationSnapshot;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "workout_round")
-public class WorkoutRound extends BaseEntity {
+public class WorkoutRound extends BaseEntityWithComplexity {
 
+    @JsonProperty("stations")
     @Column("round_schema")
-    private final WorkoutRoundSchemaSnapshot schema;
+    private final List<WorkoutStationSnapshot> workoutStationSnapshots;
 
     @Column("title")
     private final String title;
@@ -35,21 +39,27 @@ public class WorkoutRound extends BaseEntity {
     private final int complexity;
 
     @Builder
-    public WorkoutRound(UUID id, boolean isNew, WorkoutRoundSchemaSnapshot schema, String title, String description, int complexity) {
+    public WorkoutRound(UUID id, boolean isNew, List<WorkoutStationSnapshot> workoutStationSnapshots, String title, String description, int complexity) {
         super(id, isNew);
-        this.schema = schema;
+        this.workoutStationSnapshots = workoutStationSnapshots;
         this.title = title;
         this.description = description;
         this.complexity = complexity;
     }
 
     @PersistenceCreator
-    public WorkoutRound(UUID id, WorkoutRoundSchemaSnapshot schema, String title, String description, int complexity) {
+    public WorkoutRound(UUID id, List<WorkoutStationSnapshot> workoutStationSnapshots, String title, String description, int complexity) {
         super(id, false);
-        this.schema = schema;
+        this.workoutStationSnapshots = workoutStationSnapshots;
         this.title = title;
         this.description = description;
         this.complexity = complexity;
+    }
+
+    private int calculateComplexity(List<WorkoutStationSnapshot> workoutStationSnapshots) {
+        return (int) workoutStationSnapshots.stream()
+                .mapToInt(station -> station.exerciseSnapshot().complexity())
+                .average().orElse(0);
     }
 
     @Override
@@ -57,10 +67,27 @@ public class WorkoutRound extends BaseEntity {
         return WorkoutRound.builder()
                 .id(id)
                 .isNew(true)
-                .schema(this.schema())
+                .workoutStationSnapshots(this.workoutStationSnapshots())
                 .title(this.title())
                 .description(this.description())
                 .complexity(this.complexity())
                 .build();
+    }
+
+    @Override
+    public BaseEntity newWithActualComplexity(UUID id) {
+        return WorkoutRound.builder()
+                .id(id)
+                .isNew(true)
+                .workoutStationSnapshots(this.workoutStationSnapshots())
+                .title(this.title())
+                .description(this.description())
+                .complexity(calculateComplexity(this.workoutStationSnapshots()))
+                .build();
+    }
+
+    @Override
+    public BaseEntity copyWithActualComplexity() {
+        return newWithActualComplexity(id());
     }
 }

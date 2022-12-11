@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.relational.core.mapping.event.BeforeConvertCallback;
 import ru.soft.data.BaseEntity;
+import ru.soft.data.BaseEntityWithComplexity;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,19 +26,22 @@ public class JdbcConfig extends AbstractJdbcConfiguration {
     }
 
     @Bean
-    BeforeConvertCallback<BaseEntity> idSetting() {
-        return entity -> {
-            if (entity.getId() == null) {
-                return newWithId(entity);
-            }
-            return entity;
-        };
+    BeforeConvertCallback<BaseEntity> prepareForConvert() {
+        return this::prepareForConvert;
     }
 
-    private BaseEntity newWithId(BaseEntity entity) {
-        log.info("newWithId id for entity {}", entity);
-        UUID id = UUID.randomUUID();
-        return entity.newWithId(id);
+    private BaseEntity prepareForConvert(BaseEntity entity) {
+        boolean hasComplexity = entity instanceof BaseEntityWithComplexity;
+        if (entity.getId() == null) {
+            log.info("newWithId id for entity {}", entity);
+            UUID id = UUID.randomUUID();
+            return hasComplexity ?
+                    ((BaseEntityWithComplexity) entity).newWithActualComplexity(id) :
+                    entity.newWithId(id);
+        }
+        return hasComplexity ?
+                ((BaseEntityWithComplexity) entity).copyWithActualComplexity() :
+                entity;
     }
 
     @Override

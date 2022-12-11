@@ -5,11 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.postgresql.util.PGobject;
 import ru.soft.data.model.snapshot.WorkoutRoundSchemaSnapshot;
+import ru.soft.data.model.snapshot.WorkoutStationSnapshot;
 
 import java.sql.SQLException;
+import java.util.List;
 
-import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchema;
 import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaPGobject;
+import static ru.soft.utils.JsonTestUtils.createWorkoutStationSnapshots;
 
 class PGobjectToWorkoutRoundSchemaSnapshotConverterTest {
 
@@ -22,7 +24,8 @@ class PGobjectToWorkoutRoundSchemaSnapshotConverterTest {
 
     @Test
     void convert() throws SQLException {
-        WorkoutRoundSchemaSnapshot expectedSchema = createWorkoutRoundSchema();
+        List<WorkoutStationSnapshot> workoutStationSnapshots = createWorkoutStationSnapshots();
+        WorkoutRoundSchemaSnapshot expectedSchema = new WorkoutRoundSchemaSnapshot(workoutStationSnapshots);
         PGobject pGobject = createWorkoutRoundSchemaPGobject();
         WorkoutRoundSchemaSnapshot actualSchema = this.readingConverter.convert(pGobject);
         Assertions.assertEquals(expectedSchema, actualSchema);
