@@ -1,7 +1,5 @@
 package ru.soft.data;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.AccessType;
 import org.springframework.data.annotation.Id;
@@ -11,20 +9,28 @@ import org.springframework.data.relational.core.mapping.Column;
 
 import java.util.UUID;
 
-@Getter
 @ToString
-@RequiredArgsConstructor
 public abstract class BaseEntity implements Persistable<UUID>, HasId {
 
     @Id
     @Column("id")
     protected final UUID id;
+
     @Transient
     @AccessType(AccessType.Type.PROPERTY)
     protected final boolean isNew;
 
+    protected BaseEntity(UUID id, boolean isNew) {
+        this.id = id;
+        this.isNew = isNew;
+    }
+
     public UUID id() {
         return this.id;
+    }
+
+    public UUID getId() {
+        return id();
     }
 
     @Override

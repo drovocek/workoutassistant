@@ -19,30 +19,35 @@ import java.util.UUID;
 public class WorkoutSession extends BaseEntity {
 
     @NotNull
-    @MappedCollection(idColumn = "workout_id")
-    private final Workout plan;
+    @MappedCollection(idColumn = "workout_plan_id")
+    private final WorkoutPlan plan;
 
-    @Column("note")
-    private final String note;
+    @MappedCollection(idColumn = "workout_fact_id")
+    private final WorkoutFact fact;
 
     @NotNull
     @Column("dateTime")
     private final LocalDateTime dateTime;
 
+    @Column("note")
+    private final String note;
+
     @PersistenceCreator
-    public WorkoutSession(UUID id, Workout plan, String note, LocalDateTime dateTime) {
+    public WorkoutSession(UUID id, WorkoutPlan plan, WorkoutFact fact, LocalDateTime dateTime, String note) {
         super(id, false);
         this.plan = plan;
-        this.note = note;
+        this.fact = fact;
         this.dateTime = dateTime;
+        this.note = note;
     }
 
     @Builder
-    public WorkoutSession(UUID id, boolean isNew, Workout plan, String note, LocalDateTime dateTime) {
+    public WorkoutSession(UUID id, boolean isNew, WorkoutPlan plan, WorkoutFact fact, LocalDateTime dateTime, String note) {
         super(id, isNew);
         this.plan = plan;
-        this.note = note;
+        this.fact = fact;
         this.dateTime = dateTime;
+        this.note = note;
     }
 
     @Override
@@ -51,8 +56,9 @@ public class WorkoutSession extends BaseEntity {
                 .id(id)
                 .isNew(true)
                 .plan(this.plan())
-                .note(this.note())
+                .fact(this.fact())
                 .dateTime(this.dateTime())
+                .note(this.note())
                 .build();
     }
 }

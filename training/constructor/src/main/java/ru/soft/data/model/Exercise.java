@@ -1,9 +1,11 @@
 package ru.soft.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
@@ -15,6 +17,8 @@ import java.util.UUID;
 
 @Getter
 @ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
+@JsonIncludeProperties({"id", "title", "description", "complexity"})
 @Table(name = "exercise")
 public class Exercise extends BaseEntity {
 
