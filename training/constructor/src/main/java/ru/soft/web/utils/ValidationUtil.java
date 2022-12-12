@@ -29,7 +29,7 @@ public class ValidationUtil {
         }
     }
 
-    public static <T> T checkExisted(T obj, UUID id) {
+    public static <T, ID> T checkExisted(T obj, ID id) {
         if (obj == null) {
             throw new IllegalRequestDataException("Entity with id=%s not found".formatted(id));
         }

@@ -20,10 +20,10 @@ public class WorkoutSession extends BaseEntity {
 
     @NotNull
     @MappedCollection(idColumn = "workout_plan_id")
-    private final WorkoutPlan plan;
+    private final Workout plan;
 
     @MappedCollection(idColumn = "workout_fact_id")
-    private final WorkoutFact fact;
+    private final Workout fact;
 
     @NotNull
     @Column("dateTime")
@@ -33,7 +33,7 @@ public class WorkoutSession extends BaseEntity {
     private final String note;
 
     @PersistenceCreator
-    public WorkoutSession(UUID id, WorkoutPlan plan, WorkoutFact fact, LocalDateTime dateTime, String note) {
+    public WorkoutSession(UUID id, Workout plan, Workout fact, LocalDateTime dateTime, String note) {
         super(id, false);
         this.plan = plan;
         this.fact = fact;
@@ -42,7 +42,7 @@ public class WorkoutSession extends BaseEntity {
     }
 
     @Builder
-    public WorkoutSession(UUID id, boolean isNew, WorkoutPlan plan, WorkoutFact fact, LocalDateTime dateTime, String note) {
+    public WorkoutSession(UUID id, boolean isNew, Workout plan, Workout fact, LocalDateTime dateTime, String note) {
         super(id, isNew);
         this.plan = plan;
         this.fact = fact;

@@ -1,44 +1,40 @@
 package ru.soft.data.model;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
-import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+import ru.soft.data.BaseEntity;
 import ru.soft.data.model.snapshot.WorkoutSchemaSnapshot;
 
 import java.util.UUID;
 
 @Getter
 @ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "workout_fact")
 public class WorkoutFact extends Workout {
 
-    @NotBlank
-    @Column("note")
-    private final String note;
-
     @Builder
-    public WorkoutFact(UUID id, boolean isNew, WorkoutSchemaSnapshot workoutSchemaSnapshot, String note) {
-        super(id, isNew, workoutSchemaSnapshot);
-        this.note = note;
+    public WorkoutFact(UUID id, boolean isNew, WorkoutSchemaSnapshot workoutSchemaSnapshot, String title, String description) {
+        super(id, isNew, workoutSchemaSnapshot, title, description);
     }
 
     @PersistenceCreator
-    public WorkoutFact(UUID id, WorkoutSchemaSnapshot workoutSchemaSnapshot, String note, int complexity) {
-        super(id, workoutSchemaSnapshot, complexity);
-        this.note = note;
+    public WorkoutFact(UUID id, WorkoutSchemaSnapshot workoutSchemaSnapshot, String title, String description, int complexity) {
+        super(id, workoutSchemaSnapshot, title, description, complexity);
     }
 
     @Override
-    public WorkoutFact newWithId(UUID id) {
+    public BaseEntity newWithId(UUID id) {
         return WorkoutFact.builder()
                 .id(id)
                 .isNew(true)
                 .workoutSchemaSnapshot(this.workoutSchemaSnapshot())
-                .note(this.note())
+                .title(this.title())
+                .description(this.description())
                 .build();
     }
 }

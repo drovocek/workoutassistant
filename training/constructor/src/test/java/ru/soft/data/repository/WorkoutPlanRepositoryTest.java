@@ -16,8 +16,7 @@ import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaSnapshot;
 
 @DataJdbcTest
 class WorkoutPlanRepositoryTest extends AbstractDataTest {
-
-
+    
     @Autowired
     private WorkoutPlanRepository repository;
 

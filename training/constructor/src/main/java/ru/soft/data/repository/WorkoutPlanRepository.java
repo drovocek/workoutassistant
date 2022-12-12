@@ -7,17 +7,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.soft.data.model.WorkoutPlan;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import static ru.soft.web.utils.ValidationUtil.checkExisted;
 import static ru.soft.web.utils.ValidationUtil.checkModification;
 
 public interface WorkoutPlanRepository extends CrudRepository<WorkoutPlan, UUID> {
-
-    @Override
-    List<WorkoutPlan> findAll();
 
     @Modifying
     @Transactional
@@ -26,10 +20,5 @@ public interface WorkoutPlanRepository extends CrudRepository<WorkoutPlan, UUID>
 
     default void deleteExisted(UUID id) {
         checkModification(delete(id), id);
-    }
-
-    default WorkoutPlan getExisted(UUID id) {
-        Optional<WorkoutPlan> byId = findById(id);
-        return checkExisted(byId.orElse(null), id);
     }
 }
