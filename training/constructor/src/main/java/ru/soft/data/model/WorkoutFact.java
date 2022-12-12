@@ -7,9 +7,8 @@ import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-import ru.soft.data.model.snapshot.WorkoutRoundSnapshot;
+import ru.soft.data.model.snapshot.WorkoutSchemaSnapshot;
 
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -22,14 +21,14 @@ public class WorkoutFact extends Workout {
     private final String note;
 
     @Builder
-    public WorkoutFact(UUID id, boolean isNew, List<WorkoutRoundSnapshot> workoutRoundSnapshots, String note) {
-        super(id, isNew, workoutRoundSnapshots);
+    public WorkoutFact(UUID id, boolean isNew, WorkoutSchemaSnapshot workoutSchemaSnapshot, String note) {
+        super(id, isNew, workoutSchemaSnapshot);
         this.note = note;
     }
 
     @PersistenceCreator
-    public WorkoutFact(UUID id, List<WorkoutRoundSnapshot> workoutRoundSnapshots, String note) {
-        super(id, workoutRoundSnapshots);
+    public WorkoutFact(UUID id, WorkoutSchemaSnapshot workoutSchemaSnapshot, String note, int complexity) {
+        super(id, workoutSchemaSnapshot, complexity);
         this.note = note;
     }
 
@@ -38,7 +37,7 @@ public class WorkoutFact extends Workout {
         return WorkoutFact.builder()
                 .id(id)
                 .isNew(true)
-                .workoutRoundSnapshots(this.workoutSchemaSnapshot().workoutRoundSnapshots())
+                .workoutSchemaSnapshot(this.workoutSchemaSnapshot())
                 .note(this.note())
                 .build();
     }

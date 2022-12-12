@@ -6,11 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import ru.soft.AbstractDataTest;
 import ru.soft.data.model.WorkoutRound;
-import ru.soft.data.model.snapshot.WorkoutRoundSchemaSnapshot;
 
 import java.util.Optional;
 
-import static ru.soft.utils.JsonTestUtils.createWorkoutStationSnapshots;
+import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaSnapshot;
 
 @DataJdbcTest
 class WorkoutRoundRepositoryTest extends AbstractDataTest {
@@ -22,17 +21,24 @@ class WorkoutRoundRepositoryTest extends AbstractDataTest {
     void addNew() {
         WorkoutRound round = WorkoutRound.builder()
                 .isNew(true)
-                .workoutRoundSchemaSnapshot(new WorkoutRoundSchemaSnapshot(createWorkoutStationSnapshots()))
+                .workoutRoundSchemaSnapshot(createWorkoutRoundSchemaSnapshot())
                 .title("test title")
                 .description("test description")
                 .build();
         WorkoutRound saved = this.repository.save(round);
-
         Assertions.assertNotNull(saved.getId());
 
         Optional<WorkoutRound> workoutRoundOpt = this.repository.findById(saved.getId());
-
         Assertions.assertTrue(workoutRoundOpt.isPresent());
-        Assertions.assertEquals(workoutRoundOpt.get(), saved);
+
+        WorkoutRound actual = workoutRoundOpt.get();
+        WorkoutRound expected = WorkoutRound.builder()
+                .id(saved.id())
+                .isNew(false)
+                .workoutRoundSchemaSnapshot(saved.workoutRoundSchemaSnapshot())
+                .title(saved.title())
+                .description(saved.description())
+                .build();
+        Assertions.assertEquals(expected, actual);
     }
 }

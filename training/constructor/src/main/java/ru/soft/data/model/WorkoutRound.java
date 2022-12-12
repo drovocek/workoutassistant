@@ -11,18 +11,17 @@ import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import ru.soft.data.BaseEntity;
-import ru.soft.data.BaseEntityWithComplexity;
 import ru.soft.data.model.snapshot.WorkoutRoundSchemaSnapshot;
-import ru.soft.data.model.snapshot.WorkoutStationSnapshot;
 
-import java.util.List;
 import java.util.UUID;
+
+import static ru.soft.data.model.utils.ComplexityUtils.calculateComplexity;
 
 @Getter
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "workout_round")
-public class WorkoutRound extends BaseEntityWithComplexity {
+public class WorkoutRound extends BaseEntity {
 
     @JsonProperty("stations")
     @Column("round_schema")
@@ -40,12 +39,12 @@ public class WorkoutRound extends BaseEntityWithComplexity {
     private final int complexity;
 
     @Builder
-    public WorkoutRound(UUID id, boolean isNew, WorkoutRoundSchemaSnapshot workoutRoundSchemaSnapshot, String title, String description, int complexity) {
+    public WorkoutRound(UUID id, boolean isNew, WorkoutRoundSchemaSnapshot workoutRoundSchemaSnapshot, String title, String description) {
         super(id, isNew);
         this.workoutRoundSchemaSnapshot = workoutRoundSchemaSnapshot;
         this.title = title;
         this.description = description;
-        this.complexity = complexity;
+        this.complexity = calculateComplexity(this.workoutRoundSchemaSnapshot);
     }
 
     @PersistenceCreator
@@ -57,12 +56,6 @@ public class WorkoutRound extends BaseEntityWithComplexity {
         this.complexity = complexity;
     }
 
-    private int calculateComplexity(List<WorkoutStationSnapshot> workoutStationSnapshots) {
-        return (int) workoutStationSnapshots.stream()
-                .mapToInt(station -> station.exerciseSnapshot().complexity())
-                .average().orElse(0);
-    }
-
     @Override
     public BaseEntity newWithId(UUID id) {
         return WorkoutRound.builder()
@@ -71,24 +64,6 @@ public class WorkoutRound extends BaseEntityWithComplexity {
                 .workoutRoundSchemaSnapshot(this.workoutRoundSchemaSnapshot())
                 .title(this.title())
                 .description(this.description())
-                .complexity(this.complexity())
                 .build();
-    }
-
-    @Override
-    public BaseEntity newWithRecalculateComplexity(UUID id) {
-        return WorkoutRound.builder()
-                .id(id)
-                .isNew(true)
-                .workoutRoundSchemaSnapshot(this.workoutRoundSchemaSnapshot())
-                .title(this.title())
-                .description(this.description())
-                .complexity(calculateComplexity(this.workoutRoundSchemaSnapshot().workoutStations()))
-                .build();
-    }
-
-    @Override
-    public BaseEntity copyWithRecalculateComplexity() {
-        return newWithRecalculateComplexity(id());
     }
 }

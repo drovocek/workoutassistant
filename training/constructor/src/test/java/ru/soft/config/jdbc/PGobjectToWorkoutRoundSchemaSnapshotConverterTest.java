@@ -5,27 +5,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.postgresql.util.PGobject;
 import ru.soft.data.model.snapshot.WorkoutRoundSchemaSnapshot;
-import ru.soft.data.model.snapshot.WorkoutStationSnapshot;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaPGobject;
-import static ru.soft.utils.JsonTestUtils.createWorkoutStationSnapshots;
+import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaSnapshot;
 
 class PGobjectToWorkoutRoundSchemaSnapshotConverterTest {
 
-    private PGobjectToWorkoutRoundSchemaConverter readingConverter;
+    private PGobjectToWorkoutRoundSchemaSnapshotConverter readingConverter;
 
     @BeforeEach
     void init() {
-        this.readingConverter = new PGobjectToWorkoutRoundSchemaConverter(JdbcConfig.jdbcObjectMapper());
+        this.readingConverter = new PGobjectToWorkoutRoundSchemaSnapshotConverter(JdbcConfig.jdbcObjectMapper());
     }
 
     @Test
     void convert() throws SQLException {
-        List<WorkoutStationSnapshot> workoutStationSnapshots = createWorkoutStationSnapshots();
-        WorkoutRoundSchemaSnapshot expectedSchema = new WorkoutRoundSchemaSnapshot(workoutStationSnapshots);
+        WorkoutRoundSchemaSnapshot expectedSchema = createWorkoutRoundSchemaSnapshot();
         PGobject pGobject = createWorkoutRoundSchemaPGobject();
         WorkoutRoundSchemaSnapshot actualSchema = this.readingConverter.convert(pGobject);
         Assertions.assertEquals(expectedSchema, actualSchema);

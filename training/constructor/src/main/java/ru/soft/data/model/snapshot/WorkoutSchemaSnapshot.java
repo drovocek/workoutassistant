@@ -4,5 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public record WorkoutSchemaSnapshot(@JsonProperty("rounds") List<WorkoutRoundSnapshot> workoutRoundSnapshots) {
+public record WorkoutSchemaSnapshot(
+        @JsonProperty("rounds") List<WorkoutRoundSnapshot> workoutRoundSnapshots) {
 }

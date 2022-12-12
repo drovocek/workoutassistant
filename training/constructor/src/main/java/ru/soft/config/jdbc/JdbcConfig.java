@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.relational.core.mapping.event.BeforeConvertCallback;
 import ru.soft.data.BaseEntity;
-import ru.soft.data.BaseEntityWithComplexity;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,27 +26,26 @@ public class JdbcConfig extends AbstractJdbcConfiguration {
 
     @Bean
     BeforeConvertCallback<BaseEntity> prepareForConvert() {
-        return this::prepareForConvert;
+        return entity -> {
+            if (entity.id() == null) {
+                return newWithId(entity);
+            }
+            return entity;
+        };
     }
 
-    private BaseEntity prepareForConvert(BaseEntity entity) {
-        boolean hasComplexity = entity instanceof BaseEntityWithComplexity;
-        if (entity.getId() == null) {
-            log.info("newWithId id for entity {}", entity);
-            UUID id = UUID.randomUUID();
-            return hasComplexity ?
-                    ((BaseEntityWithComplexity) entity).newWithRecalculateComplexity(id) :
-                    entity.newWithId(id);
-        }
-        return hasComplexity ?
-                ((BaseEntityWithComplexity) entity).copyWithRecalculateComplexity() :
-                entity;
+    private BaseEntity newWithId(BaseEntity entity) {
+        UUID id = UUID.randomUUID();
+        return entity.newWithId(id);
     }
 
     @Override
     protected List<?> userConverters() {
         return List.of(
-                new WorkoutRoundSchemaToPGobjectConverter(jdbcObjectMapper()),
-                new PGobjectToWorkoutRoundSchemaConverter(jdbcObjectMapper()));
+                new WorkoutRoundSchemaSnapshotToPGobjectConverter(jdbcObjectMapper()),
+                new PGobjectToWorkoutRoundSchemaSnapshotConverter(jdbcObjectMapper()),
+                new WorkoutSchemaSnapshotToPGobjectConverter(jdbcObjectMapper()),
+                new PGobjectToWorkoutSchemaSnapshotConverter(jdbcObjectMapper())
+        );
     }
 }

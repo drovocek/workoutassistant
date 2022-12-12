@@ -1,5 +1,6 @@
 package ru.soft.data;
 
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.data.annotation.AccessType;
 import org.springframework.data.annotation.Id;
@@ -10,6 +11,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import java.util.UUID;
 
 @ToString
+@EqualsAndHashCode
 public abstract class BaseEntity implements Persistable<UUID>, HasId {
 
     @Id
