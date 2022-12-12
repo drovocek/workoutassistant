@@ -11,7 +11,7 @@ public abstract class BaseEntityWithComplexity extends BaseEntity {
         super(id, isNew);
     }
 
-    public abstract BaseEntity newWithActualComplexity(UUID id);
+    public abstract BaseEntity newWithRecalculateComplexity(UUID id);
 
-    public abstract BaseEntity copyWithActualComplexity();
+    public abstract BaseEntity copyWithRecalculateComplexity();
 }

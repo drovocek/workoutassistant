@@ -36,11 +36,11 @@ public class JdbcConfig extends AbstractJdbcConfiguration {
             log.info("newWithId id for entity {}", entity);
             UUID id = UUID.randomUUID();
             return hasComplexity ?
-                    ((BaseEntityWithComplexity) entity).newWithActualComplexity(id) :
+                    ((BaseEntityWithComplexity) entity).newWithRecalculateComplexity(id) :
                     entity.newWithId(id);
         }
         return hasComplexity ?
-                ((BaseEntityWithComplexity) entity).copyWithActualComplexity() :
+                ((BaseEntityWithComplexity) entity).copyWithRecalculateComplexity() :
                 entity;
     }
 

@@ -17,7 +17,7 @@ public class WorkoutRoundToSnapshotMapper {
 
     public static WorkoutRoundSnapshot toSnapshot(WorkoutRound round) {
         return new WorkoutRoundSnapshot(
-                round.workoutStationSnapshots(),
+                round.workoutRoundSchemaSnapshot().workoutStations(),
                 round.title(),
                 round.description(),
                 round.complexity()
