@@ -2,3 +2,5 @@ spring:
   test:
     database:
       replace: none
+#  datasource:
+#    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver

@@ -1,5 +1,7 @@
 DROP TABLE IF EXISTS exercise;
 DROP TABLE IF EXISTS workout_round;
+DROP TABLE IF EXISTS workout_plan;
+DROP TABLE IF EXISTS workout_fact;
 
 CREATE TABLE exercise (
     id UUID PRIMARY KEY,
