@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import ru.soft.AbstractDataTest;
+import ru.soft.TestContainerHolder;
 import ru.soft.data.model.WorkoutRound;
 
 import java.util.Optional;
@@ -12,7 +12,7 @@ import java.util.Optional;
 import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaSnapshot;
 
 @DataJdbcTest
-class WorkoutRoundRepositoryTest extends AbstractDataTest {
+class WorkoutRoundRepositoryTest extends TestContainerHolder {
 
     @Autowired
     private WorkoutRoundRepository repository;

@@ -4,14 +4,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import ru.soft.AbstractDataTest;
+import ru.soft.TestContainerHolder;
 import ru.soft.data.model.Exercise;
 
 import java.util.List;
 import java.util.Optional;
 
 @DataJdbcTest
-class ExerciseRepositoryTest extends AbstractDataTest {
+class ExerciseRepositoryTest extends TestContainerHolder {
 
     @Autowired
     private ExerciseRepository repository;
