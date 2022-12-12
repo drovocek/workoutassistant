@@ -1,44 +1,42 @@
 package ru.soft.data.repository;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import ru.soft.TestContainerHolder;
 import ru.soft.data.model.WorkoutRound;
 
-import java.util.Optional;
+import java.util.UUID;
 
 import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaSnapshot;
 
 @DataJdbcTest
-class WorkoutRoundRepositoryTest extends TestContainerHolder {
+class WorkoutRoundRepositoryTest extends BaseRepositoryTest<WorkoutRound> {
 
     @Autowired
     private WorkoutRoundRepository repository;
 
-    @Test
-    void addNew() {
-        WorkoutRound round = WorkoutRound.builder()
+    @Override
+    protected BaseRepository<WorkoutRound> repository() {
+        return this.repository;
+    }
+
+    @Override
+    protected WorkoutRound forSave() {
+        return WorkoutRound.builder()
                 .isNew(true)
                 .workoutRoundSchemaSnapshot(createWorkoutRoundSchemaSnapshot())
                 .title("test title")
                 .description("test description")
                 .build();
-        WorkoutRound saved = this.repository.save(round);
-        Assertions.assertNotNull(saved.getId());
+    }
 
-        Optional<WorkoutRound> workoutRoundOpt = this.repository.findById(saved.getId());
-        Assertions.assertTrue(workoutRoundOpt.isPresent());
-
-        WorkoutRound actual = workoutRoundOpt.get();
-        WorkoutRound expected = WorkoutRound.builder()
-                .id(saved.id())
+    @Override
+    protected WorkoutRound expectedSaved(UUID id) {
+        return WorkoutRound.builder()
+                .id(id)
                 .isNew(false)
-                .workoutRoundSchemaSnapshot(saved.workoutRoundSchemaSnapshot())
-                .title(saved.title())
-                .description(saved.description())
+                .workoutRoundSchemaSnapshot(createWorkoutRoundSchemaSnapshot())
+                .title("test title")
+                .description("test description")
                 .build();
-        Assertions.assertEquals(expected, actual);
     }
 }

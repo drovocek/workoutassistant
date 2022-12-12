@@ -8,16 +8,10 @@ import ru.soft.data.model.Exercise;
 
 import java.util.UUID;
 
-import static ru.soft.web.utils.ValidationUtil.checkModification;
-
-public interface ExerciseRepository extends BaseRepository<Exercise, UUID> {
+public interface ExerciseRepository extends BaseRepository<Exercise> {
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM Exercise e WHERE e.id = :id")
+    @Query("DELETE FROM exercise e WHERE e.id = :id")
     int delete(@Param(value = "id") UUID id);
-
-    default void deleteExisted(UUID id) {
-        checkModification(delete(id), id);
-    }
 }

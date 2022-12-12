@@ -15,7 +15,7 @@ import java.util.UUID;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "workout_plan")
-public class WorkoutPlan extends Workout{
+public class WorkoutPlan extends Workout {
 
     @Builder
     public WorkoutPlan(UUID id, boolean isNew, WorkoutSchemaSnapshot workoutSchemaSnapshot, String title, String description) {

@@ -2,19 +2,23 @@ package ru.soft.data.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static ru.soft.web.utils.ValidationUtil.checkExisted;
 
 @NoRepositoryBean
-public interface BaseRepository<T, ID> extends CrudRepository<T, ID> {
+public interface BaseRepository<T> extends CustomDeleteRepository, CrudRepository<T, UUID> {
+
+    int delete(@Param(value = "id") UUID id);
 
     @Override
     List<T> findAll();
 
-    default T getExisted(ID id) {
+    default T getExisted(UUID id) {
         Optional<T> byId = findById(id);
         return checkExisted(byId.orElse(null), id);
     }

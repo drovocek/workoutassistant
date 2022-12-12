@@ -6,10 +6,10 @@ import org.springframework.lang.NonNull;
 import ru.soft.data.HasId;
 import ru.soft.web.exception.IllegalRequestDataException;
 
-import java.util.UUID;
-
 @UtilityClass
 public class ValidationUtil {
+
+    public static final String ENTITY_NOT_FOUND_TEMPLATE = "Entity with id=%s not found";
 
     public static void checkNew(HasId bean) {
         if (bean.id() != null) {
@@ -23,15 +23,15 @@ public class ValidationUtil {
         }
     }
 
-    public static void checkModification(int count, UUID id) {
+    public static <ID> void checkModification(int count, ID id) {
         if (count == 0) {
-            throw new IllegalRequestDataException("Entity with id=%s not found".formatted(id));
+            throw new IllegalRequestDataException(ENTITY_NOT_FOUND_TEMPLATE.formatted(id));
         }
     }
 
     public static <T, ID> T checkExisted(T obj, ID id) {
         if (obj == null) {
-            throw new IllegalRequestDataException("Entity with id=%s not found".formatted(id));
+            throw new IllegalRequestDataException(ENTITY_NOT_FOUND_TEMPLATE.formatted(id));
         }
         return obj;
     }
