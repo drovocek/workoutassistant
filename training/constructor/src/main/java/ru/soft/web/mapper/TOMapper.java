@@ -1,4 +1,4 @@
-package ru.soft.web.to.mapper;
+package ru.soft.web.mapper;
 
 import ru.soft.data.BaseEntity;
 import ru.soft.data.HasId;

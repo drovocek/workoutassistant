@@ -6,22 +6,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.soft.data.model.WorkoutRound;
-import ru.soft.data.repository.WorkoutRoundRepository;
-import ru.soft.web.to.WorkoutRoundTo;
+import ru.soft.data.model.WorkoutPlan;
+import ru.soft.data.repository.WorkoutPlanRepository;
 import ru.soft.web.mapper.TOMapper;
+import ru.soft.web.to.WorkoutPlanTo;
 
 @Slf4j
 @Getter
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(
-        value = WorkoutRoundApiController.REST_URL,
+        value = WorkoutPlanApiController.REST_URL,
         produces = MediaType.APPLICATION_JSON_VALUE)
-public class WorkoutRoundApiController extends BaseApiController<WorkoutRound, WorkoutRoundTo> {
+public class WorkoutPlanApiController extends BaseApiController<WorkoutPlan, WorkoutPlanTo> {
 
-    static final String REST_URL = "/api/rounds";
+    static final String REST_URL = "/api/workouts/plans";
 
-    private final WorkoutRoundRepository repository;
-    private final TOMapper<WorkoutRound, WorkoutRoundTo> mapper;
+    private final WorkoutPlanRepository repository;
+    private final TOMapper<WorkoutPlan, WorkoutPlanTo> mapper;
 }

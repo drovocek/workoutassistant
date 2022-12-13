@@ -1,4 +1,4 @@
-package ru.soft.web.to.mapper;
+package ru.soft.web.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.soft.data.model.Exercise;

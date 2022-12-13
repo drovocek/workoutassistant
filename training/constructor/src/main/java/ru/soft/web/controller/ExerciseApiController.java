@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.soft.data.model.Exercise;
 import ru.soft.data.repository.ExerciseRepository;
+import ru.soft.web.mapper.TOMapper;
 import ru.soft.web.to.ExerciseTo;
-import ru.soft.web.to.mapper.TOMapper;
 
 @Slf4j
 @Getter

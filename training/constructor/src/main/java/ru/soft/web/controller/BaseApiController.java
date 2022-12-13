@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.soft.data.BaseEntity;
 import ru.soft.data.HasId;
 import ru.soft.data.repository.BaseRepository;
-import ru.soft.web.to.mapper.TOMapper;
+import ru.soft.web.mapper.TOMapper;
 
+import java.util.List;
 import java.util.UUID;
 
 import static ru.soft.utils.ValidationUtil.checkNew;
@@ -30,6 +31,16 @@ abstract class BaseApiController<T extends BaseEntity, TO extends HasId> {
         log.info("get by id={}", id);
         T existed = getRepository().getExisted(id);
         return ResponseEntity.ok(getMapper().toTo(existed));
+    }
+
+    @GetMapping
+    protected ResponseEntity<List<TO>> getAll() {
+        log.info("get all");
+        List<T> all = getRepository().findAll();
+        List<TO> tos = all.stream()
+                .map(t -> getMapper().toTo(t))
+                .toList();
+        return ResponseEntity.ok(tos);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
