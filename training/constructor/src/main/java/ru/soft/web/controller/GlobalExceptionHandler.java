@@ -1,4 +1,4 @@
-package ru.soft.web.controller.rest;
+package ru.soft.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
