@@ -1,4 +1,4 @@
-package ru.soft.config;
+package ru.soft.web.config;
 
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package ru.soft.config.jdbc.converters.read;
+package ru.soft.data.config.converters.read;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package ru.soft.config.jdbc;
+package ru.soft.data.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -10,13 +10,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.relational.core.mapping.event.BeforeConvertCallback;
-import ru.soft.config.jdbc.converters.read.PGobjectToWorkoutPlanSnapshotReadingConverter;
-import ru.soft.config.jdbc.converters.read.PGobjectToWorkoutRoundSchemaSnapshotReadingConverter;
-import ru.soft.config.jdbc.converters.read.PGobjectToWorkoutSchemaSnapshotReadingConverter;
-import ru.soft.config.jdbc.converters.write.WorkoutPlanSnapshotToPGobjectWritingConverter;
-import ru.soft.config.jdbc.converters.write.WorkoutRoundSchemaSnapshotToPGobjectWritingConverter;
-import ru.soft.config.jdbc.converters.write.WorkoutSchemaSnapshotToPGobjectWritingConverter;
 import ru.soft.data.BaseEntity;
+import ru.soft.data.config.converters.read.PGobjectToWorkoutPlanSnapshotReadingConverter;
+import ru.soft.data.config.converters.read.PGobjectToWorkoutRoundSchemaSnapshotReadingConverter;
+import ru.soft.data.config.converters.read.PGobjectToWorkoutSchemaSnapshotReadingConverter;
+import ru.soft.data.config.converters.write.WorkoutPlanSnapshotToPGobjectWritingConverter;
+import ru.soft.data.config.converters.write.WorkoutRoundSchemaSnapshotToPGobjectWritingConverter;
+import ru.soft.data.config.converters.write.WorkoutSchemaSnapshotToPGobjectWritingConverter;
 
 import java.util.List;
 import java.util.UUID;

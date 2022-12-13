@@ -1,10 +1,10 @@
-package ru.soft.config.jdbc.converters.read;
+package ru.soft.data.config.converters.read;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.postgresql.util.PGobject;
-import ru.soft.config.jdbc.JdbcConfig;
+import ru.soft.data.config.JdbcConfig;
 import ru.soft.data.model.snapshot.WorkoutRoundSchemaSnapshot;
 
 import java.sql.SQLException;

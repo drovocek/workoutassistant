@@ -1,4 +1,4 @@
-package ru.soft.config.jdbc.converters.write;
+package ru.soft.data.config.converters.write;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
