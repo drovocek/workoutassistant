@@ -1,6 +1,5 @@
 package ru.soft.data.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,7 +18,6 @@ import java.util.UUID;
 @Table(name = "workout_round")
 public class WorkoutRound extends BaseEntity {
 
-    @JsonProperty("stations")
     @Column("round_schema")
     private final WorkoutRoundSchemaSnapshot workoutRoundSchemaSnapshot;
 

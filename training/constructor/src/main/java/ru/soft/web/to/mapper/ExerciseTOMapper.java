@@ -7,12 +7,12 @@ import ru.soft.web.to.ExerciseTo;
 @Component
 public class ExerciseTOMapper implements TOMapper<Exercise, ExerciseTo> {
 
-    public ExerciseTo toTo(Exercise exercise) {
+    public ExerciseTo toTo(Exercise entity) {
         return new ExerciseTo(
-                exercise.getId(),
-                exercise.title(),
-                exercise.description(),
-                exercise.complexity()
+                entity.getId(),
+                entity.title(),
+                entity.description(),
+                entity.complexity()
         );
     }
 

@@ -17,6 +17,7 @@ abstract class ObjectToPGobjectWritingConverter<T> implements Converter<T, PGobj
     public PGobject convert(@NonNull T source) {
         PGobject pGobject = new PGobject();
         pGobject.setType("jsonb");
+        System.out.println(getMapper().writeValueAsString(source));
         pGobject.setValue(getMapper().writeValueAsString(source));
         return pGobject;
     }

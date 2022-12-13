@@ -12,10 +12,10 @@ import org.springframework.data.annotation.PersistenceCreator;
 @Getter
 @ToString
 @EqualsAndHashCode
-@JsonIncludeProperties({"schema", "title", "description"})
+@JsonIncludeProperties({"roundSchema", "title", "description"})
 public class WorkoutRoundSnapshot {
 
-    @JsonProperty("schema")
+    @JsonProperty("roundSchema")
     private final WorkoutRoundSchemaSnapshot workoutRoundSchemaSnapshot;
 
     @JsonProperty("title")
@@ -28,7 +28,7 @@ public class WorkoutRoundSnapshot {
     @JsonCreator
     @PersistenceCreator
     public WorkoutRoundSnapshot(
-            @JsonProperty("schema") WorkoutRoundSchemaSnapshot workoutRoundSchemaSnapshot,
+            @JsonProperty("roundSchema") WorkoutRoundSchemaSnapshot workoutRoundSchemaSnapshot,
             @JsonProperty("title") String title,
             @JsonProperty("description") String description) {
         this.workoutRoundSchemaSnapshot = workoutRoundSchemaSnapshot;

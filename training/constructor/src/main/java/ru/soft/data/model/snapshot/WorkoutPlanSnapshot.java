@@ -15,12 +15,12 @@ import org.springframework.data.annotation.PersistenceCreator;
 @Getter
 @ToString
 @EqualsAndHashCode
-@JsonRootName("workout_plan")
-@JsonIncludeProperties({"schema", "title", "description"})
+@JsonRootName("workoutPlan")
+@JsonIncludeProperties({"workoutSchema", "title", "description"})
 public class WorkoutPlanSnapshot {
 
     @NotNull
-    @JsonProperty("schema")
+    @JsonProperty("workoutSchema")
     private final WorkoutSchemaSnapshot workoutSchemaSnapshot;
 
     @NotBlank

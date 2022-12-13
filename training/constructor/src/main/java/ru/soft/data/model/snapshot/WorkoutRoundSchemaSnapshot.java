@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 
 import java.util.List;
 
-@JsonRootName("round_schema")
+@JsonRootName("roundSchema")
 public record WorkoutRoundSchemaSnapshot(
-        @JsonProperty("stations") List<WorkoutStationSnapshot> workoutStationSnapshots) {
+        @JsonProperty("roundStations") List<WorkoutStationSnapshot> workoutStationSnapshots) {
 }
