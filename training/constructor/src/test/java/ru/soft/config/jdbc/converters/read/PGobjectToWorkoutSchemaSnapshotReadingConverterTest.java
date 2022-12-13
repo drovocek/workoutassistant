@@ -1,9 +1,10 @@
-package ru.soft.config.jdbc;
+package ru.soft.config.jdbc.converters.read;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.postgresql.util.PGobject;
+import ru.soft.config.jdbc.JdbcConfig;
 import ru.soft.data.model.snapshot.WorkoutSchemaSnapshot;
 
 import java.sql.SQLException;
@@ -11,13 +12,13 @@ import java.sql.SQLException;
 import static ru.soft.utils.JsonTestUtils.createWorkoutSchemaPGobject;
 import static ru.soft.utils.JsonTestUtils.createWorkoutSchemaSnapshot;
 
-class PGobjectToWorkoutSchemaSnapshotConverterTest {
+class PGobjectToWorkoutSchemaSnapshotReadingConverterTest {
 
-    private PGobjectToWorkoutSchemaSnapshotConverter readingConverter;
+    private PGobjectToWorkoutSchemaSnapshotReadingConverter readingConverter;
 
     @BeforeEach
     void init() {
-        this.readingConverter = new PGobjectToWorkoutSchemaSnapshotConverter(JdbcConfig.jdbcObjectMapper());
+        this.readingConverter = new PGobjectToWorkoutSchemaSnapshotReadingConverter(JdbcConfig.jdbcObjectMapper());
     }
 
     @Test

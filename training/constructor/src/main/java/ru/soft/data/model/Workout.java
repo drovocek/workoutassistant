@@ -1,8 +1,6 @@
 package ru.soft.data.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
@@ -13,8 +11,6 @@ import ru.soft.data.BaseEntity;
 import ru.soft.data.model.snapshot.WorkoutSchemaSnapshot;
 
 import java.util.UUID;
-
-import static ru.soft.data.model.utils.ComplexityUtils.calculateComplexity;
 
 @Getter
 @ToString(callSuper = true)
@@ -34,24 +30,17 @@ abstract class Workout extends BaseEntity {
     @Column("description")
     protected final String description;
 
-    @Min(value = 1)
-    @Max(value = 10)
-    @Column("complexity")
-    protected final int complexity;
-
     protected Workout(UUID id, boolean isNew, WorkoutSchemaSnapshot workoutSchemaSnapshot, String title, String description) {
         super(id, isNew);
         this.workoutSchemaSnapshot = workoutSchemaSnapshot;
         this.title = title;
         this.description = description;
-        this.complexity = calculateComplexity(workoutSchemaSnapshot);
     }
 
-    protected Workout(UUID id, WorkoutSchemaSnapshot workoutSchemaSnapshot, String title, String description, int complexity) {
+    protected Workout(UUID id, WorkoutSchemaSnapshot workoutSchemaSnapshot, String title, String description) {
         super(id, false);
         this.workoutSchemaSnapshot = workoutSchemaSnapshot;
         this.title = title;
         this.description = description;
-        this.complexity = complexity;
     }
 }

@@ -10,14 +10,21 @@ import ru.soft.web.utils.ValidationUtil;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 
 public abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHolder {
+
+    protected static final int DEFAULT_TEST_ROWS_COUNT = 3;
 
     protected abstract BaseRepository<T> repository();
 
     protected abstract T forSave();
 
     protected abstract T expectedSaved(UUID id);
+
+    protected int rowsCount() {
+        return DEFAULT_TEST_ROWS_COUNT;
+    }
 
     @Test
     void getExisted() {
@@ -61,12 +68,15 @@ public abstract class BaseRepositoryTest<T extends BaseEntity> extends TestConta
     @Test
     void getAll() {
         List<T> exercises = repository().findAll();
-        Assertions.assertEquals(3, exercises.size());
+        Assertions.assertEquals(rowsCount(), exercises.size());
     }
 
     @Test
-    void addNew() {
-        T forSave = forSave();
+    void save() {
+        save(forSave(), this::expectedSaved);
+    }
+
+    protected void save(T forSave, Function<UUID, T> expected) {
         T saved = repository().save(forSave);
         Assertions.assertNotNull(saved.getId());
 
@@ -74,7 +84,6 @@ public abstract class BaseRepositoryTest<T extends BaseEntity> extends TestConta
         Assertions.assertTrue(workoutPlanOpt.isPresent());
 
         T actual = workoutPlanOpt.get();
-        T expected = expectedSaved(actual.id());
-        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expected.apply(actual.id()), actual);
     }
 }

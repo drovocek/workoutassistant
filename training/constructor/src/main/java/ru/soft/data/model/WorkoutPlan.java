@@ -23,8 +23,8 @@ public class WorkoutPlan extends Workout {
     }
 
     @PersistenceCreator
-    public WorkoutPlan(UUID id, WorkoutSchemaSnapshot workoutSchemaSnapshot, String title, String description, int complexity) {
-        super(id, workoutSchemaSnapshot, title, description, complexity);
+    public WorkoutPlan(UUID id, WorkoutSchemaSnapshot workoutSchemaSnapshot, String title, String description) {
+        super(id, workoutSchemaSnapshot, title, description);
     }
 
     @Override
