@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static ru.soft.web.utils.ValidationUtil.checkExisted;
+import static ru.soft.utils.ValidationUtil.checkExisted;
 
 @NoRepositoryBean
 public interface BaseRepository<T> extends CustomDeleteRepository, CrudRepository<T, UUID> {

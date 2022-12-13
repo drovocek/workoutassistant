@@ -11,12 +11,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.relational.core.mapping.event.BeforeConvertCallback;
 import ru.soft.data.BaseEntity;
-import ru.soft.data.config.converters.read.PGobjectToWorkoutPlanSnapshotReadingConverter;
-import ru.soft.data.config.converters.read.PGobjectToWorkoutRoundSchemaSnapshotReadingConverter;
-import ru.soft.data.config.converters.read.PGobjectToWorkoutSchemaSnapshotReadingConverter;
-import ru.soft.data.config.converters.write.WorkoutPlanSnapshotToPGobjectWritingConverter;
-import ru.soft.data.config.converters.write.WorkoutRoundSchemaSnapshotToPGobjectWritingConverter;
-import ru.soft.data.config.converters.write.WorkoutSchemaSnapshotToPGobjectWritingConverter;
+import ru.soft.data.config.converter.read.PGobjectToWorkoutPlanSnapshotReadingConverter;
+import ru.soft.data.config.converter.read.PGobjectToWorkoutRoundSchemaSnapshotReadingConverter;
+import ru.soft.data.config.converter.read.PGobjectToWorkoutSchemaSnapshotReadingConverter;
+import ru.soft.data.config.converter.write.WorkoutPlanSnapshotToPGobjectWritingConverter;
+import ru.soft.data.config.converter.write.WorkoutRoundSchemaSnapshotToPGobjectWritingConverter;
+import ru.soft.data.config.converter.write.WorkoutSchemaSnapshotToPGobjectWritingConverter;
 
 import java.util.List;
 import java.util.UUID;

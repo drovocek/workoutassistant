@@ -1,7 +1,8 @@
-package ru.soft.web.controller;
+package ru.soft.web.exception;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -16,11 +17,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ru.soft.web.exception.AppException;
-import ru.soft.web.utils.ValidationUtil;
+import ru.soft.utils.ValidationUtil;
 
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 
 @Slf4j
 @RestControllerAdvice
@@ -29,6 +31,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Autowired
     private ErrorAttributes errorAttributes;
+
+    @ExceptionHandler(PSQLException.class)
+    public ResponseEntity<?> PSQLException(WebRequest request, PSQLException ex) {
+        log.error("PSQLException: {}", ex.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), "DB exception", HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value()));
+    }
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<?> appException(WebRequest request, AppException ex) {

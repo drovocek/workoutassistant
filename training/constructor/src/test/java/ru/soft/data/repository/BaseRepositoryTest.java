@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import ru.soft.TestContainerHolder;
 import ru.soft.data.BaseEntity;
 import ru.soft.web.exception.IllegalRequestDataException;
-import ru.soft.web.utils.ValidationUtil;
+import ru.soft.utils.ValidationUtil;
 
 import java.util.List;
 import java.util.Optional;

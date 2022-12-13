@@ -12,10 +12,8 @@ public class TestSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        //http.formLogin().disable();
-        //http.csrf().disable();
-        http.httpBasic();
-        http.authorizeHttpRequests().anyRequest().authenticated();
+        http.csrf().disable();
+        http.authorizeHttpRequests().anyRequest().permitAll();
         return http.build();
     }
 }

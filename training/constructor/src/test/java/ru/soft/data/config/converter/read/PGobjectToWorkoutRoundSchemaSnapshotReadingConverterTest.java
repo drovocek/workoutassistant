@@ -1,4 +1,4 @@
-package ru.soft.data.config.converters.read;
+package ru.soft.data.config.converter.read;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

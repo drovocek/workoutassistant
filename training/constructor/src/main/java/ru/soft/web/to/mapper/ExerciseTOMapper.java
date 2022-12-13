@@ -1,15 +1,13 @@
-package ru.soft.web.utils;
+package ru.soft.web.to.mapper;
 
-import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import ru.soft.data.model.Exercise;
 import ru.soft.web.to.ExerciseTo;
 
-@Slf4j
-@UtilityClass
-public class ExerciseUtils {
+@Component
+public class ExerciseTOMapper implements TOMapper<Exercise, ExerciseTo> {
 
-    public static ExerciseTo toTo(Exercise exercise) {
+    public ExerciseTo toTo(Exercise exercise) {
         return new ExerciseTo(
                 exercise.getId(),
                 exercise.title(),
@@ -18,13 +16,13 @@ public class ExerciseUtils {
         );
     }
 
-    public static Exercise createNewFromTo(ExerciseTo to) {
+    public Exercise fromTo(ExerciseTo to) {
         return Exercise.builder()
                 .id(to.id())
+                .isNew(to.id() == null)
                 .title(to.title())
                 .description(to.description())
                 .complexity(to.complexity())
-                .isNew(to.id() == null)
                 .build();
     }
 }

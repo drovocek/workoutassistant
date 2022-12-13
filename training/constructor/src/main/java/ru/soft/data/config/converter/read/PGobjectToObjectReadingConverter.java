@@ -1,4 +1,4 @@
-package ru.soft.data.config.converters.read;
+package ru.soft.data.config.converter.read;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
