@@ -1,5 +1,6 @@
 package ru.soft.data;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.data.annotation.AccessType;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @EqualsAndHashCode
 public abstract class BaseEntity implements Persistable<UUID>, HasId {
 
+    @NotNull
     @Id
     @Column("id")
     protected final UUID id;
@@ -40,5 +42,13 @@ public abstract class BaseEntity implements Persistable<UUID>, HasId {
         return this.isNew;
     }
 
-    public abstract BaseEntity newWithId(UUID id);
+    protected abstract BaseEntity withId(UUID id, boolean isNew);
+
+    public BaseEntity newWithId(UUID id) {
+        return withId(id, true);
+    }
+
+    public BaseEntity withId(UUID id) {
+        return withId(id, false);
+    }
 }

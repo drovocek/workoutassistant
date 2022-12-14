@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public record WorkoutResultTo(
         UUID id,
-        UUID workoutSessionId,
+        @NotNull UUID workoutSessionId,
         @NotNull @JsonProperty("workoutSchema") WorkoutSchemaSnapshot workoutSchemaSnapshot,
         @NotBlank String title,
         String description) implements HasId {

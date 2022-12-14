@@ -2,10 +2,12 @@ package ru.soft.data.repository;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.soft.TestContainerHolder;
+import ru.soft.TestSettings;
 import ru.soft.data.BaseEntity;
-import ru.soft.web.exception.IllegalRequestDataException;
 import ru.soft.utils.ValidationUtil;
+import ru.soft.web.exception.IllegalRequestDataException;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,24 +16,23 @@ import java.util.function.Function;
 
 public abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHolder {
 
-    protected static final int DEFAULT_TEST_ROWS_COUNT = 3;
-
-    protected abstract BaseRepository<T> repository();
+    @Autowired
+    protected BaseRepository<T> repository;
 
     protected abstract T forSave();
 
     protected abstract T expectedSaved(UUID id);
 
     protected int rowsCount() {
-        return DEFAULT_TEST_ROWS_COUNT;
+        return TestSettings.DEFAULT_TEST_ROWS_COUNT;
     }
 
     @Test
     void getExisted() {
-        List<T> exercises = repository().findAll();
+        List<T> exercises = this.repository.findAll();
         Assertions.assertFalse(exercises.isEmpty());
         T expected = exercises.get(0);
-        T actual = repository().getExisted(expected.id());
+        T actual = this.repository.getExisted(expected.id());
         Assertions.assertEquals(expected, actual);
     }
 
@@ -39,21 +40,21 @@ public abstract class BaseRepositoryTest<T extends BaseEntity> extends TestConta
     void getExistedNotExiting() {
         UUID notExitingId = UUID.randomUUID();
         IllegalRequestDataException actual = Assertions.assertThrows(
-                IllegalRequestDataException.class, () -> repository().getExisted(notExitingId));
+                IllegalRequestDataException.class, () -> this.repository.getExisted(notExitingId));
         Assertions.assertEquals(ValidationUtil.ENTITY_NOT_FOUND_TEMPLATE.formatted(notExitingId), actual.getMessage());
     }
 
     @Test
     void deleteById() {
-        List<T> exercises = repository().findAll();
+        List<T> exercises = this.repository.findAll();
         Assertions.assertFalse(exercises.isEmpty());
 
         T deleted = exercises.get(0);
         UUID deletedId = deleted.getId();
         Assertions.assertNotNull(deletedId);
 
-        repository().deleteExisted(deletedId);
-        Optional<T> deletedOpt = repository().findById(deletedId);
+        this.repository.deleteExisted(deletedId);
+        Optional<T> deletedOpt = this.repository.findById(deletedId);
         Assertions.assertTrue(deletedOpt.isEmpty());
     }
 
@@ -61,13 +62,13 @@ public abstract class BaseRepositoryTest<T extends BaseEntity> extends TestConta
     void deleteByIdNotExiting() {
         UUID notExitingId = UUID.randomUUID();
         IllegalRequestDataException actual = Assertions.assertThrows(
-                IllegalRequestDataException.class, () -> repository().deleteExisted(notExitingId));
+                IllegalRequestDataException.class, () -> this.repository.deleteExisted(notExitingId));
         Assertions.assertEquals(ValidationUtil.ENTITY_NOT_FOUND_TEMPLATE.formatted(notExitingId), actual.getMessage());
     }
 
     @Test
     void getAll() {
-        List<T> exercises = repository().findAll();
+        List<T> exercises = this.repository.findAll();
         Assertions.assertEquals(rowsCount(), exercises.size());
     }
 
@@ -77,10 +78,10 @@ public abstract class BaseRepositoryTest<T extends BaseEntity> extends TestConta
     }
 
     protected void save(T forSave, Function<UUID, T> expected) {
-        T saved = repository().save(forSave);
+        T saved = this.repository.save(forSave);
         Assertions.assertNotNull(saved.getId());
 
-        Optional<T> workoutPlanOpt = repository().findById(saved.getId());
+        Optional<T> workoutPlanOpt = this.repository.findById(saved.getId());
         Assertions.assertTrue(workoutPlanOpt.isPresent());
 
         T actual = workoutPlanOpt.get();

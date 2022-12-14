@@ -1,7 +1,6 @@
 package ru.soft.web.to;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Range;
 import ru.soft.data.HasId;
 
@@ -10,6 +9,6 @@ import java.util.UUID;
 public record ExerciseTo(
         UUID id,
         @NotBlank String title,
-        @NotBlank String description,
-        @NotNull @Range(min = 1, max = 10) int complexity) implements HasId {
+        String description,
+        @Range(min = 1, max = 10) int complexity) implements HasId {
 }

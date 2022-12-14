@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.soft.data.BaseEntity;
@@ -27,37 +26,36 @@ abstract class BaseApiController<T extends BaseEntity, TO extends HasId> {
     protected abstract TOMapper<T, TO> getMapper();
 
     @GetMapping("/{id}")
-    protected ResponseEntity<TO> get(@NotNull @PathVariable UUID id) {
+    protected TO get(@PathVariable @NotNull UUID id) {
         log.info("get by id={}", id);
         T existed = getRepository().getExisted(id);
-        return ResponseEntity.ok(getMapper().toTo(existed));
+        return getMapper().toTo(existed);
     }
 
     @GetMapping
-    protected ResponseEntity<List<TO>> getAll() {
+    protected List<TO> getAll() {
         log.info("get all");
         List<T> all = getRepository().findAll();
-        List<TO> tos = all.stream()
+        return all.stream()
                 .map(t -> getMapper().toTo(t))
                 .toList();
-        return ResponseEntity.ok(tos);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    protected void delete(@NotNull @PathVariable UUID id) {
+    protected void delete(@PathVariable @NotNull UUID id) {
         log.info("delete {}", id);
         getRepository().deleteExisted(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    protected ResponseEntity<TO> add(@Valid @RequestBody TO to) {
+    protected TO add(@RequestBody @Valid TO to) {
         log.info("add {}", to);
         checkNew(to);
         T forCreate = getMapper().fromTo(to);
         T created = getRepository().save(forCreate);
-        return ResponseEntity.ok(getMapper().toTo(created));
+        return getMapper().toTo(created);
     }
 
     @Transactional

@@ -1,16 +1,13 @@
 package ru.soft.data.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.introspect.DefaultAccessorNamingStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.relational.core.mapping.event.BeforeConvertCallback;
 import ru.soft.data.BaseEntity;
+import ru.soft.data.config.converter.CustomJsonObjectMapper;
 import ru.soft.data.config.converter.read.PGobjectToWorkoutPlanSnapshotReadingConverter;
 import ru.soft.data.config.converter.read.PGobjectToWorkoutRoundSchemaSnapshotReadingConverter;
 import ru.soft.data.config.converter.read.PGobjectToWorkoutSchemaSnapshotReadingConverter;
@@ -24,15 +21,6 @@ import java.util.UUID;
 @Slf4j
 @Configuration
 public class JdbcConfig extends AbstractJdbcConfiguration {
-
-    public static ObjectMapper jdbcObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
-        mapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
-        mapper.setAccessorNaming(new DefaultAccessorNamingStrategy.Provider().withGetterPrefix("").withSetterPrefix(""));
-        return mapper;
-    }
 
     @Bean
     BeforeConvertCallback<BaseEntity> prepareForConvert() {
@@ -51,7 +39,7 @@ public class JdbcConfig extends AbstractJdbcConfiguration {
 
     @Override
     protected List<?> userConverters() {
-        ObjectMapper objectMapper = jdbcObjectMapper();
+        ObjectMapper objectMapper = CustomJsonObjectMapper.instance();
         return List.of(
                 new WorkoutRoundSchemaSnapshotToPGobjectWritingConverter(objectMapper),
                 new PGobjectToWorkoutRoundSchemaSnapshotReadingConverter(objectMapper),

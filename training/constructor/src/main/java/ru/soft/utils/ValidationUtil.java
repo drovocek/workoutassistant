@@ -2,6 +2,7 @@ package ru.soft.utils;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import ru.soft.data.HasId;
 import ru.soft.web.exception.IllegalRequestDataException;
@@ -25,13 +26,13 @@ public class ValidationUtil {
 
     public static <ID> void checkModification(int count, ID id) {
         if (count == 0) {
-            throw new IllegalRequestDataException(ENTITY_NOT_FOUND_TEMPLATE.formatted(id));
+            throw new IllegalRequestDataException(ENTITY_NOT_FOUND_TEMPLATE.formatted(id), HttpStatus.NOT_FOUND);
         }
     }
 
     public static <T, ID> T checkExisted(T obj, ID id) {
         if (obj == null) {
-            throw new IllegalRequestDataException(ENTITY_NOT_FOUND_TEMPLATE.formatted(id));
+            throw new IllegalRequestDataException(ENTITY_NOT_FOUND_TEMPLATE.formatted(id), HttpStatus.NOT_FOUND);
         }
         return obj;
     }

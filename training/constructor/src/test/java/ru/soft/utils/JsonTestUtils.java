@@ -3,8 +3,8 @@ package ru.soft.utils;
 import org.postgresql.util.PGobject;
 import ru.soft.data.model.snapshot.*;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public final class JsonTestUtils {
 
@@ -18,11 +18,23 @@ public final class JsonTestUtils {
     private JsonTestUtils() {
     }
 
-    public static PGobject createWorkoutPlanPGobject() throws SQLException {
-        PGobject pGobject = new PGobject();
-        pGobject.setType("jsonb");
-        pGobject.setValue(WORKOUT_PLAN_JSON);
-        return pGobject;
+    public static PGobject createWorkoutPlanPGobject() {
+        return wrapper(
+                () -> {
+                    PGobject pGobject = new PGobject();
+                    pGobject.setType("jsonb");
+                    pGobject.setValue(WORKOUT_PLAN_JSON);
+                    return pGobject;
+                }
+        );
+    }
+
+    private static PGobject wrapper(Callable<PGobject> pGobjectSupplier) {
+        try {
+            return pGobjectSupplier.call();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static WorkoutPlanSnapshot createWorkoutPlanSnapshot() {
@@ -33,11 +45,14 @@ public final class JsonTestUtils {
                 .build();
     }
 
-    public static PGobject createWorkoutSchemaPGobject() throws SQLException {
-        PGobject pGobject = new PGobject();
-        pGobject.setType("jsonb");
-        pGobject.setValue(WORKOUT_SCHEMA_JSON);
-        return pGobject;
+    public static PGobject createWorkoutSchemaPGobject() {
+        return wrapper(
+                () -> {
+                    PGobject pGobject = new PGobject();
+                    pGobject.setType("jsonb");
+                    pGobject.setValue(WORKOUT_SCHEMA_JSON);
+                    return pGobject;
+                });
     }
 
     public static WorkoutSchemaSnapshot createWorkoutSchemaSnapshot() {
@@ -60,11 +75,14 @@ public final class JsonTestUtils {
         ));
     }
 
-    public static PGobject createWorkoutRoundSchemaPGobject() throws SQLException {
-        PGobject pGobject = new PGobject();
-        pGobject.setType("jsonb");
-        pGobject.setValue(WORKOUT_ROUND_SCHEMA_JSON);
-        return pGobject;
+    public static PGobject createWorkoutRoundSchemaPGobject() {
+        return wrapper(
+                () -> {
+                    PGobject pGobject = new PGobject();
+                    pGobject.setType("jsonb");
+                    pGobject.setValue(WORKOUT_ROUND_SCHEMA_JSON);
+                    return pGobject;
+                });
     }
 
     public static WorkoutRoundSchemaSnapshot createWorkoutRoundSchemaSnapshot() {

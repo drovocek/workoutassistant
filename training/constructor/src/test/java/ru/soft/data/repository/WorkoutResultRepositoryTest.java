@@ -3,7 +3,6 @@ package ru.soft.data.repository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import ru.soft.data.model.WorkoutResult;
@@ -14,14 +13,6 @@ import static ru.soft.utils.JsonTestUtils.createWorkoutSchemaSnapshot;
 
 @DataJdbcTest
 class WorkoutResultRepositoryTest extends BaseRepositoryTest<WorkoutResult> {
-
-    @Autowired
-    private WorkoutResultRepository repository;
-
-    @Override
-    protected BaseRepository<WorkoutResult> repository() {
-        return this.repository;
-    }
 
     @Override
     protected int rowsCount() {

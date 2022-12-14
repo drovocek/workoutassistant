@@ -1,6 +1,5 @@
 package ru.soft.data.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import ru.soft.data.model.WorkoutPlan;
 
@@ -10,14 +9,6 @@ import static ru.soft.utils.JsonTestUtils.createWorkoutSchemaSnapshot;
 
 @DataJdbcTest
 class WorkoutPlanRepositoryTest extends BaseRepositoryTest<WorkoutPlan> {
-
-    @Autowired
-    private WorkoutPlanRepository repository;
-
-    @Override
-    protected BaseRepository<WorkoutPlan> repository() {
-        return this.repository;
-    }
 
     @Override
     protected WorkoutPlan forSave() {

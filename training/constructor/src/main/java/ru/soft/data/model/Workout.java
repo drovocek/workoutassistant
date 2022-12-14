@@ -26,7 +26,6 @@ abstract class Workout extends BaseEntity {
     @Column("title")
     protected final String title;
 
-    @NotBlank
     @Column("description")
     protected final String description;
 

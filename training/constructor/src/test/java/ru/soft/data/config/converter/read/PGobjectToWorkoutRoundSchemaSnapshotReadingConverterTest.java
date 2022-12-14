@@ -1,31 +1,27 @@
 package ru.soft.data.config.converter.read;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.postgresql.util.PGobject;
-import ru.soft.data.config.JdbcConfig;
 import ru.soft.data.model.snapshot.WorkoutRoundSchemaSnapshot;
-
-import java.sql.SQLException;
 
 import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaPGobject;
 import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaSnapshot;
 
-class PGobjectToWorkoutRoundSchemaSnapshotReadingConverterTest {
+class PGobjectToWorkoutRoundSchemaSnapshotReadingConverterTest
+        extends BasePGobjectToEntityReadingConverterTest<WorkoutRoundSchemaSnapshot, PGobjectToWorkoutRoundSchemaSnapshotReadingConverter> {
 
-    private PGobjectToWorkoutRoundSchemaSnapshotReadingConverter readingConverter;
-
-    @BeforeEach
-    void init() {
-        this.readingConverter = new PGobjectToWorkoutRoundSchemaSnapshotReadingConverter(JdbcConfig.jdbcObjectMapper());
+    @Override
+    protected PGobjectToWorkoutRoundSchemaSnapshotReadingConverter readingConverter(ObjectMapper mapper) {
+        return new PGobjectToWorkoutRoundSchemaSnapshotReadingConverter(mapper);
     }
 
-    @Test
-    void convert() throws SQLException {
-        WorkoutRoundSchemaSnapshot expectedSchema = createWorkoutRoundSchemaSnapshot();
-        PGobject pGobject = createWorkoutRoundSchemaPGobject();
-        WorkoutRoundSchemaSnapshot actualSchema = this.readingConverter.convert(pGobject);
-        Assertions.assertEquals(expectedSchema, actualSchema);
+    @Override
+    protected PGobject forReading() {
+        return createWorkoutRoundSchemaPGobject();
+    }
+
+    @Override
+    protected WorkoutRoundSchemaSnapshot expected() {
+        return createWorkoutRoundSchemaSnapshot();
     }
 }

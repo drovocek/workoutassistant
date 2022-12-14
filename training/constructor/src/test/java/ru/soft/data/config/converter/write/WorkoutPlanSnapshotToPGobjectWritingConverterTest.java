@@ -1,31 +1,27 @@
 package ru.soft.data.config.converter.write;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.postgresql.util.PGobject;
-import ru.soft.data.config.JdbcConfig;
 import ru.soft.data.model.snapshot.WorkoutPlanSnapshot;
-
-import java.sql.SQLException;
 
 import static ru.soft.utils.JsonTestUtils.createWorkoutPlanPGobject;
 import static ru.soft.utils.JsonTestUtils.createWorkoutPlanSnapshot;
 
-class WorkoutPlanSnapshotToPGobjectWritingConverterTest {
+class WorkoutPlanSnapshotToPGobjectWritingConverterTest
+        extends BaseEntityToPGobjectWritingConverterTest<WorkoutPlanSnapshot, WorkoutPlanSnapshotToPGobjectWritingConverter> {
 
-    private WorkoutPlanSnapshotToPGobjectWritingConverter writingConverter;
-
-    @BeforeEach
-    void init() {
-        this.writingConverter = new WorkoutPlanSnapshotToPGobjectWritingConverter(JdbcConfig.jdbcObjectMapper());
+    @Override
+    protected WorkoutPlanSnapshotToPGobjectWritingConverter writingConverter(ObjectMapper mapper) {
+        return new WorkoutPlanSnapshotToPGobjectWritingConverter(mapper);
     }
 
-    @Test
-    void convert() throws SQLException {
-        WorkoutPlanSnapshot schema = createWorkoutPlanSnapshot();
-        PGobject pGobject = this.writingConverter.convert(schema);
-        PGobject expectedPGobject = createWorkoutPlanPGobject();
-        Assertions.assertEquals(expectedPGobject, pGobject);
+    @Override
+    protected WorkoutPlanSnapshot forWriting() {
+        return createWorkoutPlanSnapshot();
+    }
+
+    @Override
+    protected PGobject expected() {
+        return createWorkoutPlanPGobject();
     }
 }

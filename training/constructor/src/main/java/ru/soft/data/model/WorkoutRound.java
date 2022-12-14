@@ -1,5 +1,7 @@
 package ru.soft.data.model;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,9 +20,11 @@ import java.util.UUID;
 @Table(name = "workout_round")
 public class WorkoutRound extends BaseEntity {
 
+    @NotNull
     @Column("round_schema")
     private final WorkoutRoundSchemaSnapshot workoutRoundSchemaSnapshot;
 
+    @NotBlank
     @Column("title")
     private final String title;
 
@@ -44,10 +48,10 @@ public class WorkoutRound extends BaseEntity {
     }
 
     @Override
-    public BaseEntity newWithId(UUID id) {
+    protected BaseEntity withId(UUID id, boolean isNew) {
         return WorkoutRound.builder()
                 .id(id)
-                .isNew(true)
+                .isNew(isNew)
                 .workoutRoundSchemaSnapshot(this.workoutRoundSchemaSnapshot())
                 .title(this.title())
                 .description(this.description())

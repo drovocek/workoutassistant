@@ -11,6 +11,6 @@ import java.util.UUID;
 public record WorkoutSessionTo(
         UUID id,
         @NotNull @JsonProperty("workoutPlan") WorkoutPlanSnapshot plan,
-        LocalDateTime dateTime,
+        @NotNull LocalDateTime dateTime,
         String note) implements HasId {
 }

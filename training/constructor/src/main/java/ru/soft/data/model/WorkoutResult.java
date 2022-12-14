@@ -34,11 +34,11 @@ public class WorkoutResult extends Workout {
     }
 
     @Override
-    public BaseEntity newWithId(UUID id) {
+    protected BaseEntity withId(UUID id, boolean isNew) {
         return WorkoutResult.builder()
                 .id(id)
+                .isNew(isNew)
                 .workoutSessionId(this.workoutSessionId())
-                .isNew(true)
                 .workoutSchemaSnapshot(this.workoutSchemaSnapshot())
                 .title(this.title())
                 .description(this.description())

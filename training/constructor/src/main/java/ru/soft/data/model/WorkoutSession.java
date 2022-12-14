@@ -46,10 +46,10 @@ public class WorkoutSession extends BaseEntity {
     }
 
     @Override
-    public BaseEntity newWithId(UUID id) {
+    protected BaseEntity withId(UUID id, boolean isNew) {
         return WorkoutSession.builder()
                 .id(id)
-                .isNew(true)
+                .isNew(isNew)
                 .plan(this.plan())
                 .dateTime(this.dateTime())
                 .note(this.note())

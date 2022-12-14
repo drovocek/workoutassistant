@@ -26,7 +26,6 @@ public class Exercise extends BaseEntity {
     @Column("title")
     private final String title;
 
-    @NotBlank
     @Column("description")
     private final String description;
 
@@ -52,10 +51,10 @@ public class Exercise extends BaseEntity {
     }
 
     @Override
-    public BaseEntity newWithId(UUID id) {
+    protected BaseEntity withId(UUID id, boolean isNew) {
         return Exercise.builder()
                 .id(id)
-                .isNew(true)
+                .isNew(isNew)
                 .title(this.title())
                 .description(this.description())
                 .complexity(this.complexity())

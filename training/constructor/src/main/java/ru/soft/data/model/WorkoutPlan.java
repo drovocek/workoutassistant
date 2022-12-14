@@ -28,10 +28,10 @@ public class WorkoutPlan extends Workout {
     }
 
     @Override
-    public BaseEntity newWithId(UUID id) {
+    protected BaseEntity withId(UUID id, boolean isNew) {
         return WorkoutPlan.builder()
                 .id(id)
-                .isNew(true)
+                .isNew(isNew)
                 .workoutSchemaSnapshot(this.workoutSchemaSnapshot())
                 .title(this.title())
                 .description(this.description())

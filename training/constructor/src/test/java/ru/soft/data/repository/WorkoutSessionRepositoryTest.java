@@ -1,6 +1,5 @@
 package ru.soft.data.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import ru.soft.data.model.WorkoutSession;
 
@@ -13,14 +12,6 @@ import static ru.soft.utils.JsonTestUtils.createWorkoutPlanSnapshot;
 class WorkoutSessionRepositoryTest extends BaseRepositoryTest<WorkoutSession> {
 
     private final static LocalDateTime NOW = LocalDateTime.now();
-
-    @Autowired
-    private WorkoutSessionRepository repository;
-
-    @Override
-    protected BaseRepository<WorkoutSession> repository() {
-        return this.repository;
-    }
 
     @Override
     protected WorkoutSession forSave() {

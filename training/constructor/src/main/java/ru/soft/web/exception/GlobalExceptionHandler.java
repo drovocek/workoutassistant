@@ -6,6 +6,7 @@ import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -32,10 +33,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     private ErrorAttributes errorAttributes;
 
-    @ExceptionHandler(PSQLException.class)
+    @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<?> PSQLException(WebRequest request, PSQLException ex) {
-        log.error("PSQLException: {}", ex.getMessage());
-        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), "DB exception", HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value()));
+        log.error("DataIntegrityViolationException: {}", ex.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), "DB constraints exception", HttpStatusCode.valueOf(HttpStatus.UNPROCESSABLE_ENTITY.value()));
     }
 
     @ExceptionHandler(AppException.class)

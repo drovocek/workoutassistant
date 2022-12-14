@@ -1,31 +1,27 @@
 package ru.soft.data.config.converter.write;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.postgresql.util.PGobject;
-import ru.soft.data.config.JdbcConfig;
 import ru.soft.data.model.snapshot.WorkoutRoundSchemaSnapshot;
-
-import java.sql.SQLException;
 
 import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaPGobject;
 import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaSnapshot;
 
-class WorkoutRoundSchemaSnapshotToPGobjectWritingConverterTest {
+class WorkoutRoundSchemaSnapshotToPGobjectWritingConverterTest
+        extends BaseEntityToPGobjectWritingConverterTest<WorkoutRoundSchemaSnapshot, WorkoutRoundSchemaSnapshotToPGobjectWritingConverter> {
 
-    private WorkoutRoundSchemaSnapshotToPGobjectWritingConverter writingConverter;
-
-    @BeforeEach
-    void init() {
-        this.writingConverter = new WorkoutRoundSchemaSnapshotToPGobjectWritingConverter(JdbcConfig.jdbcObjectMapper());
+    @Override
+    protected WorkoutRoundSchemaSnapshotToPGobjectWritingConverter writingConverter(ObjectMapper mapper) {
+        return new WorkoutRoundSchemaSnapshotToPGobjectWritingConverter(mapper);
     }
 
-    @Test
-    void convert() throws SQLException {
-        WorkoutRoundSchemaSnapshot schema = createWorkoutRoundSchemaSnapshot();
-        PGobject pGobject = this.writingConverter.convert(schema);
-        PGobject expectedPGobject = createWorkoutRoundSchemaPGobject();
-        Assertions.assertEquals(expectedPGobject, pGobject);
+    @Override
+    protected WorkoutRoundSchemaSnapshot forWriting() {
+        return createWorkoutRoundSchemaSnapshot();
+    }
+
+    @Override
+    protected PGobject expected() {
+        return createWorkoutRoundSchemaPGobject();
     }
 }
