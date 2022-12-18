@@ -1,3 +1,17 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+        maven { url = 'https://maven.vaadin.com/vaadin-prereleases' }
+        gradlePluginPortal()
+    }
+    plugins {
+        id 'com.vaadin' version "${vaadinVersion}"
+        id 'org.springframework.boot' version "$springBootVersion"
+        id 'io.spring.dependency-management' version "$springDependencyManagementVersion"
+        id "com.github.johnrengelman.shadow" version "$johnrengelmanVersion" apply false
+    }
+}
+
 rootProject.name = 'workoutassistant'
 include 'web-client'
 include 'telegram-client'

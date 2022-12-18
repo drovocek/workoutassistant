@@ -1,0 +1,47 @@
+//https://github.com/vaadin/base-starter-spring-gradle
+//https://vaadin.com/docs/latest/guide/start/gradle#build-file
+//buildscript {
+//    repositories {
+//        mavenCentral()
+//        maven { setUrl("https://maven.vaadin.com/vaadin-prereleases") }
+//        maven { setUrl("https://maven.vaadin.com/vaadin-addons") }
+//        maven { url "https://repo.spring.io/milestone" }
+//    }
+//}
+
+plugins {
+    id 'java'
+    id 'com.vaadin'
+}
+
+apply plugin: 'com.vaadin'
+//defaultTasks("clean", "build")
+
+//configurations {
+//    developmentOnly
+//    runtimeClasspath {
+//        extendsFrom developmentOnly
+//    }
+//}
+
+dependencies {
+    implementation project(':common')
+//    implementation('com.vaadin:vaadin-spring-boot-starter')
+
+    implementation('dev.hilla:hilla-spring-boot-starter')
+    implementation('dev.hilla:hilla')
+
+    implementation('com.h2database:h2')
+
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('org.springframework.boot:spring-boot-starter-validation')
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+}
+
+// The following pnpmEnable = true is not needed as pnpm is used by default,
+// this is just an example of how to configure the Gradle Vaadin Plugin:
+// for more configuration options please see: https://vaadin.com/docs/latest/guide/start/gradle/#all-options
+vaadin {
+    pnpmEnable = false
+}
