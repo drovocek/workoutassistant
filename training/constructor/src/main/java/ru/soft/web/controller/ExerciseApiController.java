@@ -8,19 +8,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.soft.data.model.Exercise;
 import ru.soft.data.repository.ExerciseRepository;
+import ru.soft.common.AppApi;
 import ru.soft.web.mapper.TOMapper;
-import ru.soft.web.to.ExerciseTo;
+import ru.soft.common.to.ExerciseTo;
 
 @Slf4j
 @Getter
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(
-        value = ExerciseApiController.REST_URL,
+        value = AppApi.Exercise.URL,
         produces = MediaType.APPLICATION_JSON_VALUE)
-public class ExerciseApiController extends BaseApiController<Exercise, ExerciseTo> {
-
-    static final String REST_URL = "/api/exercises";
+class ExerciseApiController extends AbstractApiController<Exercise, ExerciseTo> {
 
     private final ExerciseRepository repository;
     private final TOMapper<Exercise, ExerciseTo> mapper;

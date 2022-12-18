@@ -2,7 +2,7 @@ package ru.soft.web.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.soft.data.model.Exercise;
-import ru.soft.web.to.ExerciseTo;
+import ru.soft.common.to.ExerciseTo;
 
 @Component
 public class ExerciseTOMapper implements TOMapper<Exercise, ExerciseTo> {

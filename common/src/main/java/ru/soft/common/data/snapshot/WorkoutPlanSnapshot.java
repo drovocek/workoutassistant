@@ -1,22 +1,26 @@
-package ru.soft.data.model.snapshot;
+package ru.soft.common.data.snapshot;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-
 @Getter
 @ToString
 @EqualsAndHashCode
-@JsonIncludeProperties({"roundSchema", "title", "description"})
-public class WorkoutRoundSnapshot {
+@JsonRootName("workoutPlan")
+@JsonIncludeProperties({"workoutSchema", "title", "description"})
+public class WorkoutPlanSnapshot {
+    @NotNull
+    @JsonProperty("workoutSchema")
+    private final WorkoutSchemaSnapshot workoutSchemaSnapshot;
 
-    @JsonProperty("roundSchema")
-    private final WorkoutRoundSchemaSnapshot workoutRoundSchemaSnapshot;
-
+    @NotBlank
     @JsonProperty("title")
     private final String title;
 
@@ -25,11 +29,11 @@ public class WorkoutRoundSnapshot {
 
     @Builder
     @JsonCreator
-    public WorkoutRoundSnapshot(
-            @JsonProperty("roundSchema") WorkoutRoundSchemaSnapshot workoutRoundSchemaSnapshot,
+    public WorkoutPlanSnapshot(
+            @JsonProperty("schema") WorkoutSchemaSnapshot workoutSchemaSnapshot,
             @JsonProperty("title") String title,
             @JsonProperty("description") String description) {
-        this.workoutRoundSchemaSnapshot = workoutRoundSchemaSnapshot;
+        this.workoutSchemaSnapshot = workoutSchemaSnapshot;
         this.title = title;
         this.description = description;
     }

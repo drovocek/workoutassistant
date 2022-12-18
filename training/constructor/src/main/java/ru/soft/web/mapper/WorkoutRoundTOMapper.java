@@ -2,7 +2,7 @@ package ru.soft.web.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.soft.data.model.WorkoutRound;
-import ru.soft.web.to.WorkoutRoundTo;
+import ru.soft.common.to.WorkoutRoundTo;
 
 @Component
 public class WorkoutRoundTOMapper implements TOMapper<WorkoutRound, WorkoutRoundTo> {

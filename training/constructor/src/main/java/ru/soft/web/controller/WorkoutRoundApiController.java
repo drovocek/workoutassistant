@@ -8,19 +8,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.soft.data.model.WorkoutRound;
 import ru.soft.data.repository.WorkoutRoundRepository;
-import ru.soft.web.to.WorkoutRoundTo;
+import ru.soft.common.AppApi;
 import ru.soft.web.mapper.TOMapper;
+import ru.soft.common.to.WorkoutRoundTo;
 
 @Slf4j
 @Getter
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(
-        value = WorkoutRoundApiController.REST_URL,
+        value = AppApi.WorkoutRound.URL,
         produces = MediaType.APPLICATION_JSON_VALUE)
-public class WorkoutRoundApiController extends BaseApiController<WorkoutRound, WorkoutRoundTo> {
-
-    static final String REST_URL = "/api/rounds";
+class WorkoutRoundApiController extends AbstractApiController<WorkoutRound, WorkoutRoundTo> {
 
     private final WorkoutRoundRepository repository;
     private final TOMapper<WorkoutRound, WorkoutRoundTo> mapper;

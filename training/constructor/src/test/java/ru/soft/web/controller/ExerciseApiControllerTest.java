@@ -2,12 +2,13 @@ package ru.soft.web.controller;
 
 import ru.soft.data.model.Exercise;
 import ru.soft.utils.MatcherFactory;
-import ru.soft.web.to.ExerciseTo;
+import ru.soft.common.AppApi;
+import ru.soft.common.to.ExerciseTo;
 
 import java.util.List;
 import java.util.UUID;
 
-class ExerciseApiControllerTest extends BaseApiControllerTest<Exercise, ExerciseTo> {
+class ExerciseApiControllerTest extends AbstractApiControllerTest<Exercise, ExerciseTo> {
 
     private static final MatcherFactory.Matcher<ExerciseTo> MATCHER =
             MatcherFactory.usingIgnoringFieldsComparator(ExerciseTo.class);
@@ -16,7 +17,7 @@ class ExerciseApiControllerTest extends BaseApiControllerTest<Exercise, Exercise
 
     @Override
     protected String getApiUrl() {
-        return ExerciseApiController.REST_URL;
+        return AppApi.Exercise.URL;
     }
 
     @Override

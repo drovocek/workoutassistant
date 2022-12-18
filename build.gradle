@@ -35,10 +35,14 @@ allprojects {
             mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
             mavenBom "org.testcontainers:testcontainers-bom:$testcontainersVersion"
             mavenBom "dev.hilla:hilla-bom:$hillaVersion"
-//            mavenBom "com.vaadin:vaadin-bom:$vaadinVersion"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
         }
         dependencies {
             dependency "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion"
+//            dependency "io.github.openfeign:feign-okhttp:$feignVersion"
+//            dependency "io.github.openfeign:feign-gson:$feignVersion"
+//            dependency "io.github.openfeign:feign-slf4j:$feignVersion"
+//            dependency "org.springframework.cloud:spring-cloud-starter-feign:$cloudFeignVersion"
         }
     }
 
@@ -60,6 +64,10 @@ allprojects {
             force('com.google.guava:guava:31.1-jre')
             force('com.github.fge:jackson-coreutils:1.8')
             force('jakarta.inject:jakarta.inject-api:2.0.1')
+            force('io.reactivex:rxjava:1.2.0')
+            force('com.netflix.archaius:archaius-core:0.7.4')
+            force('com.netflix.hystrix:hystrix-core:1.4.3')
+            force('com.netflix.servo:servo-core:0.10.1')
         }
     }
 

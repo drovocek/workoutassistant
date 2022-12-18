@@ -8,7 +8,7 @@ import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import ru.soft.data.BaseEntity;
-import ru.soft.data.model.snapshot.WorkoutSchemaSnapshot;
+import ru.soft.common.data.snapshot.WorkoutSchemaSnapshot;
 
 import java.util.UUID;
 

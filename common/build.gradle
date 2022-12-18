@@ -3,7 +3,9 @@ plugins {
 }
 
 dependencies {
-    implementation 'jakarta.validation:jakarta.validation-api'
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'org.hibernate.validator:hibernate-validator'
+    api 'jakarta.validation:jakarta.validation-api'
+    api 'com.fasterxml.jackson.core:jackson-databind'
+    api 'org.hibernate.validator:hibernate-validator'
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.boot:spring-boot-starter-data-jdbc'
 }

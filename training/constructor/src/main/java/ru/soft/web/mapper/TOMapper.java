@@ -1,7 +1,7 @@
 package ru.soft.web.mapper;
 
 import ru.soft.data.BaseEntity;
-import ru.soft.data.HasId;
+import ru.soft.common.data.HasId;
 
 public interface TOMapper<T extends BaseEntity, TO extends HasId> {
 

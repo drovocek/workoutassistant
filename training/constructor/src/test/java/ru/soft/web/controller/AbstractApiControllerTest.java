@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.soft.TestContainerHolder;
 import ru.soft.TestSettings;
 import ru.soft.data.BaseEntity;
-import ru.soft.data.HasId;
+import ru.soft.common.data.HasId;
 import ru.soft.data.repository.BaseRepository;
 import ru.soft.utils.MatcherFactory;
 import ru.soft.web.mapper.TOMapper;
@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-abstract class BaseApiControllerTest<T extends BaseEntity, TO extends HasId> extends TestContainerHolder {
+abstract class AbstractApiControllerTest<T extends BaseEntity, TO extends HasId> extends TestContainerHolder {
 
     @Autowired
     protected BaseRepository<T> repository;
@@ -130,7 +130,7 @@ abstract class BaseApiControllerTest<T extends BaseEntity, TO extends HasId> ext
 
     @Test
     void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(getApiUrl()))
+        perform(MockMvcRequestBuilders.get(getApiUrl() + "/all"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(matcher().contentJson(expectedAll()));

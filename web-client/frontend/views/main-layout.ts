@@ -84,6 +84,11 @@ export class MainLayout extends Layout {
         title: 'Hello World',
         icon: 'la la-globe',
       },
+      {
+        path: 'exercise',
+        title: 'Exercise',
+        icon: 'la la-globe',
+      },
     ];
   }
 }

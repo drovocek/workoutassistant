@@ -4,7 +4,7 @@ import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
-import ru.soft.data.HasId;
+import ru.soft.common.data.HasId;
 import ru.soft.web.exception.IllegalRequestDataException;
 
 @UtilityClass

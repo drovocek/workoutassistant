@@ -8,19 +8,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.soft.data.model.WorkoutSession;
 import ru.soft.data.repository.WorkoutSessionRepository;
+import ru.soft.common.AppApi;
 import ru.soft.web.mapper.TOMapper;
-import ru.soft.web.to.WorkoutSessionTo;
+import ru.soft.common.to.WorkoutSessionTo;
 
 @Slf4j
 @Getter
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(
-        value = WorkoutSessionApiController.REST_URL,
+        value = AppApi.WorkoutSession.URL,
         produces = MediaType.APPLICATION_JSON_VALUE)
-public class WorkoutSessionApiController extends BaseApiController<WorkoutSession, WorkoutSessionTo> {
-
-    static final String REST_URL = "/api/sessions";
+class WorkoutSessionApiController extends AbstractApiController<WorkoutSession, WorkoutSessionTo> {
 
     private final WorkoutSessionRepository repository;
     private final TOMapper<WorkoutSession, WorkoutSessionTo> mapper;

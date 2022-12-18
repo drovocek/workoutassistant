@@ -34,6 +34,16 @@ export const views: ViewRoute[] = [
       return;
     },
   },
+  {
+    path: 'exercise',
+    component: 'exercise-view',
+    icon: 'la la-globe',
+    title: 'Exercise',
+    action: async (_context, _command) => {
+      await import('./views/exercise/exercise-view');
+      return;
+    },
+  },
 ];
 export const routes: ViewRoute[] = [
   {

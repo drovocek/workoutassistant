@@ -1,14 +1,13 @@
 package ru.soft.web.controller;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import ru.soft.common.api.ApiController;
 import ru.soft.data.BaseEntity;
-import ru.soft.data.HasId;
+import ru.soft.common.data.HasId;
 import ru.soft.data.repository.BaseRepository;
 import ru.soft.web.mapper.TOMapper;
 
@@ -19,21 +18,21 @@ import static ru.soft.utils.ValidationUtil.checkNew;
 import static ru.soft.utils.ValidationUtil.checkNotNew;
 
 @Slf4j
-abstract class BaseApiController<T extends BaseEntity, TO extends HasId> {
+abstract class AbstractApiController<T extends BaseEntity, TO extends HasId> implements ApiController<TO> {
 
     protected abstract BaseRepository<T> getRepository();
 
     protected abstract TOMapper<T, TO> getMapper();
 
-    @GetMapping("/{id}")
-    protected TO get(@PathVariable @NotNull UUID id) {
+    @Override
+    public TO get(UUID id) {
         log.info("get by id={}", id);
         T existed = getRepository().getExisted(id);
         return getMapper().toTo(existed);
     }
 
-    @GetMapping
-    protected List<TO> getAll() {
+    @Override
+    public List<TO> getAll() {
         log.info("get all");
         List<T> all = getRepository().findAll();
         return all.stream()
@@ -41,16 +40,30 @@ abstract class BaseApiController<T extends BaseEntity, TO extends HasId> {
                 .toList();
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{id}")
-    protected void delete(@PathVariable @NotNull UUID id) {
+    @Override
+    public Page<TO> getPage(Pageable pageable) {
+        log.info("get page number:{}, size:{} ", pageable.getPageNumber(), pageable.getPageSize());
+        Page<T> page = getRepository().findAll(pageable);
+        List<TO> pageTo = page.get()
+                .map(t -> getMapper().toTo(t))
+                .toList();
+        return new PageImpl<>(pageTo, pageable, pageTo.size());
+    }
+
+    @Override
+    public long count() {
+        log.info("count");
+        return getRepository().count();
+    }
+
+    @Override
+    public void delete(UUID id) {
         log.info("delete {}", id);
         getRepository().deleteExisted(id);
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    protected TO add(@RequestBody @Valid TO to) {
+    @Override
+    public TO add(TO to) {
         log.info("add {}", to);
         checkNew(to);
         T forCreate = getMapper().fromTo(to);
@@ -58,10 +71,9 @@ abstract class BaseApiController<T extends BaseEntity, TO extends HasId> {
         return getMapper().toTo(created);
     }
 
+    @Override
     @Transactional
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    protected void update(@RequestBody @Valid TO to) {
+    public void update(TO to) {
         log.info("update by {}", to);
         checkNotNew(to);
         getRepository().getExisted(to.id());

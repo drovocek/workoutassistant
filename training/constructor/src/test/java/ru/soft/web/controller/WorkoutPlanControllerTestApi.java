@@ -3,12 +3,13 @@ package ru.soft.web.controller;
 import ru.soft.data.model.WorkoutPlan;
 import ru.soft.utils.JsonTestUtils;
 import ru.soft.utils.MatcherFactory;
-import ru.soft.web.to.WorkoutPlanTo;
+import ru.soft.common.AppApi;
+import ru.soft.common.to.WorkoutPlanTo;
 
 import java.util.List;
 import java.util.UUID;
 
-class WorkoutPlanApiControllerTest extends BaseApiControllerTest<WorkoutPlan, WorkoutPlanTo> {
+class WorkoutPlanControllerTestApi extends AbstractApiControllerTest<WorkoutPlan, WorkoutPlanTo> {
 
     private static final MatcherFactory.Matcher<WorkoutPlanTo> MATCHER = MatcherFactory.usingIgnoringFieldsComparator(WorkoutPlanTo.class);
     private static final UUID EXITED_ID = UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002");
@@ -16,7 +17,7 @@ class WorkoutPlanApiControllerTest extends BaseApiControllerTest<WorkoutPlan, Wo
 
     @Override
     protected String getApiUrl() {
-        return WorkoutPlanApiController.REST_URL;
+        return AppApi.WorkoutPlan.URL;
     }
 
     @Override

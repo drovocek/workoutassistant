@@ -2,7 +2,7 @@ package ru.soft.data.config.converter.read;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.postgresql.util.PGobject;
-import ru.soft.data.model.snapshot.WorkoutRoundSchemaSnapshot;
+import ru.soft.common.data.snapshot.WorkoutRoundSchemaSnapshot;
 
 import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaPGobject;
 import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaSnapshot;

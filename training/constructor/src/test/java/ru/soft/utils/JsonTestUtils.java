@@ -1,7 +1,7 @@
 package ru.soft.utils;
 
 import org.postgresql.util.PGobject;
-import ru.soft.data.model.snapshot.*;
+import ru.soft.common.data.snapshot.*;
 
 import java.util.List;
 import java.util.concurrent.Callable;

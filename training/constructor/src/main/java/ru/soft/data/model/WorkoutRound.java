@@ -10,7 +10,7 @@ import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import ru.soft.data.BaseEntity;
-import ru.soft.data.model.snapshot.WorkoutRoundSchemaSnapshot;
+import ru.soft.common.data.snapshot.WorkoutRoundSchemaSnapshot;
 
 import java.util.UUID;
 

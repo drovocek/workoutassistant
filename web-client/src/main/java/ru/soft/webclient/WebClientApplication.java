@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
 import org.springframework.boot.autoconfigure.sql.init.SqlInitializationProperties;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import ru.soft.webclient.data.service.SamplePersonRepository;
 
@@ -20,6 +21,7 @@ import javax.sql.DataSource;
  * Use the @PWA annotation make the application installable on phones, tablets
  * and some desktop browsers.
  */
+@EnableFeignClients
 @SpringBootApplication
 @Theme(value = "workoutassistant")
 @PWA(name = "Workout assistant", shortName = "Workout assistant", offlineResources = {})

@@ -3,7 +3,7 @@ package ru.soft.data.config.converter.read;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import ru.soft.data.model.snapshot.WorkoutPlanSnapshot;
+import ru.soft.common.data.snapshot.WorkoutPlanSnapshot;
 
 @Getter
 @RequiredArgsConstructor

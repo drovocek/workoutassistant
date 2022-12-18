@@ -2,7 +2,7 @@ package ru.soft.web.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.soft.data.model.WorkoutPlan;
-import ru.soft.web.to.WorkoutPlanTo;
+import ru.soft.common.to.WorkoutPlanTo;
 
 @Component
 public class WorkoutPlanTOMapper implements TOMapper<WorkoutPlan, WorkoutPlanTo> {

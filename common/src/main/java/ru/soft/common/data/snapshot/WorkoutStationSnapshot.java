@@ -1,11 +1,10 @@
-package ru.soft.data.model.snapshot;
+package ru.soft.common.data.snapshot;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-
 @JsonRootName("roundStations")
 public record WorkoutStationSnapshot(@JsonProperty("exercise") @NotNull ExerciseSnapshot exerciseSnapshot,
                                      @JsonProperty("repetitions") @Min(value = 0) @Max(value = 1_000) int repetitions,
