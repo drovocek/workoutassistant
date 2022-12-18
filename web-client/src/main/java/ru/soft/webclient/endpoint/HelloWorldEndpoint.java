@@ -1,4 +1,4 @@
-package ru.soft.webclient.endpoints;
+package ru.soft.webclient.endpoint;
 
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.hilla.Endpoint;

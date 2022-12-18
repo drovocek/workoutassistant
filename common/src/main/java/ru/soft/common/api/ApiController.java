@@ -12,7 +12,7 @@ import ru.soft.common.data.HasId;
 import java.util.List;
 import java.util.UUID;
 
-public interface ApiController<TO extends HasId> {
+public interface ApiController<TO extends HasId> extends WebApi<TO> {
 
     @GetMapping("/{id}")
     TO get(@PathVariable @NotNull UUID id);
