@@ -18,25 +18,17 @@ dependencies {
 
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     implementation('org.springframework.boot:spring-boot-starter-validation')
-    implementation('org.springframework.cloud:spring-cloud-starter-feign:+')
+    implementation('org.springframework.cloud:spring-cloud-starter-feign')
 
     developmentOnly('org.springframework.boot:spring-boot-devtools')
 
     //TESTS//
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-stub-runner-boot'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine'
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
     testImplementation 'org.mockito:mockito-junit-jupiter'
     testImplementation 'org.assertj:assertj-core'
-    testImplementation ('org.mock-server:mockserver-client-java-no-dependencies:5.14.0'){
-        exclude(module: "org.slf4j")
-    }
-
-//    testImplementation "com.github.tomakehurst:wiremock-jre8:$wiremockVersion"
-//    testImplementation 'javax.servlet:javax.servlet-api:3.1.0'
-//    testImplementation group: 'org.mock-server', name: 'mockserver-spring-test-listener', version: '5.14.0'
-//    testImplementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.3.30.v20211001'
-//    testImplementation 'org.eclipse.jetty:jetty-server:12.0.0.alpha3'
 }
 
 // https://vaadin.com/docs/latest/guide/start/gradle/#all-options
