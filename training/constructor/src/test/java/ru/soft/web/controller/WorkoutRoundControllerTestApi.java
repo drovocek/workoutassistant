@@ -1,13 +1,14 @@
 package ru.soft.web.controller;
 
-import ru.soft.data.model.WorkoutRound;
-import ru.soft.utils.JsonTestUtils;
-import ru.soft.utils.MatcherFactory;
 import ru.soft.common.AppApi;
 import ru.soft.common.to.WorkoutRoundTo;
+import ru.soft.data.model.WorkoutRound;
+import ru.soft.utils.MatcherFactory;
 
 import java.util.List;
 import java.util.UUID;
+
+import static ru.soft.testdata.WorkoutRoundTestDataStore.workoutRoundSchemaSnapshot;
 
 class WorkoutRoundControllerTestApi extends AbstractApiControllerTest<WorkoutRound, WorkoutRoundTo> {
 
@@ -34,7 +35,7 @@ class WorkoutRoundControllerTestApi extends AbstractApiControllerTest<WorkoutRou
     protected WorkoutRoundTo requestEntity(boolean isNew) {
         return new WorkoutRoundTo(
                 isNew ? null : EXITED_ID,
-                JsonTestUtils.createWorkoutRoundSchemaSnapshot(),
+                workoutRoundSchemaSnapshot(),
                 "request title",
                 "request description"
         );
@@ -45,13 +46,13 @@ class WorkoutRoundControllerTestApi extends AbstractApiControllerTest<WorkoutRou
         return List.of(
                 new WorkoutRoundTo(
                         isNew ? null : EXITED_ID,
-                        JsonTestUtils.createWorkoutRoundSchemaSnapshot(),
+                        workoutRoundSchemaSnapshot(),
                         "",
                         "request description"
                 ),
                 new WorkoutRoundTo(
                         isNew ? EXITED_ID : null,
-                        JsonTestUtils.createWorkoutRoundSchemaSnapshot(),
+                        workoutRoundSchemaSnapshot(),
                         "request title",
                         "request description"
                 ),
@@ -69,7 +70,7 @@ class WorkoutRoundControllerTestApi extends AbstractApiControllerTest<WorkoutRou
         return List.of(
                 new WorkoutRoundTo(
                         isNew ? null : EXITED_ID,
-                        JsonTestUtils.createWorkoutRoundSchemaSnapshot(),
+                        workoutRoundSchemaSnapshot(),
                         DUPLICATE_TITLE,
                         "request description"
                 )

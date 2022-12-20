@@ -1,13 +1,14 @@
 package ru.soft.web.controller;
 
-import ru.soft.data.model.WorkoutResult;
-import ru.soft.utils.JsonTestUtils;
-import ru.soft.utils.MatcherFactory;
 import ru.soft.common.AppApi;
 import ru.soft.common.to.WorkoutResultTo;
+import ru.soft.data.model.WorkoutResult;
+import ru.soft.utils.MatcherFactory;
 
 import java.util.List;
 import java.util.UUID;
+
+import static ru.soft.testdata.WorkoutPlanTestDataStore.workoutSchemaSnapshot;
 
 class WorkoutResultControllerTestApi extends AbstractApiControllerTest<WorkoutResult, WorkoutResultTo> {
 
@@ -41,7 +42,7 @@ class WorkoutResultControllerTestApi extends AbstractApiControllerTest<WorkoutRe
         return new WorkoutResultTo(
                 isNew ? null : EXITED_ID,
                 EXITED_SESSION_ID,
-                JsonTestUtils.createWorkoutSchemaSnapshot(),
+                workoutSchemaSnapshot(),
                 "request title",
                 "request description"
         );
@@ -53,21 +54,21 @@ class WorkoutResultControllerTestApi extends AbstractApiControllerTest<WorkoutRe
                 new WorkoutResultTo(
                         isNew ? null : EXITED_ID,
                         EXITED_SESSION_ID,
-                        JsonTestUtils.createWorkoutSchemaSnapshot(),
+                        workoutSchemaSnapshot(),
                         "",
                         "request description"
                 ),
                 new WorkoutResultTo(
                         isNew ? EXITED_ID : null,
                         EXITED_SESSION_ID,
-                        JsonTestUtils.createWorkoutSchemaSnapshot(),
+                        workoutSchemaSnapshot(),
                         null,
                         "request description"
                 ),
                 new WorkoutResultTo(
                         isNew ? EXITED_ID : null,
                         null,
-                        JsonTestUtils.createWorkoutSchemaSnapshot(),
+                        workoutSchemaSnapshot(),
                         "request title",
                         "request description"
                 ),
@@ -87,7 +88,7 @@ class WorkoutResultControllerTestApi extends AbstractApiControllerTest<WorkoutRe
                 new WorkoutResultTo(
                         isNew ? null : EXITED_ID,
                         EXITED_SESSION_ID,
-                        JsonTestUtils.createWorkoutSchemaSnapshot(),
+                        workoutSchemaSnapshot(),
                         DUPLICATE_TITLE,
                         "request description"
                 )

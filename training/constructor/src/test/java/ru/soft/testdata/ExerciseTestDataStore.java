@@ -1,27 +1,43 @@
 package ru.soft.testdata;
 
-import org.springframework.stereotype.Component;
+import ru.soft.common.data.snapshot.ExerciseSnapshot;
 import ru.soft.common.to.ExerciseTo;
 import ru.soft.data.model.Exercise;
+import ru.soft.web.mapper.ExerciseTOMapper;
 import ru.soft.web.mapper.TOMapper;
 
 import java.util.List;
 import java.util.UUID;
 
-@Component
 public final class ExerciseTestDataStore implements TestDataStore<Exercise, ExerciseTo> {
 
-    private final TOMapper<Exercise, ExerciseTo> mapper;
+    private final static ExerciseTestDataStore INSTANCE = new ExerciseTestDataStore();
 
-    public ExerciseTestDataStore(TOMapper<Exercise, ExerciseTo> mapper) {
-        this.mapper = mapper;
+    public static ExerciseTestDataStore getInstance() {
+        return INSTANCE;
+    }
+
+    private final static Exercise ENTITY =
+            new Exercise(
+                    UUID.fromString("f386d086-6e5d-11ed-a1eb-0242ac120002"),
+                    "Push-up title",
+                    "Push-up description", 1);
+
+    private final TOMapper<Exercise, ExerciseTo> toMapper;
+
+    private ExerciseTestDataStore() {
+        this.toMapper = new ExerciseTOMapper();
+    }
+
+    @Override
+    public Exercise entity() {
+        return ENTITY;
     }
 
     @Override
     public List<Exercise> entities() {
         return List.of(
-                new Exercise(UUID.fromString("f386d086-6e5d-11ed-a1eb-0242ac120002"),
-                        "Push-up title", "Push-up description", 1),
+                entity(),
                 new Exercise(UUID.fromString("ff252f6e-6e5d-11ed-a1eb-0242ac120002"),
                         "Barbell squat title", "Barbell squat description", 2),
                 new Exercise(UUID.fromString("05bf5a98-6e5e-11ed-a1eb-0242ac120002"),
@@ -30,9 +46,22 @@ public final class ExerciseTestDataStore implements TestDataStore<Exercise, Exer
     }
 
     @Override
+    public ExerciseTo to() {
+        return this.toMapper.toTo(ENTITY);
+    }
+
+    @Override
     public List<ExerciseTo> tos() {
         return entities().stream()
-                .map(this.mapper::toTo)
+                .map(this.toMapper::toTo)
                 .toList();
+    }
+
+    public static ExerciseSnapshot exerciseSnapshot() {
+        return new ExerciseSnapshot(
+                ENTITY.title(),
+                ENTITY.description(),
+                ENTITY.complexity()
+        );
     }
 }

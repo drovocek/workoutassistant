@@ -1,14 +1,15 @@
 package ru.soft.web.controller;
 
-import ru.soft.data.model.WorkoutSession;
-import ru.soft.utils.JsonTestUtils;
-import ru.soft.utils.MatcherFactory;
 import ru.soft.common.AppApi;
 import ru.soft.common.to.WorkoutSessionTo;
+import ru.soft.data.model.WorkoutSession;
+import ru.soft.utils.MatcherFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+
+import static ru.soft.testdata.WorkoutPlanTestDataStore.workoutPlanSnapshot;
 
 class WorkoutSessionControllerTestApi extends AbstractApiControllerTest<WorkoutSession, WorkoutSessionTo> {
 
@@ -35,7 +36,7 @@ class WorkoutSessionControllerTestApi extends AbstractApiControllerTest<WorkoutS
     protected WorkoutSessionTo requestEntity(boolean isNew) {
         return new WorkoutSessionTo(
                 isNew ? null : EXITED_ID,
-                JsonTestUtils.createWorkoutPlanSnapshot(),
+                workoutPlanSnapshot(),
                 SESSION_DATE_TIME,
                 "request note"
         );
@@ -46,7 +47,7 @@ class WorkoutSessionControllerTestApi extends AbstractApiControllerTest<WorkoutS
         return List.of(
                 new WorkoutSessionTo(
                         isNew ? null : EXITED_ID,
-                        JsonTestUtils.createWorkoutPlanSnapshot(),
+                        workoutPlanSnapshot(),
                         null,
                         "request note"
                 ),

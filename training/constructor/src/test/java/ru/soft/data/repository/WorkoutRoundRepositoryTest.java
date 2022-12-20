@@ -5,7 +5,7 @@ import ru.soft.data.model.WorkoutRound;
 
 import java.util.UUID;
 
-import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaSnapshot;
+import static ru.soft.testdata.WorkoutRoundTestDataStore.workoutRoundSchemaSnapshot;
 
 @DataJdbcTest
 class WorkoutRoundRepositoryTest extends BaseRepositoryTest<WorkoutRound> {
@@ -14,7 +14,7 @@ class WorkoutRoundRepositoryTest extends BaseRepositoryTest<WorkoutRound> {
     protected WorkoutRound forSave() {
         return WorkoutRound.builder()
                 .isNew(true)
-                .workoutRoundSchemaSnapshot(createWorkoutRoundSchemaSnapshot())
+                .workoutRoundSchemaSnapshot(workoutRoundSchemaSnapshot())
                 .title("test title")
                 .description("test description")
                 .build();
@@ -25,7 +25,7 @@ class WorkoutRoundRepositoryTest extends BaseRepositoryTest<WorkoutRound> {
         return WorkoutRound.builder()
                 .id(id)
                 .isNew(false)
-                .workoutRoundSchemaSnapshot(createWorkoutRoundSchemaSnapshot())
+                .workoutRoundSchemaSnapshot(workoutRoundSchemaSnapshot())
                 .title("test title")
                 .description("test description")
                 .build();

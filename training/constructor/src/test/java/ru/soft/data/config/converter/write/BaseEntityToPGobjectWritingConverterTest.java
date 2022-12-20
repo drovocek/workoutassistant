@@ -8,8 +8,6 @@ import org.postgresql.util.PGobject;
 import org.springframework.core.convert.converter.Converter;
 import ru.soft.data.config.converter.CustomJsonObjectMapper;
 
-import java.sql.SQLException;
-
 abstract class BaseEntityToPGobjectWritingConverterTest<T, C extends Converter<T, PGobject>> {
 
     private C writingConverter;
@@ -26,7 +24,7 @@ abstract class BaseEntityToPGobjectWritingConverterTest<T, C extends Converter<T
     }
 
     @Test
-    void convert() throws SQLException {
+    void convert() {
         T forWriting = forWriting();
         PGobject actual = this.writingConverter.convert(forWriting);
         PGobject expected = expected();

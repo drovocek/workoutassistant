@@ -3,9 +3,7 @@ package ru.soft.data.config.converter.write;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.postgresql.util.PGobject;
 import ru.soft.common.data.snapshot.WorkoutPlanSnapshot;
-
-import static ru.soft.utils.JsonTestUtils.createWorkoutPlanPGobject;
-import static ru.soft.utils.JsonTestUtils.createWorkoutPlanSnapshot;
+import ru.soft.testdata.WorkoutPlanTestDataStore;
 
 class WorkoutPlanSnapshotToPGobjectWritingConverterTest
         extends BaseEntityToPGobjectWritingConverterTest<WorkoutPlanSnapshot, WorkoutPlanSnapshotToPGobjectWritingConverter> {
@@ -17,11 +15,11 @@ class WorkoutPlanSnapshotToPGobjectWritingConverterTest
 
     @Override
     protected WorkoutPlanSnapshot forWriting() {
-        return createWorkoutPlanSnapshot();
+        return WorkoutPlanTestDataStore.workoutPlanSnapshot();
     }
 
     @Override
     protected PGobject expected() {
-        return createWorkoutPlanPGobject();
+        return WorkoutPlanTestDataStore.workoutPlanPGobject();
     }
 }

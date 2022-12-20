@@ -3,9 +3,7 @@ package ru.soft.data.config.converter.read;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.postgresql.util.PGobject;
 import ru.soft.common.data.snapshot.WorkoutSchemaSnapshot;
-
-import static ru.soft.utils.JsonTestUtils.createWorkoutSchemaPGobject;
-import static ru.soft.utils.JsonTestUtils.createWorkoutSchemaSnapshot;
+import ru.soft.testdata.WorkoutPlanTestDataStore;
 
 class PGobjectToWorkoutSchemaSnapshotReadingConverterTest
         extends BasePGobjectToEntityReadingConverterTest<WorkoutSchemaSnapshot, PGobjectToWorkoutSchemaSnapshotReadingConverter> {
@@ -17,11 +15,11 @@ class PGobjectToWorkoutSchemaSnapshotReadingConverterTest
 
     @Override
     protected PGobject forReading() {
-        return createWorkoutSchemaPGobject();
+        return WorkoutPlanTestDataStore.workoutSchemaPGobject();
     }
 
     @Override
     protected WorkoutSchemaSnapshot expected() {
-        return createWorkoutSchemaSnapshot();
+        return WorkoutPlanTestDataStore.workoutSchemaSnapshot();
     }
 }

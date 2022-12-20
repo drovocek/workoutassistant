@@ -1,13 +1,14 @@
 package ru.soft.web.controller;
 
-import ru.soft.data.model.WorkoutPlan;
-import ru.soft.utils.JsonTestUtils;
-import ru.soft.utils.MatcherFactory;
 import ru.soft.common.AppApi;
 import ru.soft.common.to.WorkoutPlanTo;
+import ru.soft.data.model.WorkoutPlan;
+import ru.soft.utils.MatcherFactory;
 
 import java.util.List;
 import java.util.UUID;
+
+import static ru.soft.testdata.WorkoutPlanTestDataStore.workoutSchemaSnapshot;
 
 class WorkoutPlanControllerTestApi extends AbstractApiControllerTest<WorkoutPlan, WorkoutPlanTo> {
 
@@ -34,7 +35,7 @@ class WorkoutPlanControllerTestApi extends AbstractApiControllerTest<WorkoutPlan
     protected WorkoutPlanTo requestEntity(boolean isNew) {
         return new WorkoutPlanTo(
                 isNew ? null : EXITED_ID,
-                JsonTestUtils.createWorkoutSchemaSnapshot(),
+                workoutSchemaSnapshot(),
                 "request title",
                 "request description"
         );
@@ -45,13 +46,13 @@ class WorkoutPlanControllerTestApi extends AbstractApiControllerTest<WorkoutPlan
         return List.of(
                 new WorkoutPlanTo(
                         isNew ? null : EXITED_ID,
-                        JsonTestUtils.createWorkoutSchemaSnapshot(),
+                        workoutSchemaSnapshot(),
                         "",
                         "request description"
                 ),
                 new WorkoutPlanTo(
                         isNew ? EXITED_ID : null,
-                        JsonTestUtils.createWorkoutSchemaSnapshot(),
+                        workoutSchemaSnapshot(),
                         "request title",
                         "request description"
                 ),
@@ -69,7 +70,7 @@ class WorkoutPlanControllerTestApi extends AbstractApiControllerTest<WorkoutPlan
         return List.of(
                 new WorkoutPlanTo(
                         isNew ? null : EXITED_ID,
-                        JsonTestUtils.createWorkoutSchemaSnapshot(),
+                        workoutSchemaSnapshot(),
                         DUPLICATE_TITLE,
                         "request description"
                 )

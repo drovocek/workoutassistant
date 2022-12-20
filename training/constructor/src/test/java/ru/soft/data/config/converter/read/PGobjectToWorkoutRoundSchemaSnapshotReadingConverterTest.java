@@ -3,9 +3,7 @@ package ru.soft.data.config.converter.read;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.postgresql.util.PGobject;
 import ru.soft.common.data.snapshot.WorkoutRoundSchemaSnapshot;
-
-import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaPGobject;
-import static ru.soft.utils.JsonTestUtils.createWorkoutRoundSchemaSnapshot;
+import ru.soft.testdata.WorkoutRoundTestDataStore;
 
 class PGobjectToWorkoutRoundSchemaSnapshotReadingConverterTest
         extends BasePGobjectToEntityReadingConverterTest<WorkoutRoundSchemaSnapshot, PGobjectToWorkoutRoundSchemaSnapshotReadingConverter> {
@@ -17,11 +15,11 @@ class PGobjectToWorkoutRoundSchemaSnapshotReadingConverterTest
 
     @Override
     protected PGobject forReading() {
-        return createWorkoutRoundSchemaPGobject();
+        return WorkoutRoundTestDataStore.workoutRoundSchemaPGobject();
     }
 
     @Override
     protected WorkoutRoundSchemaSnapshot expected() {
-        return createWorkoutRoundSchemaSnapshot();
+        return WorkoutRoundTestDataStore.workoutRoundSchemaSnapshot();
     }
 }

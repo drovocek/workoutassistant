@@ -6,7 +6,7 @@ import ru.soft.data.model.WorkoutSession;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static ru.soft.utils.JsonTestUtils.createWorkoutPlanSnapshot;
+import static ru.soft.testdata.WorkoutPlanTestDataStore.workoutPlanSnapshot;
 
 @DataJdbcTest
 class WorkoutSessionRepositoryTest extends BaseRepositoryTest<WorkoutSession> {
@@ -18,7 +18,7 @@ class WorkoutSessionRepositoryTest extends BaseRepositoryTest<WorkoutSession> {
         return WorkoutSession.builder()
                 .isNew(true)
                 .dateTime(NOW)
-                .plan(createWorkoutPlanSnapshot())
+                .plan(workoutPlanSnapshot())
                 .note("Легкая тренировка")
                 .build();
     }
@@ -29,7 +29,7 @@ class WorkoutSessionRepositoryTest extends BaseRepositoryTest<WorkoutSession> {
                 .id(id)
                 .isNew(false)
                 .dateTime(NOW)
-                .plan(createWorkoutPlanSnapshot())
+                .plan(workoutPlanSnapshot())
                 .note("Легкая тренировка")
                 .build();
     }

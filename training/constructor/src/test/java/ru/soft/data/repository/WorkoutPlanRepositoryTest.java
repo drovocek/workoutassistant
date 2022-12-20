@@ -5,7 +5,7 @@ import ru.soft.data.model.WorkoutPlan;
 
 import java.util.UUID;
 
-import static ru.soft.utils.JsonTestUtils.createWorkoutSchemaSnapshot;
+import static ru.soft.testdata.WorkoutPlanTestDataStore.workoutSchemaSnapshot;
 
 @DataJdbcTest
 class WorkoutPlanRepositoryTest extends BaseRepositoryTest<WorkoutPlan> {
@@ -16,7 +16,7 @@ class WorkoutPlanRepositoryTest extends BaseRepositoryTest<WorkoutPlan> {
                 .isNew(true)
                 .title("test title")
                 .description("test description")
-                .workoutSchemaSnapshot(createWorkoutSchemaSnapshot())
+                .workoutSchemaSnapshot(workoutSchemaSnapshot())
                 .build();
     }
 
@@ -27,7 +27,7 @@ class WorkoutPlanRepositoryTest extends BaseRepositoryTest<WorkoutPlan> {
                 .isNew(false)
                 .title("test title")
                 .description("test description")
-                .workoutSchemaSnapshot(createWorkoutSchemaSnapshot())
+                .workoutSchemaSnapshot(workoutSchemaSnapshot())
                 .build();
     }
 }

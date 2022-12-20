@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.soft.TestContainerHolder;
 import ru.soft.TestSettings;
-import ru.soft.data.BaseEntity;
 import ru.soft.common.data.HasId;
+import ru.soft.data.BaseEntity;
 import ru.soft.data.repository.BaseRepository;
 import ru.soft.utils.MatcherFactory;
 import ru.soft.web.mapper.TOMapper;
@@ -32,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+//https://www.baeldung.com/spring-boot-testing
 @SpringBootTest
 @AutoConfigureMockMvc
 abstract class AbstractApiControllerTest<T extends BaseEntity, TO extends HasId> extends TestContainerHolder {
@@ -44,6 +45,11 @@ abstract class AbstractApiControllerTest<T extends BaseEntity, TO extends HasId>
 
     @Autowired
     protected MockMvc mockMvc;
+
+//    @BeforeEach
+//    void initData(){
+//        given(this.repository.findAll()).willReturn(allEmployees);
+//    }
 
     protected int rowsCount() {
         return TestSettings.DEFAULT_TEST_ROWS_COUNT;
