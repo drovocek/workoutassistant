@@ -1,25 +1,27 @@
 package ru.soft.web.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import ru.soft.TestContainerHolder;
 import ru.soft.TestSettings;
 import ru.soft.common.data.HasId;
-import ru.soft.data.BaseEntity;
-import ru.soft.data.repository.BaseRepository;
+import ru.soft.service.BaseApiService;
 import ru.soft.utils.MatcherFactory;
-import ru.soft.web.mapper.TOMapper;
+import ru.soft.web.exception.IllegalRequestDataException;
 import ru.soft.web.utils.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -31,25 +33,28 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.soft.utils.ValidationUtil.ENTITY_NOT_FOUND_TEMPLATE;
 
 //https://www.baeldung.com/spring-boot-testing
-@SpringBootTest
+@WebMvcTest
 @AutoConfigureMockMvc
-abstract class AbstractApiControllerTest<T extends BaseEntity, TO extends HasId> extends TestContainerHolder {
+abstract class AbstractApiControllerTest<TO extends HasId> {
 
-    @Autowired
-    protected BaseRepository<T> repository;
-
-    @Autowired
-    protected TOMapper<T, TO> mapper;
+    @MockBean
+    protected BaseApiService<TO> service;
 
     @Autowired
     protected MockMvc mockMvc;
 
-//    @BeforeEach
-//    void initData(){
-//        given(this.repository.findAll()).willReturn(allEmployees);
-//    }
+    @Autowired
+    protected ObjectMapper mapper;
+
+    @BeforeEach
+    void initData() {
+        BDDMockito.given(this.service.getAll())
+                .willReturn(toStore().tos());
+        JsonUtil.setMapper(mapper);
+    }
 
     protected int rowsCount() {
         return TestSettings.DEFAULT_TEST_ROWS_COUNT;
@@ -59,32 +64,16 @@ abstract class AbstractApiControllerTest<T extends BaseEntity, TO extends HasId>
 
     protected abstract MatcherFactory.Matcher<TO> matcher();
 
-    protected abstract UUID expectedId();
-
-    protected abstract TO requestEntity(boolean isNew);
-
-    protected abstract List<TO> invalids(boolean isNew);
-
-    protected abstract List<TO> duplicates(boolean isNew);
-
-    protected abstract List<TO> htmlUnsafe(boolean isNew);
+    protected abstract TestToStore<TO> toStore();
 
     protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
     }
 
-    protected TO expected() {
-        T existed = this.repository.getExisted(expectedId());
-        return this.mapper.toTo(existed);
-    }
-
     protected List<TO> expectedAll() {
-        List<T> all = this.repository.findAll();
+        List<TO> all = toStore().tos();
         Assertions.assertEquals(rowsCount(), all.size());
-
-        return all.stream()
-                .map(d -> this.mapper.toTo(d))
-                .toList();
+        return all;
     }
 
     protected void delete(UUID id, ResultMatcher matcher) {
@@ -144,85 +133,120 @@ abstract class AbstractApiControllerTest<T extends BaseEntity, TO extends HasId>
 
     @Test
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(getApiUrl() + '/' + expectedId()))
+        UUID id = toStore().to().id();
+        TO to = toStore().to();
+
+        BDDMockito.given(this.service.get(id))
+                .willReturn(to);
+
+        perform(MockMvcRequestBuilders.get(getApiUrl() + '/' + id))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(matcher().contentJson(expected()));
+                .andExpect(matcher().contentJson(to));
     }
 
     @Test
     void getNotFound() throws Exception {
-        perform(MockMvcRequestBuilders.get(getApiUrl() + '/' + UUID.randomUUID()))
+        UUID id = toStore().to().id();
+
+        BDDMockito.willThrow(
+                        new IllegalRequestDataException(
+                                ENTITY_NOT_FOUND_TEMPLATE.formatted(id),
+                                HttpStatus.NOT_FOUND))
+                .given(this.service)
+                .get(id);
+
+        perform(MockMvcRequestBuilders.get(getApiUrl() + '/' + id))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void delete() {
-        delete(expectedId(), status().isNoContent());
+        UUID id = toStore().to().id();
+        delete(id, status().isNoContent());
     }
 
     @Test
     void deleteNotFound() {
-        delete(UUID.randomUUID(), status().isNotFound());
+        UUID id = toStore().to().id();
+
+        BDDMockito.willThrow(
+                        new IllegalRequestDataException(
+                                ENTITY_NOT_FOUND_TEMPLATE.formatted(id),
+                                HttpStatus.NOT_FOUND))
+                .given(this.service)
+                .delete(id);
+
+        delete(id, status().isNotFound());
     }
 
     @Test
     void update() {
-        TO forUpdate = requestEntity(false);
-        update(forUpdate, status().isNoContent());
-
-        TO actual = this.mapper.toTo(this.repository.getExisted(expectedId()));
-        matcher().assertMatch(actual, forUpdate);
+        TO updated = toStore().requestTo(false);
+        update(updated, status().isNoContent());
     }
 
     @Test
     void updateInvalids() {
-        invalids(false).forEach(invalid ->
+        toStore().invalids(false).forEach(invalid ->
                 update(invalid, status().isUnprocessableEntity()));
     }
 
     @Test
     void updateDuplicates() {
-        duplicates(false).forEach(duplicate ->
-                update(duplicate, status().isUnprocessableEntity()));
+        toStore().duplicates(false).forEach(duplicate -> {
+            BDDMockito.doThrow(DataIntegrityViolationException.class)
+                    .when(this.service)
+                    .update(duplicate);
+            update(duplicate, status().isUnprocessableEntity());
+        });
     }
 
     @Test
     void updateHtmlUnsafe() {
-        htmlUnsafe(false).forEach(htmlUnsafe ->
+        toStore().htmlUnsafe(false).forEach(htmlUnsafe ->
                 update(htmlUnsafe, status().isUnprocessableEntity()));
     }
 
     @Test
     void add() throws UnsupportedEncodingException {
-        TO forAdd = requestEntity(true);
-        ResultActions resultAction = add(forAdd, status().isCreated());
+        TO newEntity = toStore().requestTo(true);
+        TO expected = toStore().requestTo(false);
 
-        TO to = matcher().readFromJson(resultAction);
-        T actual = this.mapper.fromTo(to);
-        T expectedWithoutId = this.mapper.fromTo(forAdd);
+        BDDMockito.given(this.service.add(newEntity))
+                .willReturn(expected);
 
-        Assertions.assertEquals(expectedWithoutId.withId(actual.id()), actual);
+        ResultActions resultAction = add(newEntity, status().isCreated());
+        TO actual = matcher().readFromJson(resultAction);
+
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     void addInvalids() {
-        invalids(true).forEach(invalid ->
-                add(invalid, status().isUnprocessableEntity()));
+        toStore().invalids(true)
+                .forEach(invalid ->
+                        add(invalid, status().isUnprocessableEntity()));
     }
 
     @Test
-    @Transactional(propagation = Propagation.NEVER)
     void addDuplicates() {
-        duplicates(true).forEach(duplicate ->
-                add(duplicate, status().isUnprocessableEntity()));
+        toStore().duplicates(true)
+                .forEach(duplicate -> {
+                            BDDMockito.doThrow(DataIntegrityViolationException.class)
+                                    .when(this.service)
+                                    .add(duplicate);
+                            add(duplicate, status().isUnprocessableEntity());
+                        }
+                );
     }
 
     @Test
     void addHtmlUnsafe() {
-        htmlUnsafe(true).forEach(htmlUnsafe ->
-                add(htmlUnsafe, status().isUnprocessableEntity()));
+        toStore().htmlUnsafe(true)
+                .forEach(htmlUnsafe ->
+                        add(htmlUnsafe, status().isUnprocessableEntity()));
     }
 }

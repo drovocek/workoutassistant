@@ -1,9 +1,9 @@
 package ru.soft.data.config.converter.write;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.postgresql.util.PGobject;
 import ru.soft.common.data.snapshot.WorkoutRoundSchemaSnapshot;
-import ru.soft.testdata.WorkoutRoundTestDataStore;
+
+import static ru.soft.testdata.snapshot.TestSnapshotStore.workoutRoundSchemaSnapshot;
 
 class WorkoutRoundSchemaSnapshotToPGobjectWritingConverterTest
         extends BaseEntityToPGobjectWritingConverterTest<WorkoutRoundSchemaSnapshot, WorkoutRoundSchemaSnapshotToPGobjectWritingConverter> {
@@ -15,11 +15,6 @@ class WorkoutRoundSchemaSnapshotToPGobjectWritingConverterTest
 
     @Override
     protected WorkoutRoundSchemaSnapshot forWriting() {
-        return WorkoutRoundTestDataStore.workoutRoundSchemaSnapshot();
-    }
-
-    @Override
-    protected PGobject expected() {
-        return WorkoutRoundTestDataStore.workoutRoundSchemaPGobject();
+        return workoutRoundSchemaSnapshot();
     }
 }

@@ -1,37 +1,23 @@
 package ru.soft.testdata;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.postgresql.util.PGobject;
-import ru.soft.data.config.converter.CustomJsonObjectMapper;
-
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.UUID;
 
-public interface TestDataStore<T, TO> {
+public interface TestDataStore<T> {
 
-    ObjectMapper jsonMapper = CustomJsonObjectMapper.instance();
+    T entity(boolean isNew);
 
-    T entity();
+    List<T> entities(boolean isNew);
 
-    List<T> entities();
+    T requestEntity(boolean isNew);
 
-    TO to();
+    List<T> invalids(boolean isNew);
 
-    List<TO> tos();
+    List<T> duplicates(boolean isNew);
 
-    static PGobject wrapper(Callable<PGobject> pGobjectSupplier) {
-        try {
-            return pGobjectSupplier.call();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    List<T> htmlUnsafe(boolean isNew);
 
-    static void throwIfNotEquals(String first, String second) {
-        if (!first.equals(second)) {
-            throw new RuntimeException("json не эквивалентны: \n" +
-                    first + "\n" +
-                    second);
-        }
+    default UUID newId(){
+        return UUID.randomUUID();
     }
 }

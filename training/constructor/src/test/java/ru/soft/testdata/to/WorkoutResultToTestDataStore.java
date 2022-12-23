@@ -1,46 +1,49 @@
-package ru.soft.web.controller;
+package ru.soft.testdata.to;
 
-import ru.soft.common.AppApi;
+import org.springframework.stereotype.Component;
 import ru.soft.common.to.WorkoutResultTo;
-import ru.soft.data.model.WorkoutResult;
-import ru.soft.utils.MatcherFactory;
+import ru.soft.testdata.TestDataStore;
 
 import java.util.List;
 import java.util.UUID;
 
-import static ru.soft.testdata.WorkoutPlanTestDataStore.workoutSchemaSnapshot;
+import static ru.soft.testdata.snapshot.TestSnapshotStore.workoutSchemaSnapshot;
 
-class WorkoutResultControllerTestApi extends AbstractApiControllerTest<WorkoutResult, WorkoutResultTo> {
+@Component
+public class WorkoutResultToTestDataStore implements TestDataStore<WorkoutResultTo> {
 
-    private static final MatcherFactory.Matcher<WorkoutResultTo> MATCHER = MatcherFactory.usingIgnoringFieldsComparator(WorkoutResultTo.class);
-    private static final UUID EXITED_ID = UUID.fromString("6ab39d60-7a52-11ed-a1eb-0242ac120002");
     private static final UUID EXITED_SESSION_ID = UUID.fromString("ae9b7996-7ac8-11ed-a1eb-0242ac120002");
     private static final String DUPLICATE_TITLE = "Barbell squats training";
 
     @Override
-    protected String getApiUrl() {
-        return AppApi.WorkoutResult.URL;
-    }
-
-    @Override
-    protected MatcherFactory.Matcher<WorkoutResultTo> matcher() {
-        return MATCHER;
-    }
-
-    @Override
-    protected UUID expectedId() {
-        return EXITED_ID;
-    }
-
-    @Override
-    protected int rowsCount() {
-        return 2;
-    }
-
-    @Override
-    protected WorkoutResultTo requestEntity(boolean isNew) {
+    public WorkoutResultTo entity(boolean isNew) {
         return new WorkoutResultTo(
-                isNew ? null : EXITED_ID,
+                isNew ? null : UUID.fromString("6ab39d60-7a52-11ed-a1eb-0242ac120002"),
+                UUID.fromString("a34798c2-7ac8-11ed-a1eb-0242ac120002"),
+                workoutSchemaSnapshot()
+                , "Push-up training",
+                "Push-up description"
+        );
+    }
+
+    @Override
+    public List<WorkoutResultTo> entities(boolean isNew) {
+        return List.of(
+                entity(isNew),
+                new WorkoutResultTo(
+                        isNew ? null : UUID.fromString("6f8f8c22-7a52-11ed-a1eb-0242ac120002"),
+                        UUID.fromString("a9323cf6-7ac8-11ed-a1eb-0242ac120002"),
+                        workoutSchemaSnapshot()
+                        , "Barbell squat title",
+                        "Barbell squat description"
+                )
+        );
+    }
+
+    @Override
+    public WorkoutResultTo requestEntity(boolean isNew) {
+        return new WorkoutResultTo(
+                isNew ? null : newId(),
                 EXITED_SESSION_ID,
                 workoutSchemaSnapshot(),
                 "request title",
@@ -49,31 +52,31 @@ class WorkoutResultControllerTestApi extends AbstractApiControllerTest<WorkoutRe
     }
 
     @Override
-    protected List<WorkoutResultTo> invalids(boolean isNew) {
+    public List<WorkoutResultTo> invalids(boolean isNew) {
         return List.of(
                 new WorkoutResultTo(
-                        isNew ? null : EXITED_ID,
+                        isNew ? null : newId(),
                         EXITED_SESSION_ID,
                         workoutSchemaSnapshot(),
                         "",
                         "request description"
                 ),
                 new WorkoutResultTo(
-                        isNew ? EXITED_ID : null,
+                        isNew ? newId() : null,
                         EXITED_SESSION_ID,
                         workoutSchemaSnapshot(),
                         null,
                         "request description"
                 ),
                 new WorkoutResultTo(
-                        isNew ? EXITED_ID : null,
+                        isNew ? newId() : null,
                         null,
                         workoutSchemaSnapshot(),
                         "request title",
                         "request description"
                 ),
                 new WorkoutResultTo(
-                        isNew ? null : EXITED_ID,
+                        isNew ? null : newId(),
                         EXITED_SESSION_ID,
                         null,
                         "request title",
@@ -83,10 +86,10 @@ class WorkoutResultControllerTestApi extends AbstractApiControllerTest<WorkoutRe
     }
 
     @Override
-    protected List<WorkoutResultTo> duplicates(boolean isNew) {
+    public List<WorkoutResultTo> duplicates(boolean isNew) {
         return List.of(
                 new WorkoutResultTo(
-                        isNew ? null : EXITED_ID,
+                        isNew ? null : newId(),
                         EXITED_SESSION_ID,
                         workoutSchemaSnapshot(),
                         DUPLICATE_TITLE,
@@ -96,7 +99,7 @@ class WorkoutResultControllerTestApi extends AbstractApiControllerTest<WorkoutRe
     }
 
     @Override
-    protected List<WorkoutResultTo> htmlUnsafe(boolean isNew) {
+    public List<WorkoutResultTo> htmlUnsafe(boolean isNew) {
         return List.of();
     }
 }

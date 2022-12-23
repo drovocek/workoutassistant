@@ -2,7 +2,6 @@ package ru.soft.web.exception;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -34,7 +33,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private ErrorAttributes errorAttributes;
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<?> PSQLException(WebRequest request, PSQLException ex) {
+    public ResponseEntity<?> PSQLException(WebRequest request, DataIntegrityViolationException ex) {
         log.error("DataIntegrityViolationException: {}", ex.getMessage());
         return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), "DB constraints exception", HttpStatusCode.valueOf(HttpStatus.UNPROCESSABLE_ENTITY.value()));
     }

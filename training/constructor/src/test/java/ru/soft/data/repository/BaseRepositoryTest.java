@@ -1,69 +1,38 @@
 package ru.soft.data.repository;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import ru.soft.TestContainerHolder;
 import ru.soft.TestSettings;
 import ru.soft.data.BaseEntity;
-import ru.soft.utils.ValidationUtil;
+import ru.soft.testdata.TestDataStore;
 import ru.soft.web.exception.IllegalRequestDataException;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 
-public abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHolder {
+import static ru.soft.utils.ValidationUtil.ENTITY_NOT_FOUND_TEMPLATE;
+
+@DataJdbcTest
+abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHolder {
 
     @Autowired
     protected BaseRepository<T> repository;
 
-    protected abstract T forSave();
+    @BeforeEach
+    void initRepo() {
+        this.repository.saveAll(entityStore().entities());
+    }
 
-    protected abstract T expectedSaved(UUID id);
+    protected abstract TestDataStore<T> entityStore();
 
     protected int rowsCount() {
         return TestSettings.DEFAULT_TEST_ROWS_COUNT;
-    }
-
-    @Test
-    void getExisted() {
-        List<T> exercises = this.repository.findAll();
-        Assertions.assertFalse(exercises.isEmpty());
-        T expected = exercises.get(0);
-        T actual = this.repository.getExisted(expected.id());
-        Assertions.assertEquals(expected, actual);
-    }
-
-    @Test
-    void getExistedNotExiting() {
-        UUID notExitingId = UUID.randomUUID();
-        IllegalRequestDataException actual = Assertions.assertThrows(
-                IllegalRequestDataException.class, () -> this.repository.getExisted(notExitingId));
-        Assertions.assertEquals(ValidationUtil.ENTITY_NOT_FOUND_TEMPLATE.formatted(notExitingId), actual.getMessage());
-    }
-
-    @Test
-    void deleteById() {
-        List<T> exercises = this.repository.findAll();
-        Assertions.assertFalse(exercises.isEmpty());
-
-        T deleted = exercises.get(0);
-        UUID deletedId = deleted.getId();
-        Assertions.assertNotNull(deletedId);
-
-        this.repository.deleteExisted(deletedId);
-        Optional<T> deletedOpt = this.repository.findById(deletedId);
-        Assertions.assertTrue(deletedOpt.isEmpty());
-    }
-
-    @Test
-    void deleteByIdNotExiting() {
-        UUID notExitingId = UUID.randomUUID();
-        IllegalRequestDataException actual = Assertions.assertThrows(
-                IllegalRequestDataException.class, () -> this.repository.deleteExisted(notExitingId));
-        Assertions.assertEquals(ValidationUtil.ENTITY_NOT_FOUND_TEMPLATE.formatted(notExitingId), actual.getMessage());
     }
 
     @Test
@@ -73,18 +42,73 @@ public abstract class BaseRepositoryTest<T extends BaseEntity> extends TestConta
     }
 
     @Test
-    void save() {
-        save(forSave(), this::expectedSaved);
+    void get() {
+        T expected = entityStore().entity();
+        T actual = this.repository.getExisted(expected.id());
+        Assertions.assertEquals(expected, actual);
     }
 
-    protected void save(T forSave, Function<UUID, T> expected) {
+    @Test
+    void getNotFound() {
+        UUID notExitingId = UUID.randomUUID();
+        IllegalRequestDataException actual = Assertions.assertThrows(
+                IllegalRequestDataException.class, () -> this.repository.getExisted(notExitingId));
+        Assertions.assertEquals(ENTITY_NOT_FOUND_TEMPLATE.formatted(notExitingId), actual.getMessage());
+    }
+
+    @Test
+    void delete() {
+        UUID id = entityStore().entity().id();
+        this.repository.deleteExisted(id);
+        Optional<T> deletedOpt = this.repository.findById(id);
+        Assertions.assertTrue(deletedOpt.isEmpty());
+    }
+
+    @Test
+    void deleteNotFound() {
+        UUID notExitingId = UUID.randomUUID();
+        IllegalRequestDataException actual = Assertions.assertThrows(
+                IllegalRequestDataException.class, () -> this.repository.deleteExisted(notExitingId));
+        Assertions.assertEquals(ENTITY_NOT_FOUND_TEMPLATE.formatted(notExitingId), actual.getMessage());
+    }
+
+    @Test
+    void update() {
+        T updated = entityStore().requestEntity(false);
+        this.repository.save(updated);
+        T actual = this.repository.getExisted(updated.id());
+        Assertions.assertEquals(updated, actual);
+    }
+
+    @Test
+    void updateInvalids() {
+        entityStore().invalids(false).forEach(invalid -> {
+            DataIntegrityViolationException actual = Assertions.assertThrows(
+                    DataIntegrityViolationException.class, () -> this.repository.save(invalid));
+            Assertions.assertEquals(ENTITY_NOT_FOUND_TEMPLATE.formatted(invalid), actual.getMessage());
+        });
+    }
+
+    @Test
+    void updateDuplicates() {
+        entityStore().duplicates(false).forEach(duplicate -> {
+            DataIntegrityViolationException actual = Assertions.assertThrows(
+                    DataIntegrityViolationException.class, () -> this.repository.save(duplicate));
+            Assertions.assertEquals(ENTITY_NOT_FOUND_TEMPLATE.formatted(duplicate), actual.getMessage());
+        });
+    }
+
+    @Test
+    void save() {
+        T forSave = entityStore().requestEntity(true);
         T saved = this.repository.save(forSave);
         Assertions.assertNotNull(saved.getId());
 
-        Optional<T> workoutPlanOpt = this.repository.findById(saved.getId());
-        Assertions.assertTrue(workoutPlanOpt.isPresent());
+        Optional<T> savedOpt = this.repository.findById(saved.getId());
+        Assertions.assertTrue(savedOpt.isPresent());
 
-        T actual = workoutPlanOpt.get();
-        Assertions.assertEquals(expected.apply(actual.id()), actual);
+        T actual = savedOpt.get();
+
+        Assertions.assertEquals(actual.withId(actual.id()), actual);
     }
 }

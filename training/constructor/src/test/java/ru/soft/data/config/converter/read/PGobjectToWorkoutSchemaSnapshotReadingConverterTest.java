@@ -1,9 +1,9 @@
 package ru.soft.data.config.converter.read;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.postgresql.util.PGobject;
 import ru.soft.common.data.snapshot.WorkoutSchemaSnapshot;
-import ru.soft.testdata.WorkoutPlanTestDataStore;
+
+import static ru.soft.testdata.snapshot.TestSnapshotStore.workoutSchemaSnapshot;
 
 class PGobjectToWorkoutSchemaSnapshotReadingConverterTest
         extends BasePGobjectToEntityReadingConverterTest<WorkoutSchemaSnapshot, PGobjectToWorkoutSchemaSnapshotReadingConverter> {
@@ -14,12 +14,7 @@ class PGobjectToWorkoutSchemaSnapshotReadingConverterTest
     }
 
     @Override
-    protected PGobject forReading() {
-        return WorkoutPlanTestDataStore.workoutSchemaPGobject();
-    }
-
-    @Override
     protected WorkoutSchemaSnapshot expected() {
-        return WorkoutPlanTestDataStore.workoutSchemaSnapshot();
+        return workoutSchemaSnapshot();
     }
 }
