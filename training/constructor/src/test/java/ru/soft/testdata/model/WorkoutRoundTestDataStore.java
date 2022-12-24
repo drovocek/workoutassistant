@@ -34,14 +34,14 @@ public class WorkoutRoundTestDataStore implements TestDataStore<WorkoutRound> {
                         isNew,
                         workoutRoundSchemaSnapshot()
                         , "Strength round title",
-                        "For strength round description"
+                        "Strength round description"
                 ),
                 new WorkoutRound(
                         isNew ? null : UUID.fromString("475617e4-7a52-11ed-a1eb-0242ac120002"),
                         isNew,
                         workoutRoundSchemaSnapshot()
                         , "Endurance round title",
-                        "For endurance round description"
+                        "Endurance round description"
                 )
         );
     }

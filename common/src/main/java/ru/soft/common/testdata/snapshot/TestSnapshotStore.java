@@ -6,7 +6,7 @@ import ru.soft.common.to.WorkoutPlanTo;
 import ru.soft.common.to.WorkoutRoundTo;
 import ru.soft.common.testdata.to.ExerciseToTestDataStore;
 import ru.soft.common.testdata.to.WorkoutPlanToTestDataStore;
-import ru.soft.common.testdata.to.WorkoutRoundTestDataStore;
+import ru.soft.common.testdata.to.WorkoutRoundToTestDataStore;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public final class TestSnapshotStore {
     }
 
     public static WorkoutRoundSnapshot workoutRoundSnapshot() {
-        WorkoutRoundTo to = WorkoutRoundTestDataStore.example(true);
+        WorkoutRoundTo to = WorkoutRoundToTestDataStore.example(true);
         return new WorkoutRoundSnapshot(
                 workoutRoundSchemaSnapshot(),
                 to.title(),
@@ -44,7 +44,7 @@ public final class TestSnapshotStore {
 
     public static WorkoutSchemaSnapshot workoutSchemaSnapshot() {
         List<WorkoutRoundSnapshot> workoutRoundSnapshots =
-                WorkoutRoundTestDataStore.examples(true).stream()
+                WorkoutRoundToTestDataStore.examples(true).stream()
                         .map(round ->
                                 WorkoutRoundSnapshot.builder()
                                         .workoutRoundSchemaSnapshot(workoutRoundSchemaSnapshot())

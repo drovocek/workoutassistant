@@ -1,8 +1,8 @@
 package ru.soft.testdata.model;
 
 import org.springframework.stereotype.Component;
-import ru.soft.data.model.WorkoutSession;
 import ru.soft.common.testdata.TestDataStore;
+import ru.soft.data.model.WorkoutSession;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,14 +31,14 @@ public class WorkoutSessionTestDataStore implements TestDataStore<WorkoutSession
         return List.of(
                 entity(isNew),
                 new WorkoutSession(
-                        UUID.fromString("a9323cf6-7ac8-11ed-a1eb-0242ac120002"),
+                        isNew ? null : UUID.fromString("a9323cf6-7ac8-11ed-a1eb-0242ac120002"),
                         isNew,
                         workoutPlanSnapshot(),
                         LocalDateTime.of(2024, 3, 20, 19, 10, 25),
                         "Medium session note"
                 ),
                 new WorkoutSession(
-                        UUID.fromString("ae9b7996-7ac8-11ed-a1eb-0242ac120002"),
+                        isNew ? null : UUID.fromString("ae9b7996-7ac8-11ed-a1eb-0242ac120002"),
                         isNew,
                         workoutPlanSnapshot(),
                         LocalDateTime.of(2024, 3, 20, 19, 10, 25),

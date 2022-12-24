@@ -3,7 +3,7 @@ package ru.soft.web.controller;
 import ru.soft.common.AppApi;
 import ru.soft.common.to.WorkoutRoundTo;
 import ru.soft.common.testdata.TestDataStore;
-import ru.soft.common.testdata.to.WorkoutRoundTestDataStore;
+import ru.soft.common.testdata.to.WorkoutRoundToTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
 class WorkoutRoundApiControllerTest extends AbstractApiControllerTest<WorkoutRoundTo> {
@@ -20,6 +20,6 @@ class WorkoutRoundApiControllerTest extends AbstractApiControllerTest<WorkoutRou
 
     @Override
     protected TestDataStore<WorkoutRoundTo> toStore() {
-        return new WorkoutRoundTestDataStore();
+        return new WorkoutRoundToTestDataStore();
     }
 }

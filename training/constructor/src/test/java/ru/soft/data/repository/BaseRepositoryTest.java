@@ -2,6 +2,7 @@ package ru.soft.data.repository;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -69,6 +70,7 @@ abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHol
     }
 
     @Test
+    @DisplayName("должен возвращать все сохраненные экземпляры сущности")
     void getAll() {
         List<T> actual = this.repository.findAll();
         Assertions.assertEquals(rowsCount(), actual.size());
@@ -80,12 +82,14 @@ abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHol
     }
 
     @Test
+    @DisplayName("должен возвращать экземпляр сущности с запрашиваемым id")
     void get() {
         T actual = this.repository.getExisted(getExitedId());
         matcher().assertMatch(actual, getExited());
     }
 
     @Test
+    @DisplayName("должен выбрасывать ошибку, если запрашиваемый экземпляр сущности не найден")
     void getNotFound() {
         UUID notExitingId = UUID.randomUUID();
 
@@ -96,6 +100,7 @@ abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHol
     }
 
     @Test
+    @DisplayName("должен удалять экземпляр сущности с запрашиваемым id")
     void delete() {
         UUID exitedId = getExitedId();
         this.repository.deleteExisted(exitedId);
@@ -105,6 +110,7 @@ abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHol
     }
 
     @Test
+    @DisplayName("должен выбрасывать ошибку, если удаляемый экземпляр сущности не найден")
     void deleteNotFound() {
         UUID notExitingId = UUID.randomUUID();
 
@@ -115,6 +121,7 @@ abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHol
     }
 
     @Test
+    @DisplayName("должен обновлять существующий экземпляр сущности")
     void update() {
         UUID exitedId = getExitedId();
 
@@ -126,6 +133,7 @@ abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHol
     }
 
     @Test
+    @DisplayName("не должен обновлять существующие экземпляры сущности, с полями не прошедшими валидацию на сервере")
     void updateInvalids() {
         UUID exitedId = getExitedId();
         invalids(false).stream()
@@ -137,6 +145,7 @@ abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHol
     }
 
     @Test
+    @DisplayName("не должен обновлять существующие экземпляры сущности, с полями нарушающими ограничения базы данных")
     void updateDuplicates() {
         UUID exitedId = getExitedId();
         duplicates(false).stream()
@@ -148,6 +157,19 @@ abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHol
     }
 
     @Test
+    @DisplayName("не должен обновлять существующие экземпляры сущности, с полями нарушающими ограничения")
+    void updateHtmlUnsafe() {
+        UUID exitedId = getExitedId();
+        htmlUnsafe(false).stream()
+                .map(htmlUnsafe -> (T) htmlUnsafe.withId(exitedId))
+                .forEach(htmlUnsafe -> {
+                    DbActionExecutionException actual = Assertions.assertThrows(
+                            DbActionExecutionException.class, () -> this.repository.save(htmlUnsafe));
+                });
+    }
+
+    @Test
+    @DisplayName("должен добавлять новый экземпляр сущности")
     void save() {
         T forSave = requestEntity(true);
         T saved = this.repository.save(forSave);
@@ -159,5 +181,41 @@ abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHol
         T actual = savedOpt.get();
 
         Assertions.assertEquals(actual.withId(actual.id()), actual);
+    }
+
+    @Test
+    @DisplayName("не должен добавлять новый экземпляр сущности, с полями не прошедшими валидацию на сервере")
+    void saveInvalids() {
+        UUID exitedId = getExitedId();
+        invalids(true).stream()
+                .map(invalid -> (T) invalid.withId(exitedId))
+                .forEach(invalid -> {
+                    DbActionExecutionException actual = Assertions.assertThrows(
+                            DbActionExecutionException.class, () -> this.repository.save(invalid));
+                });
+    }
+
+    @Test
+    @DisplayName("не должен добавлять новый экземпляр сущности, с полями нарушающими ограничения базы данных")
+    void saveDuplicates() {
+        UUID exitedId = getExitedId();
+        duplicates(true).stream()
+                .map(duplicate -> (T) duplicate.withId(exitedId))
+                .forEach(duplicate -> {
+                    DbActionExecutionException actual = Assertions.assertThrows(
+                            DbActionExecutionException.class, () -> this.repository.save(duplicate));
+                });
+    }
+
+    @Test
+    @DisplayName("не должен добавлять новый экземпляр сущности, с полями нарушающими ограничения")
+    void saveHtmlUnsafe() {
+        UUID exitedId = getExitedId();
+        htmlUnsafe(true).stream()
+                .map(htmlUnsafe -> (T) htmlUnsafe.withId(exitedId))
+                .forEach(htmlUnsafe -> {
+                    DbActionExecutionException actual = Assertions.assertThrows(
+                            DbActionExecutionException.class, () -> this.repository.save(htmlUnsafe));
+                });
     }
 }

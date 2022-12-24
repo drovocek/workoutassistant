@@ -10,7 +10,7 @@ import java.util.UUID;
 import static ru.soft.common.testdata.snapshot.TestSnapshotStore.workoutRoundSchemaSnapshot;
 
 @Component
-public class WorkoutRoundTestDataStore implements TestDataStore<WorkoutRoundTo> {
+public class WorkoutRoundToTestDataStore implements TestDataStore<WorkoutRoundTo> {
 
     private static final String DUPLICATE_TITLE = "Strength round title";
 
