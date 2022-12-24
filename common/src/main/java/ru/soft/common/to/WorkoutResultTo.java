@@ -14,4 +14,9 @@ public record WorkoutResultTo(
         @JsonProperty("workoutSchema") @NotNull WorkoutSchemaSnapshot workoutSchemaSnapshot,
         @JsonProperty("title") @NotBlank String title,
         @JsonProperty("description") String description) implements HasId {
+
+    @Override
+    public WorkoutResultTo withId(UUID id) {
+        return new WorkoutResultTo(id, workoutSessionId(), workoutSchemaSnapshot(), title(), description());
+    }
 }

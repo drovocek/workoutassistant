@@ -45,11 +45,11 @@ public abstract class BaseEntity implements Persistable<UUID>, HasId {
 
     protected abstract BaseEntity withId(UUID id, boolean isNew);
 
-    public BaseEntity newWithId(UUID id) {
-        return withId(id, true);
-    }
-
     public BaseEntity withId(UUID id) {
         return withId(id, false);
+    }
+
+    public BaseEntity newWithId(UUID id) {
+        return withId(id, true);
     }
 }

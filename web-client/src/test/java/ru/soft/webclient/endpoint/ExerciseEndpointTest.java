@@ -1,10 +1,10 @@
 package ru.soft.webclient.endpoint;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import dev.hilla.Nonnull;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import ru.soft.common.testdata.TestDataStore;
 import ru.soft.common.to.ExerciseTo;
+import ru.soft.common.utils.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -29,59 +31,60 @@ public class ExerciseEndpointTest {
 
     @Autowired
     private ExerciseEndpoint endpoint;
+
     @Autowired
     private ObjectMapper mapper;
 
-    @Value("#{T(ru.soft.common.AppApi.Exercise).URL}")
+    @Autowired
+    private TestDataStore<ExerciseTo> dataStore;
+
+    @Value("#{T(ru.soft.common.AppApi.Exercises).URL}")
     private String coreUrl;
 
-    protected UUID expectedId(){
-        return UUID.randomUUID();
+    @BeforeEach
+    void initJsonUtil() {
+        JsonUtil.setMapper(this.mapper);
     }
 
-    private String asJson(List<Object> objects) {
-        return asJson(objects);
+    protected String coreUrl() {
+        return this.coreUrl;
     }
 
-    private String asJson(Object object) {
-        try {
-            return this.mapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    protected BaseEndpoint<ExerciseTo> endpoint() {
+        return this.endpoint;
+    }
+
+    protected TestDataStore<ExerciseTo> dataStore() {
+        return this.dataStore;
     }
 
     @Test
     void getAll() {
-        UUID uuid1 = UUID.randomUUID();
-        UUID uuid2 = UUID.randomUUID();
-        UUID uuid3 = UUID.randomUUID();
-        ExerciseTo expected1 = new ExerciseTo(uuid1, "title1", "description1", 1);
-        ExerciseTo expected2 = new ExerciseTo(uuid2, "title2", "description2", 2);
-        ExerciseTo expected3 = new ExerciseTo(uuid3, "title3", "description3", 3);
-        List<ExerciseTo> expectedAll = List.of(expected1, expected2, expected3);
+        List<ExerciseTo> expectedAll = dataStore().entities(false);
 
-        stubFor(WireMock.get(coreUrl + "/all")
+        stubFor(WireMock.get(coreUrl() + "/all")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                        .withBody(asJson(expectedAll))));
-        List<@Nonnull ExerciseTo> actualAll = this.endpoint.getAll();
+                        .withBody(JsonUtil.writeValue(expectedAll))));
+
+        List<@Nonnull ExerciseTo> actualAll = endpoint().getAll();
 
         Assertions.assertEquals(expectedAll, actualAll);
     }
 
     @Test
-    void get() throws Exception {
-        UUID uuid = expectedId();
-        ExerciseTo expected = new ExerciseTo(uuid, "title", "description", 1);
+    void get() {
+        ExerciseTo expected = dataStore().entity(false);
+        UUID expectedId = expected.id();
 
-        stubFor(WireMock.get("/api/exercises/" + uuid)
+        stubFor(WireMock.get(coreUrl() + "/" + expectedId)
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                        .withBody(asJson(expected))));
-        ExerciseTo actual = this.endpoint.get(uuid);
+                        .withBody(JsonUtil.writeValue(expected))));
+
+        ExerciseTo actual = endpoint().get(expectedId);
 
         Assertions.assertEquals(expected, actual);
     }

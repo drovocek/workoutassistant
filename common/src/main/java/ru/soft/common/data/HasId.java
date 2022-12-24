@@ -11,4 +11,6 @@ public interface HasId {
     default boolean isNew() {
         return id() == null;
     }
+
+    HasId withId(UUID id);
 }

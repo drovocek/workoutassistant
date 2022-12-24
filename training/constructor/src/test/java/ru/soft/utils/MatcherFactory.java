@@ -3,7 +3,7 @@ package ru.soft.utils;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
-import ru.soft.web.utils.JsonUtil;
+import ru.soft.common.utils.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;

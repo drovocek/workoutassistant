@@ -1,16 +1,16 @@
-package ru.soft.web.controller;
+package ru.soft.web.controller.unit;
 
 import ru.soft.common.AppApi;
-import ru.soft.common.to.WorkoutSessionTo;
 import ru.soft.common.testdata.TestDataStore;
 import ru.soft.common.testdata.to.WorkoutSessionToTestDataStore;
+import ru.soft.common.to.WorkoutSessionTo;
 import ru.soft.utils.MatcherFactory;
 
-class WorkoutSessionApiControllerTest extends AbstractApiControllerTest<WorkoutSessionTo> {
+class WorkoutSessionApiControllerUnitTest extends AbstractApiControllerUnitTest<WorkoutSessionTo> {
 
     @Override
     protected String getApiUrl() {
-        return AppApi.WorkoutSession.URL;
+        return AppApi.WorkoutSessions.URL;
     }
 
     @Override

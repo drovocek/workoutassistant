@@ -14,7 +14,7 @@ import ru.soft.common.to.WorkoutResultTo;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(
-        value = AppApi.WorkoutResult.URL,
+        value = AppApi.WorkoutResults.URL,
         produces = MediaType.APPLICATION_JSON_VALUE)
 class WorkoutResultApiController extends AbstractApiController<WorkoutResultTo> {
 }

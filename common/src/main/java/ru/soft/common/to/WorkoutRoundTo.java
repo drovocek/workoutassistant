@@ -13,4 +13,9 @@ public record WorkoutRoundTo(
         @JsonProperty("roundSchema") @NotNull WorkoutRoundSchemaSnapshot workoutRoundSchemaSnapshot,
         @JsonProperty("title") @NotBlank String title,
         @JsonProperty("description") String description) implements HasId {
+
+    @Override
+    public WorkoutRoundTo withId(UUID id) {
+        return new WorkoutRoundTo(id, workoutRoundSchemaSnapshot(), title(), description());
+    }
 }

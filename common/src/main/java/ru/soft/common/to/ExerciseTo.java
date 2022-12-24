@@ -12,4 +12,9 @@ public record ExerciseTo(
         @JsonProperty("title") @NotBlank String title,
         @JsonProperty("description") String description,
         @JsonProperty("complexity") @Range(min = 1, max = 10) int complexity) implements HasId {
+
+    @Override
+    public ExerciseTo withId(UUID id) {
+        return new ExerciseTo(id, title(), description(), complexity());
+    }
 }

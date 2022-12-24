@@ -1,4 +1,4 @@
-package ru.soft.web.controller;
+package ru.soft.web.controller.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
@@ -21,10 +21,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.soft.TestSettings;
 import ru.soft.common.data.HasId;
 import ru.soft.common.testdata.TestDataStore;
+import ru.soft.common.utils.JsonUtil;
 import ru.soft.service.BaseApiService;
 import ru.soft.utils.MatcherFactory;
 import ru.soft.web.exception.IllegalRequestDataException;
-import ru.soft.web.utils.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -42,16 +42,16 @@ import static ru.soft.utils.ValidationUtil.ENTITY_NOT_FOUND_TEMPLATE;
 //https://www.baeldung.com/spring-boot-testing
 @WebMvcTest
 @AutoConfigureMockMvc
-abstract class AbstractApiControllerTest<TO extends HasId> {
-
-    @MockBean
-    protected BaseApiService<TO> service;
+abstract class AbstractApiControllerUnitTest<TO extends HasId> {
 
     @Autowired
     protected MockMvc mockMvc;
 
     @Autowired
     protected ObjectMapper mapper;
+
+    @MockBean
+    protected BaseApiService<TO> service;
 
     @BeforeEach
     void initData() {
@@ -67,6 +67,10 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
     protected abstract MatcherFactory.Matcher<TO> matcher();
 
     protected abstract TestDataStore<TO> toStore();
+
+    protected BaseApiService<TO> service() {
+        return this.service;
+    }
 
     protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
@@ -95,7 +99,7 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
                     .content(JsonUtil.writeValue(updated)))
                     .andDo(print())
                     .andExpect(matcher);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -143,7 +147,7 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
         TO exited = toStore().entity(false);
         UUID exitedId = exited.id();
 
-        given(this.service.get(exitedId))
+        given(service().get(exitedId))
                 .willReturn(exited);
 
         TO expected = toStore().entity(false);
@@ -164,7 +168,7 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
                         new IllegalRequestDataException(
                                 ENTITY_NOT_FOUND_TEMPLATE.formatted(notExitedId),
                                 HttpStatus.NOT_FOUND))
-                .given(this.service)
+                .given(service())
                 .get(notExitedId);
 
         perform(MockMvcRequestBuilders.get(getApiUrl() + '/' + notExitedId))
@@ -188,7 +192,7 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
                         new IllegalRequestDataException(
                                 ENTITY_NOT_FOUND_TEMPLATE.formatted(notExitedId),
                                 HttpStatus.NOT_FOUND))
-                .given(this.service)
+                .given(service())
                 .delete(notExitedId);
 
         delete(notExitedId, status().isNotFound());
@@ -214,7 +218,7 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
         toStore().duplicates(false)
                 .forEach(duplicate -> {
                     doThrow(DataIntegrityViolationException.class)
-                            .when(this.service)
+                            .when(service())
                             .update(duplicate);
 
                     update(duplicate, status().isUnprocessableEntity());
@@ -234,8 +238,10 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
         TO newEntity = toStore().requestEntity(true);
         TO expected = toStore().requestEntity(false);
 
-        given(this.service.add(newEntity))
+
+        given(service().add(newEntity))
                 .willReturn(expected);
+
 
         ResultActions resultAction = add(newEntity, status().isCreated());
         TO actual = matcher().readFromJson(resultAction);
@@ -257,7 +263,7 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
         toStore().duplicates(true)
                 .forEach(duplicate -> {
                             doThrow(DataIntegrityViolationException.class)
-                                    .when(this.service)
+                                    .when(service())
                                     .add(duplicate);
 
                             add(duplicate, status().isUnprocessableEntity());

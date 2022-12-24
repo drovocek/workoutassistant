@@ -5,7 +5,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
-import ru.soft.web.utils.JsonUtil;
+import ru.soft.common.utils.JsonUtil;
 
 @Configuration
 public class WebConfig {

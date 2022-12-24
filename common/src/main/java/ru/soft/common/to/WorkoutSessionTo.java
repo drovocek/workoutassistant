@@ -13,4 +13,9 @@ public record WorkoutSessionTo(
         @JsonProperty("workoutPlan") @NotNull WorkoutPlanSnapshot plan,
         @JsonProperty("dateTime") @NotNull LocalDateTime dateTime,
         @JsonProperty("note") String note) implements HasId {
+
+    @Override
+    public WorkoutSessionTo withId(UUID id) {
+        return new WorkoutSessionTo(id, plan(), dateTime(), note());
+    }
 }

@@ -1,16 +1,18 @@
-package ru.soft.web.controller;
+package ru.soft.web.controller.unit;
 
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import ru.soft.common.AppApi;
 import ru.soft.common.to.WorkoutPlanTo;
 import ru.soft.common.testdata.TestDataStore;
 import ru.soft.common.testdata.to.WorkoutPlanToTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
-class WorkoutPlanApiControllerTest extends AbstractApiControllerTest<WorkoutPlanTo> {
+@WebMvcTest
+class WorkoutPlanApiControllerUnitTest extends AbstractApiControllerUnitTest<WorkoutPlanTo> {
 
     @Override
     protected String getApiUrl() {
-        return AppApi.WorkoutPlan.URL;
+        return AppApi.WorkoutPlans.URL;
     }
 
     @Override
