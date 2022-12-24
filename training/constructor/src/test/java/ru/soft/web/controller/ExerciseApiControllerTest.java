@@ -2,13 +2,14 @@ package ru.soft.web.controller;
 
 import ru.soft.common.AppApi;
 import ru.soft.common.to.ExerciseTo;
-import ru.soft.testdata.to.ExerciseToTestDataStore;
+import ru.soft.common.testdata.TestDataStore;
+import ru.soft.common.testdata.to.ExerciseToTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
 class ExerciseApiControllerTest extends AbstractApiControllerTest<ExerciseTo> {
 
     @Override
-    protected TestToStore<ExerciseTo> toStore() {
+    protected TestDataStore<ExerciseTo> toStore() {
         return new ExerciseToTestDataStore();
     }
 

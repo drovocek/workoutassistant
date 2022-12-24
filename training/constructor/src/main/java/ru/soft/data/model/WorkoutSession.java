@@ -7,8 +7,8 @@ import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-import ru.soft.data.BaseEntity;
 import ru.soft.common.data.snapshot.WorkoutPlanSnapshot;
+import ru.soft.data.BaseEntity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -46,7 +46,7 @@ public class WorkoutSession extends BaseEntity {
     }
 
     @Override
-    protected BaseEntity withId(UUID id, boolean isNew) {
+    protected WorkoutSession withId(UUID id, boolean isNew) {
         return WorkoutSession.builder()
                 .id(id)
                 .isNew(isNew)

@@ -51,7 +51,7 @@ public class Exercise extends BaseEntity {
     }
 
     @Override
-    protected BaseEntity withId(UUID id, boolean isNew) {
+    protected Exercise withId(UUID id, boolean isNew) {
         return Exercise.builder()
                 .id(id)
                 .isNew(isNew)

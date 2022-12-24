@@ -5,11 +5,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import ru.soft.TestContainerHolder;
 import ru.soft.TestSettings;
+import ru.soft.common.testdata.TestDataStore;
 import ru.soft.data.BaseEntity;
-import ru.soft.testdata.TestDataStore;
+import ru.soft.utils.MatcherFactory;
 import ru.soft.web.exception.IllegalRequestDataException;
 
 import java.util.List;
@@ -24,57 +25,101 @@ abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHol
     @Autowired
     protected BaseRepository<T> repository;
 
-    @BeforeEach
-    void initRepo() {
-        this.repository.saveAll(entityStore().entities());
-    }
-
     protected abstract TestDataStore<T> entityStore();
+
+    protected abstract MatcherFactory.Matcher<T> matcher();
 
     protected int rowsCount() {
         return TestSettings.DEFAULT_TEST_ROWS_COUNT;
     }
 
+    @BeforeEach
+    protected void populateDB() {
+        this.repository.saveAll(all(true));
+    }
+
+    protected List<T> all(boolean isNew){
+        return entityStore().entities(isNew);
+    }
+
+    protected T requestEntity(boolean isNew){
+        return entityStore().requestEntity(isNew);
+    }
+
+    protected List<T> invalids(boolean isNew){
+        return entityStore().invalids(isNew);
+    }
+
+    protected List<T> duplicates(boolean isNew){
+        return entityStore().duplicates(isNew);
+    }
+
+    protected List<T> htmlUnsafe(boolean isNew){
+        return entityStore().htmlUnsafe(isNew);
+    }
+
+    T getExited() {
+        List<T> all = this.repository.findAll();
+        return all.get(0);
+    }
+
+    UUID getExitedId() {
+        List<T> all = this.repository.findAll();
+        return all.get(0).id();
+    }
+
     @Test
     void getAll() {
-        List<T> exercises = this.repository.findAll();
-        Assertions.assertEquals(rowsCount(), exercises.size());
+        List<T> actual = this.repository.findAll();
+        Assertions.assertEquals(rowsCount(), actual.size());
+
+        List<T> expected = all(false);
+        Assertions.assertEquals(rowsCount(), expected.size());
+
+        matcher().assertMatch(actual, expected);
     }
 
     @Test
     void get() {
-        T expected = entityStore().entity();
-        T actual = this.repository.getExisted(expected.id());
-        Assertions.assertEquals(expected, actual);
+        T actual = this.repository.getExisted(getExitedId());
+        matcher().assertMatch(actual, getExited());
     }
 
     @Test
     void getNotFound() {
         UUID notExitingId = UUID.randomUUID();
+
         IllegalRequestDataException actual = Assertions.assertThrows(
                 IllegalRequestDataException.class, () -> this.repository.getExisted(notExitingId));
+
         Assertions.assertEquals(ENTITY_NOT_FOUND_TEMPLATE.formatted(notExitingId), actual.getMessage());
     }
 
     @Test
     void delete() {
-        UUID id = entityStore().entity().id();
-        this.repository.deleteExisted(id);
-        Optional<T> deletedOpt = this.repository.findById(id);
+        UUID exitedId = getExitedId();
+        this.repository.deleteExisted(exitedId);
+        Optional<T> deletedOpt = this.repository.findById(exitedId);
+
         Assertions.assertTrue(deletedOpt.isEmpty());
     }
 
     @Test
     void deleteNotFound() {
         UUID notExitingId = UUID.randomUUID();
+
         IllegalRequestDataException actual = Assertions.assertThrows(
                 IllegalRequestDataException.class, () -> this.repository.deleteExisted(notExitingId));
+
         Assertions.assertEquals(ENTITY_NOT_FOUND_TEMPLATE.formatted(notExitingId), actual.getMessage());
     }
 
     @Test
     void update() {
-        T updated = entityStore().requestEntity(false);
+        UUID exitedId = getExitedId();
+
+        T updated = (T) requestEntity(false).withId(exitedId);
+
         this.repository.save(updated);
         T actual = this.repository.getExisted(updated.id());
         Assertions.assertEquals(updated, actual);
@@ -82,25 +127,29 @@ abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHol
 
     @Test
     void updateInvalids() {
-        entityStore().invalids(false).forEach(invalid -> {
-            DataIntegrityViolationException actual = Assertions.assertThrows(
-                    DataIntegrityViolationException.class, () -> this.repository.save(invalid));
-            Assertions.assertEquals(ENTITY_NOT_FOUND_TEMPLATE.formatted(invalid), actual.getMessage());
-        });
+        UUID exitedId = getExitedId();
+        invalids(false).stream()
+                .map(invalid -> (T) invalid.withId(exitedId))
+                .forEach(invalid -> {
+                    DbActionExecutionException actual = Assertions.assertThrows(
+                            DbActionExecutionException.class, () -> this.repository.save(invalid));
+                });
     }
 
     @Test
     void updateDuplicates() {
-        entityStore().duplicates(false).forEach(duplicate -> {
-            DataIntegrityViolationException actual = Assertions.assertThrows(
-                    DataIntegrityViolationException.class, () -> this.repository.save(duplicate));
-            Assertions.assertEquals(ENTITY_NOT_FOUND_TEMPLATE.formatted(duplicate), actual.getMessage());
-        });
+        UUID exitedId = getExitedId();
+        duplicates(false).stream()
+                .map(duplicate -> (T) duplicate.withId(exitedId))
+                .forEach(duplicate -> {
+                    DbActionExecutionException actual = Assertions.assertThrows(
+                            DbActionExecutionException.class, () -> this.repository.save(duplicate));
+                });
     }
 
     @Test
     void save() {
-        T forSave = entityStore().requestEntity(true);
+        T forSave = requestEntity(true);
         T saved = this.repository.save(forSave);
         Assertions.assertNotNull(saved.getId());
 

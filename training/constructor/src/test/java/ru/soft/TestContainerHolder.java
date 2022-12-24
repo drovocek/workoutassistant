@@ -6,7 +6,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-@Sql({"/db/schema.sql"})
+@Sql({"/db/schema.sql"})//, "/db/data.sql"
 public abstract class TestContainerHolder {
 
     @Container

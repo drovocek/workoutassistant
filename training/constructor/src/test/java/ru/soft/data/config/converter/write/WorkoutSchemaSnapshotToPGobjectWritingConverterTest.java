@@ -3,7 +3,7 @@ package ru.soft.data.config.converter.write;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.soft.common.data.snapshot.WorkoutSchemaSnapshot;
 
-import static ru.soft.testdata.snapshot.TestSnapshotStore.workoutSchemaSnapshot;
+import static ru.soft.common.testdata.snapshot.TestSnapshotStore.workoutSchemaSnapshot;
 
 class WorkoutSchemaSnapshotToPGobjectWritingConverterTest
         extends BaseEntityToPGobjectWritingConverterTest<WorkoutSchemaSnapshot, WorkoutSchemaSnapshotToPGobjectWritingConverter> {

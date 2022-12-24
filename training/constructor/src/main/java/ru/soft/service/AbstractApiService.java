@@ -17,7 +17,7 @@ import static ru.soft.utils.ValidationUtil.checkNew;
 import static ru.soft.utils.ValidationUtil.checkNotNew;
 
 @Slf4j
-abstract class AbstractApiService<T extends BaseEntity, TO extends HasId>  implements BaseApiService<TO> {
+abstract class AbstractApiService<T extends BaseEntity, TO extends HasId> implements BaseApiService<TO> {
 
     @Autowired
     protected BaseRepository<T> repository;
@@ -43,7 +43,7 @@ abstract class AbstractApiService<T extends BaseEntity, TO extends HasId>  imple
     @Override
     public Page<TO> getPage(Pageable pageable) {
         log.info("get page number:{}, size:{} ", pageable.getPageNumber(), pageable.getPageSize());
-        Page<T> page =this.repository.findAll(pageable);
+        Page<T> page = this.repository.findAll(pageable);
         List<TO> pageTo = page.get()
                 .map(t -> this.mapper.toTo(t))
                 .toList();

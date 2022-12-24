@@ -1,13 +1,65 @@
 package ru.soft.data.repository;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.soft.common.testdata.TestDataStore;
+import ru.soft.data.BaseEntity;
 import ru.soft.data.model.WorkoutResult;
-import ru.soft.testdata.TestDataStore;
+import ru.soft.data.model.WorkoutSession;
 import ru.soft.testdata.model.WorkoutResultTestDataStore;
+import ru.soft.testdata.model.WorkoutSessionTestDataStore;
+import ru.soft.utils.MatcherFactory;
+
+import java.util.List;
+import java.util.UUID;
 
 class WorkoutResultRepositoryTest extends BaseRepositoryTest<WorkoutResult> {
 
+    @Autowired
+    private BaseRepository<WorkoutSession> sessionRepository;
+    private final TestDataStore<WorkoutSession> workoutSessionTestDataStore = new WorkoutSessionTestDataStore();
+
+    @BeforeEach
     @Override
-    protected TestDataStore<WorkoutResult> entityStore() {
+    protected void populateDB() {
+        this.sessionRepository.saveAll(this.workoutSessionTestDataStore.entities(true));
+        this.repository.saveAll(all(true));
+    }
+
+    private UUID existSessionId() {
+        return this.sessionRepository.findAll().get(0).id();
+    }
+
+    @Override
+    protected List<WorkoutResult> all(boolean isNew) {
+        UUID[] sessionIds = this.sessionRepository.findAll().stream()
+                .map(BaseEntity::id)
+                .toArray(UUID[]::new);
+        return entityStore().entities(isNew, sessionIds);
+    }
+
+    @Override
+    protected WorkoutResult requestEntity(boolean isNew) {
+        return entityStore().requestEntity(isNew, this.sessionRepository.findAll().get(2).id());
+    }
+
+    @Override
+    protected List<WorkoutResult> invalids(boolean isNew) {
+        return entityStore().invalids(isNew, existSessionId());
+    }
+
+    @Override
+    protected List<WorkoutResult> duplicates(boolean isNew) {
+        return entityStore().duplicates(isNew, existSessionId());
+    }
+
+    @Override
+    protected List<WorkoutResult> htmlUnsafe(boolean isNew) {
+        return entityStore().htmlUnsafe(isNew, existSessionId());
+    }
+
+    @Override
+    protected WorkoutResultTestDataStore entityStore() {
         return new WorkoutResultTestDataStore();
     }
 
@@ -15,6 +67,12 @@ class WorkoutResultRepositoryTest extends BaseRepositoryTest<WorkoutResult> {
     protected int rowsCount() {
         return 2;
     }
+
+    @Override
+    protected MatcherFactory.Matcher<WorkoutResult> matcher() {
+        return MatcherFactory.usingIgnoringFieldsComparator(WorkoutResult.class, "id");
+    }
+
 //
 //    @Test
 //    @DisplayName("Для одной сессии можно добавить только один результат")

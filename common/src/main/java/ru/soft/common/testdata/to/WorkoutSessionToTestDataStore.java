@@ -1,28 +1,32 @@
-package ru.soft.testdata.to;
+package ru.soft.common.testdata.to;
 
 import org.springframework.stereotype.Component;
 import ru.soft.common.to.WorkoutSessionTo;
-import ru.soft.testdata.TestDataStore;
+import ru.soft.common.testdata.TestDataStore;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.soft.testdata.snapshot.TestSnapshotStore.workoutPlanSnapshot;
+import static ru.soft.common.testdata.snapshot.TestSnapshotStore.workoutPlanSnapshot;
 
 @Component
 public class WorkoutSessionToTestDataStore implements TestDataStore<WorkoutSessionTo> {
 
     private static final LocalDateTime SESSION_DATE_TIME = LocalDateTime.of(2021, 12, 1, 1, 2);
 
+    public static WorkoutSessionTo example(boolean isNew) {
+        return new WorkoutSessionTo(
+                isNew ? null : UUID.fromString("a34798c2-7ac8-11ed-a1eb-0242ac120002"),
+                workoutPlanSnapshot(),
+                LocalDateTime.of(2024, 3, 20, 19, 10, 25),
+                "Easy session note"
+        );
+    }
+
     @Override
     public WorkoutSessionTo entity(boolean isNew) {
-        return new WorkoutSessionTo(
-                isNew ? null : UUID.fromString("f386d086-6e5d-11ed-a1eb-0242ac120002"),
-                workoutPlanSnapshot(),
-                LocalDateTime.of(2016, 6, 22, 19, 10, 25),
-                "Easy training"
-        );
+        return example(isNew);
     }
 
     @Override
@@ -30,16 +34,16 @@ public class WorkoutSessionToTestDataStore implements TestDataStore<WorkoutSessi
         return List.of(
                 entity(isNew),
                 new WorkoutSessionTo(
-                        isNew ? null : UUID.fromString("ff252f6e-6e5d-11ed-a1eb-0242ac120002"),
+                        isNew ? null : UUID.fromString("a9323cf6-7ac8-11ed-a1eb-0242ac120002"),
                         workoutPlanSnapshot(),
-                        LocalDateTime.of(2016, 6, 22, 19, 10, 25),
-                        "Medium training"
+                        LocalDateTime.of(2024, 3, 20, 19, 10, 25),
+                        "Medium session note"
                 ),
                 new WorkoutSessionTo(
-                        isNew ? null : UUID.fromString("05bf5a98-6e5e-11ed-a1eb-0242ac120002"),
+                        isNew ? null : UUID.fromString("ae9b7996-7ac8-11ed-a1eb-0242ac120002"),
                         workoutPlanSnapshot(),
-                        LocalDateTime.of(2016, 6, 22, 19, 10, 25),
-                        "Hard training"
+                        LocalDateTime.of(2024, 3, 20, 19, 10, 25),
+                        "Hard session note"
                 )
         );
     }
@@ -50,7 +54,7 @@ public class WorkoutSessionToTestDataStore implements TestDataStore<WorkoutSessi
                 isNew ? null : newId(),
                 workoutPlanSnapshot(),
                 SESSION_DATE_TIME,
-                "request note"
+                "request session note"
         );
     }
 
@@ -61,13 +65,13 @@ public class WorkoutSessionToTestDataStore implements TestDataStore<WorkoutSessi
                         isNew ? null : newId(),
                         workoutPlanSnapshot(),
                         null,
-                        "request note"
+                        "request session note"
                 ),
                 new WorkoutSessionTo(
                         isNew ? null : newId(),
                         null,
                         SESSION_DATE_TIME,
-                        "request note"
+                        "request session note"
                 )
         );
     }

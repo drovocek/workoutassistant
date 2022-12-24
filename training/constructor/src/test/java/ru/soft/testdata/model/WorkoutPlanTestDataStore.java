@@ -2,17 +2,17 @@ package ru.soft.testdata.model;
 
 import org.springframework.stereotype.Component;
 import ru.soft.data.model.WorkoutPlan;
-import ru.soft.testdata.TestDataStore;
+import ru.soft.common.testdata.TestDataStore;
 
 import java.util.List;
 import java.util.UUID;
 
-import static ru.soft.testdata.snapshot.TestSnapshotStore.workoutSchemaSnapshot;
+import static ru.soft.common.testdata.snapshot.TestSnapshotStore.workoutSchemaSnapshot;
 
 @Component
 public class WorkoutPlanTestDataStore implements TestDataStore<WorkoutPlan> {
 
-    private static final String DUPLICATE_TITLE = "Barbell squats training";
+    private static final String DUPLICATE_TITLE = "Barbell squats plan title";
 
     @Override
     public WorkoutPlan entity(boolean isNew) {
@@ -20,8 +20,8 @@ public class WorkoutPlanTestDataStore implements TestDataStore<WorkoutPlan> {
                 isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"),
                 isNew,
                 workoutSchemaSnapshot()
-                , "Push-up training",
-                "Push-up description"
+                , "Push-up plan title",
+                "Push-up plan description"
         );
     }
 
@@ -33,15 +33,15 @@ public class WorkoutPlanTestDataStore implements TestDataStore<WorkoutPlan> {
                         isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"),
                         isNew,
                         workoutSchemaSnapshot()
-                        , "Push-up training",
-                        "Push-up description"
+                        , "Barbell squats plan title",
+                        "Barbell squats plan description"
                 ),
                 new WorkoutPlan(
                         isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"),
                         isNew,
-                        workoutSchemaSnapshot()
-                        , "Push-up training",
-                        "Push-up description"
+                        workoutSchemaSnapshot(),
+                        "Pull-up plan title",
+                        "Pull-up plan description"
                 )
         );
     }
@@ -52,8 +52,8 @@ public class WorkoutPlanTestDataStore implements TestDataStore<WorkoutPlan> {
                 isNew ? null : newId(),
                 isNew,
                 workoutSchemaSnapshot(),
-                "request title",
-                "request description"
+                "request plan title",
+                "request plan description"
         );
     }
 
@@ -62,21 +62,24 @@ public class WorkoutPlanTestDataStore implements TestDataStore<WorkoutPlan> {
         return List.of(
                 new WorkoutPlan(
                         isNew ? null : newId(),
+                        isNew,
                         workoutSchemaSnapshot(),
                         "",
-                        "request description"
+                        "request plan description"
                 ),
                 new WorkoutPlan(
                         isNew ? newId() : null,
+                        isNew,
                         workoutSchemaSnapshot(),
-                        "request title",
-                        "request description"
+                        "request plan title",
+                        "request plan description"
                 ),
                 new WorkoutPlan(
                         isNew ? null : newId(),
+                        isNew,
                         null,
-                        "request title",
-                        "request description"
+                        "request plan title",
+                        "request plan description"
                 )
         );
     }
@@ -86,9 +89,10 @@ public class WorkoutPlanTestDataStore implements TestDataStore<WorkoutPlan> {
         return List.of(
                 new WorkoutPlan(
                         isNew ? null : newId(),
+                        isNew,
                         workoutSchemaSnapshot(),
                         DUPLICATE_TITLE,
-                        "request description"
+                        "request plan description"
                 )
         );
     }

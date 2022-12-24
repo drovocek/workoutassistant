@@ -9,8 +9,8 @@ import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-import ru.soft.data.BaseEntity;
 import ru.soft.common.data.snapshot.WorkoutRoundSchemaSnapshot;
+import ru.soft.data.BaseEntity;
 
 import java.util.UUID;
 
@@ -48,7 +48,7 @@ public class WorkoutRound extends BaseEntity {
     }
 
     @Override
-    protected BaseEntity withId(UUID id, boolean isNew) {
+    protected WorkoutRound withId(UUID id, boolean isNew) {
         return WorkoutRound.builder()
                 .id(id)
                 .isNew(isNew)

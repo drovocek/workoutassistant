@@ -1,108 +1,139 @@
 package ru.soft.testdata.model;
 
 import org.springframework.stereotype.Component;
+import ru.soft.common.testdata.TestDataStore;
 import ru.soft.data.model.WorkoutResult;
-import ru.soft.testdata.TestDataStore;
 
 import java.util.List;
 import java.util.UUID;
 
-import static ru.soft.testdata.snapshot.TestSnapshotStore.workoutSchemaSnapshot;
+import static ru.soft.common.testdata.snapshot.TestSnapshotStore.workoutSchemaSnapshot;
 
 @Component
 public class WorkoutResultTestDataStore implements TestDataStore<WorkoutResult> {
 
-    private static final UUID EXITED_SESSION_ID = UUID.fromString("ae9b7996-7ac8-11ed-a1eb-0242ac120002");
-    private static final String DUPLICATE_TITLE = "Barbell squats training";
+    private static final UUID SESSION_ID = UUID.fromString("ae9b7996-7ac8-11ed-a1eb-0242ac120002");
+    private static final String DUPLICATE_TITLE = "Barbell squat result title";
 
     @Override
     public WorkoutResult entity(boolean isNew) {
+        return entity(isNew, UUID.fromString("a34798c2-7ac8-11ed-a1eb-0242ac120002"));
+    }
+
+    public WorkoutResult entity(boolean isNew, UUID sessionId) {
         return new WorkoutResult(
                 isNew ? null : UUID.fromString("6ab39d60-7a52-11ed-a1eb-0242ac120002"),
-                UUID.fromString("a34798c2-7ac8-11ed-a1eb-0242ac120002"),
-                false,
+                sessionId,
+                isNew,
                 workoutSchemaSnapshot()
-                , "Push-up training",
-                "Push-up description"
+                , "Push-up result title",
+                "Push-up result description"
         );
     }
 
     @Override
     public List<WorkoutResult> entities(boolean isNew) {
+        return entities(isNew,
+                UUID.fromString("a34798c2-7ac8-11ed-a1eb-0242ac120002"),
+                UUID.fromString("a9323cf6-7ac8-11ed-a1eb-0242ac120002"));
+    }
+
+    public List<WorkoutResult> entities(boolean isNew, UUID... sessionIds) {
         return List.of(
-                entity(isNew),
+                entity(isNew, sessionIds[0]),
                 new WorkoutResult(
-                        UUID.fromString("6f8f8c22-7a52-11ed-a1eb-0242ac120002"),
-                        UUID.fromString("a9323cf6-7ac8-11ed-a1eb-0242ac120002"),
-                        false,
+                        isNew ? null : UUID.fromString("6f8f8c22-7a52-11ed-a1eb-0242ac120002"),
+                        sessionIds[1],
+                        isNew,
                         workoutSchemaSnapshot()
-                        , "Barbell squat title",
-                        "Barbell squat description"
+                        , "Barbell squat result title",
+                        "Barbell squat result description"
                 )
         );
     }
 
     @Override
     public WorkoutResult requestEntity(boolean isNew) {
+        return requestEntity(isNew, SESSION_ID);
+    }
+
+    public WorkoutResult requestEntity(boolean isNew, UUID sessionId) {
         return new WorkoutResult(
                 isNew ? null : newId(),
-                EXITED_SESSION_ID,
+                sessionId,
                 isNew,
                 workoutSchemaSnapshot(),
-                "request title",
-                "request description"
+                "request result title",
+                "request result description"
         );
     }
 
     @Override
     public List<WorkoutResult> invalids(boolean isNew) {
+        return invalids(isNew, SESSION_ID);
+    }
+
+    public List<WorkoutResult> invalids(boolean isNew, UUID sessionId) {
         return List.of(
                 new WorkoutResult(
                         isNew ? null : newId(),
-                        EXITED_SESSION_ID,
+                        sessionId,
+                        isNew,
                         workoutSchemaSnapshot(),
                         "",
-                        "request description"
+                        "request result description"
                 ),
                 new WorkoutResult(
                         isNew ? newId() : null,
-                        EXITED_SESSION_ID,
+                        sessionId,
+                        isNew,
                         workoutSchemaSnapshot(),
                         null,
-                        "request description"
+                        "request result description"
                 ),
                 new WorkoutResult(
                         isNew ? newId() : null,
                         null,
+                        isNew,
                         workoutSchemaSnapshot(),
-                        "request title",
-                        "request description"
+                        "request result title",
+                        "request result description"
                 ),
                 new WorkoutResult(
                         isNew ? null : newId(),
-                        EXITED_SESSION_ID,
+                        sessionId,
+                        isNew,
                         null,
-                        "request title",
-                        "request description"
+                        "request result title",
+                        "request result description"
                 )
         );
     }
 
     @Override
     public List<WorkoutResult> duplicates(boolean isNew) {
+        return duplicates(isNew, SESSION_ID);
+    }
+
+    public List<WorkoutResult> duplicates(boolean isNew, UUID sessionID) {
         return List.of(
                 new WorkoutResult(
                         isNew ? null : newId(),
-                        EXITED_SESSION_ID,
+                        sessionID,
+                        isNew,
                         workoutSchemaSnapshot(),
                         DUPLICATE_TITLE,
-                        "request description"
+                        "request result description"
                 )
         );
     }
 
     @Override
     public List<WorkoutResult> htmlUnsafe(boolean isNew) {
+        return htmlUnsafe(isNew, SESSION_ID);
+    }
+
+    public List<WorkoutResult> htmlUnsafe(boolean isNew, UUID sessionId) {
         return List.of();
     }
 }

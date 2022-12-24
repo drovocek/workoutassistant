@@ -1,4 +1,4 @@
-package ru.soft.testdata;
+package ru.soft.common.testdata;
 
 import java.util.List;
 import java.util.UUID;

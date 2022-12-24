@@ -3,6 +3,7 @@ package ru.soft.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.soft.TestSettings;
 import ru.soft.common.data.HasId;
+import ru.soft.common.testdata.TestDataStore;
 import ru.soft.service.BaseApiService;
 import ru.soft.utils.MatcherFactory;
 import ru.soft.web.exception.IllegalRequestDataException;
@@ -28,6 +30,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.UUID;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -51,8 +55,6 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
 
     @BeforeEach
     void initData() {
-        BDDMockito.given(this.service.getAll())
-                .willReturn(toStore().tos());
         JsonUtil.setMapper(mapper);
     }
 
@@ -64,14 +66,14 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
 
     protected abstract MatcherFactory.Matcher<TO> matcher();
 
-    protected abstract TestToStore<TO> toStore();
+    protected abstract TestDataStore<TO> toStore();
 
     protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
     }
 
     protected List<TO> expectedAll() {
-        List<TO> all = toStore().tos();
+        List<TO> all = toStore().entities(false);
         Assertions.assertEquals(rowsCount(), all.size());
         return all;
     }
@@ -93,7 +95,7 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
                     .content(JsonUtil.writeValue(updated)))
                     .andDo(print())
                     .andExpect(matcher);
-        } catch (Exception e) {
+        }  catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -124,7 +126,11 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
 //    }
 
     @Test
+    @DisplayName("должен возвращать все сохраненные экземпляры сущности")
     void getAll() throws Exception {
+        given(this.service.getAll())
+                .willReturn(toStore().entities(false));
+
         perform(MockMvcRequestBuilders.get(getApiUrl() + "/all"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -132,90 +138,103 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
     }
 
     @Test
+    @DisplayName("должен возвращать экземпляр сущности с запрашиваемым id")
     void get() throws Exception {
-        UUID id = toStore().to().id();
-        TO to = toStore().to();
+        TO exited = toStore().entity(false);
+        UUID exitedId = exited.id();
 
-        BDDMockito.given(this.service.get(id))
-                .willReturn(to);
+        given(this.service.get(exitedId))
+                .willReturn(exited);
 
-        perform(MockMvcRequestBuilders.get(getApiUrl() + '/' + id))
+        TO expected = toStore().entity(false);
+
+        perform(MockMvcRequestBuilders.get(getApiUrl() + '/' + exitedId))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(matcher().contentJson(to));
+                .andExpect(matcher().contentJson(expected));
     }
 
     @Test
+    @DisplayName("должен выбрасывать ошибку, если запрашиваемый экземпляр сущности не найден")
     void getNotFound() throws Exception {
-        UUID id = toStore().to().id();
+        UUID notExitedId = UUID.randomUUID();
 
         BDDMockito.willThrow(
                         new IllegalRequestDataException(
-                                ENTITY_NOT_FOUND_TEMPLATE.formatted(id),
+                                ENTITY_NOT_FOUND_TEMPLATE.formatted(notExitedId),
                                 HttpStatus.NOT_FOUND))
                 .given(this.service)
-                .get(id);
+                .get(notExitedId);
 
-        perform(MockMvcRequestBuilders.get(getApiUrl() + '/' + id))
+        perform(MockMvcRequestBuilders.get(getApiUrl() + '/' + notExitedId))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
+    @DisplayName("должен удалять экземпляр сущности с запрашиваемым id")
     void delete() {
-        UUID id = toStore().to().id();
+        UUID id = toStore().entity(false).id();
         delete(id, status().isNoContent());
     }
 
     @Test
+    @DisplayName("должен выбрасывать ошибку, если удаляемый экземпляр сущности не найден")
     void deleteNotFound() {
-        UUID id = toStore().to().id();
+        UUID notExitedId = UUID.randomUUID();
 
         BDDMockito.willThrow(
                         new IllegalRequestDataException(
-                                ENTITY_NOT_FOUND_TEMPLATE.formatted(id),
+                                ENTITY_NOT_FOUND_TEMPLATE.formatted(notExitedId),
                                 HttpStatus.NOT_FOUND))
                 .given(this.service)
-                .delete(id);
+                .delete(notExitedId);
 
-        delete(id, status().isNotFound());
+        delete(notExitedId, status().isNotFound());
     }
 
     @Test
+    @DisplayName("должен обновлять существующий экземпляр сущности")
     void update() {
-        TO updated = toStore().requestTo(false);
+        TO updated = toStore().requestEntity(false);
         update(updated, status().isNoContent());
     }
 
     @Test
+    @DisplayName("не должен обновлять существующие экземпляры сущности, с полями не прошедшими валидацию на сервере")
     void updateInvalids() {
-        toStore().invalids(false).forEach(invalid ->
-                update(invalid, status().isUnprocessableEntity()));
+        toStore().invalids(false)
+                .forEach(invalid -> update(invalid, status().isUnprocessableEntity()));
     }
 
     @Test
+    @DisplayName("не должен обновлять существующие экземпляры сущности, с полями нарушающими ограничения базы данных")
     void updateDuplicates() {
-        toStore().duplicates(false).forEach(duplicate -> {
-            BDDMockito.doThrow(DataIntegrityViolationException.class)
-                    .when(this.service)
-                    .update(duplicate);
-            update(duplicate, status().isUnprocessableEntity());
-        });
+        toStore().duplicates(false)
+                .forEach(duplicate -> {
+                    doThrow(DataIntegrityViolationException.class)
+                            .when(this.service)
+                            .update(duplicate);
+
+                    update(duplicate, status().isUnprocessableEntity());
+                });
     }
 
     @Test
+    @DisplayName("не должен обновлять существующие экземпляры сущности, с полями нарушающими ограничения")
     void updateHtmlUnsafe() {
-        toStore().htmlUnsafe(false).forEach(htmlUnsafe ->
-                update(htmlUnsafe, status().isUnprocessableEntity()));
+        toStore().htmlUnsafe(false)
+                .forEach(htmlUnsafe -> update(htmlUnsafe, status().isUnprocessableEntity()));
     }
 
     @Test
+    @DisplayName("должен добавлять новый экземпляр сущности")
     void add() throws UnsupportedEncodingException {
-        TO newEntity = toStore().requestTo(true);
-        TO expected = toStore().requestTo(false);
+        TO newEntity = toStore().requestEntity(true);
+        TO expected = toStore().requestEntity(false);
 
-        BDDMockito.given(this.service.add(newEntity))
+        given(this.service.add(newEntity))
                 .willReturn(expected);
 
         ResultActions resultAction = add(newEntity, status().isCreated());
@@ -225,6 +244,7 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
     }
 
     @Test
+    @DisplayName("не должен добавлять новый экземпляр сущности, с полями не прошедшими валидацию на сервере")
     void addInvalids() {
         toStore().invalids(true)
                 .forEach(invalid ->
@@ -232,18 +252,21 @@ abstract class AbstractApiControllerTest<TO extends HasId> {
     }
 
     @Test
+    @DisplayName("не должен добавлять новый экземпляр сущности, с полями нарушающими ограничения базы данных")
     void addDuplicates() {
         toStore().duplicates(true)
                 .forEach(duplicate -> {
-                            BDDMockito.doThrow(DataIntegrityViolationException.class)
+                            doThrow(DataIntegrityViolationException.class)
                                     .when(this.service)
                                     .add(duplicate);
+
                             add(duplicate, status().isUnprocessableEntity());
                         }
                 );
     }
 
     @Test
+    @DisplayName("не должен добавлять новый экземпляр сущности, с полями нарушающими ограничения")
     void addHtmlUnsafe() {
         toStore().htmlUnsafe(true)
                 .forEach(htmlUnsafe ->

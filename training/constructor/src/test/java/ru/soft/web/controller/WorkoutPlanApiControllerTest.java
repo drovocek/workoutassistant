@@ -2,7 +2,8 @@ package ru.soft.web.controller;
 
 import ru.soft.common.AppApi;
 import ru.soft.common.to.WorkoutPlanTo;
-import ru.soft.testdata.to.WorkoutPlanToTestDataStore;
+import ru.soft.common.testdata.TestDataStore;
+import ru.soft.common.testdata.to.WorkoutPlanToTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
 class WorkoutPlanApiControllerTest extends AbstractApiControllerTest<WorkoutPlanTo> {
@@ -18,7 +19,7 @@ class WorkoutPlanApiControllerTest extends AbstractApiControllerTest<WorkoutPlan
     }
 
     @Override
-    protected TestToStore<WorkoutPlanTo> toStore() {
+    protected TestDataStore<WorkoutPlanTo> toStore() {
         return new WorkoutPlanToTestDataStore();
     }
 }

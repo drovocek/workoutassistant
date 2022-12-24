@@ -1,15 +1,14 @@
-package ru.soft.testdata.snapshot;
+package ru.soft.common.testdata.snapshot;
 
 import ru.soft.common.data.snapshot.*;
 import ru.soft.common.to.ExerciseTo;
 import ru.soft.common.to.WorkoutPlanTo;
 import ru.soft.common.to.WorkoutRoundTo;
-import ru.soft.testdata.to.ExerciseToTestDataStore;
-import ru.soft.testdata.to.WorkoutPlanToTestDataStore;
-import ru.soft.testdata.to.WorkoutRoundTestDataStore;
+import ru.soft.common.testdata.to.ExerciseToTestDataStore;
+import ru.soft.common.testdata.to.WorkoutPlanToTestDataStore;
+import ru.soft.common.testdata.to.WorkoutRoundTestDataStore;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public final class TestSnapshotStore {
 
@@ -17,7 +16,7 @@ public final class TestSnapshotStore {
     }
 
     public static ExerciseSnapshot exerciseSnapshot() {
-        ExerciseTo to = ExerciseToTestDataStore.TO_1;
+        ExerciseTo to = ExerciseToTestDataStore.example(true);
         return new ExerciseSnapshot(
                 to.title(),
                 to.description(),
@@ -26,7 +25,7 @@ public final class TestSnapshotStore {
     }
 
     public static WorkoutPlanSnapshot workoutPlanSnapshot() {
-        WorkoutPlanTo to = WorkoutPlanToTestDataStore.TO_1;
+        WorkoutPlanTo to = WorkoutPlanToTestDataStore.example(true);
         return new WorkoutPlanSnapshot(
                 workoutSchemaSnapshot(),
                 to.title(),
@@ -35,7 +34,7 @@ public final class TestSnapshotStore {
     }
 
     public static WorkoutRoundSnapshot workoutRoundSnapshot() {
-        WorkoutRoundTo to = WorkoutRoundTestDataStore.TO_1;
+        WorkoutRoundTo to = WorkoutRoundTestDataStore.example(true);
         return new WorkoutRoundSnapshot(
                 workoutRoundSchemaSnapshot(),
                 to.title(),
@@ -45,7 +44,7 @@ public final class TestSnapshotStore {
 
     public static WorkoutSchemaSnapshot workoutSchemaSnapshot() {
         List<WorkoutRoundSnapshot> workoutRoundSnapshots =
-                Stream.of(WorkoutRoundTestDataStore.TO_1, WorkoutRoundTestDataStore.TO_2, WorkoutRoundTestDataStore.TO_3)
+                WorkoutRoundTestDataStore.examples(true).stream()
                         .map(round ->
                                 WorkoutRoundSnapshot.builder()
                                         .workoutRoundSchemaSnapshot(workoutRoundSchemaSnapshot())
@@ -58,7 +57,7 @@ public final class TestSnapshotStore {
 
     public static WorkoutRoundSchemaSnapshot workoutRoundSchemaSnapshot() {
         List<ExerciseSnapshot> exerciseSnapshots =
-                Stream.of(ExerciseToTestDataStore.TO_1, ExerciseToTestDataStore.TO_2, ExerciseToTestDataStore.TO_3)
+                ExerciseToTestDataStore.examples(true).stream()
                         .map(exercise -> new ExerciseSnapshot(exercise.title(), exercise.description(), exercise.complexity()))
                         .toList();
         List<WorkoutStationSnapshot> workoutStationSnapshots = exerciseSnapshots.stream()

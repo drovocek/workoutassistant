@@ -1,29 +1,33 @@
-package ru.soft.testdata.to;
+package ru.soft.common.testdata.to;
 
 import org.springframework.stereotype.Component;
 import ru.soft.common.to.WorkoutResultTo;
-import ru.soft.testdata.TestDataStore;
+import ru.soft.common.testdata.TestDataStore;
 
 import java.util.List;
 import java.util.UUID;
 
-import static ru.soft.testdata.snapshot.TestSnapshotStore.workoutSchemaSnapshot;
+import static ru.soft.common.testdata.snapshot.TestSnapshotStore.workoutSchemaSnapshot;
 
 @Component
 public class WorkoutResultToTestDataStore implements TestDataStore<WorkoutResultTo> {
 
     private static final UUID EXITED_SESSION_ID = UUID.fromString("ae9b7996-7ac8-11ed-a1eb-0242ac120002");
-    private static final String DUPLICATE_TITLE = "Barbell squats training";
+    private static final String DUPLICATE_TITLE = "Barbell squats result title";
 
-    @Override
-    public WorkoutResultTo entity(boolean isNew) {
+    public static WorkoutResultTo example(boolean isNew){
         return new WorkoutResultTo(
                 isNew ? null : UUID.fromString("6ab39d60-7a52-11ed-a1eb-0242ac120002"),
                 UUID.fromString("a34798c2-7ac8-11ed-a1eb-0242ac120002"),
                 workoutSchemaSnapshot()
-                , "Push-up training",
-                "Push-up description"
+                , "Push-up result title",
+                "Push-up result description"
         );
+    }
+
+    @Override
+    public WorkoutResultTo entity(boolean isNew) {
+        return example(isNew);
     }
 
     @Override
@@ -34,8 +38,8 @@ public class WorkoutResultToTestDataStore implements TestDataStore<WorkoutResult
                         isNew ? null : UUID.fromString("6f8f8c22-7a52-11ed-a1eb-0242ac120002"),
                         UUID.fromString("a9323cf6-7ac8-11ed-a1eb-0242ac120002"),
                         workoutSchemaSnapshot()
-                        , "Barbell squat title",
-                        "Barbell squat description"
+                        , "Barbell squat result title",
+                        "Barbell squat result description"
                 )
         );
     }
@@ -46,8 +50,8 @@ public class WorkoutResultToTestDataStore implements TestDataStore<WorkoutResult
                 isNew ? null : newId(),
                 EXITED_SESSION_ID,
                 workoutSchemaSnapshot(),
-                "request title",
-                "request description"
+                "request result title",
+                "request result description"
         );
     }
 
@@ -59,28 +63,28 @@ public class WorkoutResultToTestDataStore implements TestDataStore<WorkoutResult
                         EXITED_SESSION_ID,
                         workoutSchemaSnapshot(),
                         "",
-                        "request description"
+                        "request result description"
                 ),
                 new WorkoutResultTo(
                         isNew ? newId() : null,
                         EXITED_SESSION_ID,
                         workoutSchemaSnapshot(),
                         null,
-                        "request description"
+                        "request result description"
                 ),
                 new WorkoutResultTo(
                         isNew ? newId() : null,
                         null,
                         workoutSchemaSnapshot(),
-                        "request title",
-                        "request description"
+                        "request result title",
+                        "request result description"
                 ),
                 new WorkoutResultTo(
                         isNew ? null : newId(),
                         EXITED_SESSION_ID,
                         null,
-                        "request title",
-                        "request description"
+                        "request result title",
+                        "request result description"
                 )
         );
     }
@@ -93,7 +97,7 @@ public class WorkoutResultToTestDataStore implements TestDataStore<WorkoutResult
                         EXITED_SESSION_ID,
                         workoutSchemaSnapshot(),
                         DUPLICATE_TITLE,
-                        "request description"
+                        "request result description"
                 )
         );
     }

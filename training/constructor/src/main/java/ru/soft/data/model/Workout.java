@@ -7,8 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.relational.core.mapping.Column;
-import ru.soft.data.BaseEntity;
 import ru.soft.common.data.snapshot.WorkoutSchemaSnapshot;
+import ru.soft.data.BaseEntity;
 
 import java.util.UUID;
 

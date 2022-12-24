@@ -7,7 +7,6 @@ import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-import ru.soft.data.BaseEntity;
 import ru.soft.common.data.snapshot.WorkoutSchemaSnapshot;
 
 import java.util.UUID;
@@ -34,7 +33,7 @@ public class WorkoutResult extends Workout {
     }
 
     @Override
-    protected BaseEntity withId(UUID id, boolean isNew) {
+    protected WorkoutResult withId(UUID id, boolean isNew) {
         return WorkoutResult.builder()
                 .id(id)
                 .isNew(isNew)

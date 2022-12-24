@@ -1,27 +1,31 @@
-package ru.soft.testdata.to;
+package ru.soft.common.testdata.to;
 
 import org.springframework.stereotype.Component;
+import ru.soft.common.testdata.TestDataStore;
 import ru.soft.common.to.WorkoutPlanTo;
-import ru.soft.testdata.TestDataStore;
 
 import java.util.List;
 import java.util.UUID;
 
-import static ru.soft.testdata.snapshot.TestSnapshotStore.workoutSchemaSnapshot;
+import static ru.soft.common.testdata.snapshot.TestSnapshotStore.workoutSchemaSnapshot;
 
 @Component
 public class WorkoutPlanToTestDataStore implements TestDataStore<WorkoutPlanTo> {
 
-    public static final String DUPLICATE_TITLE = "Barbell squats training";
+    public static final String DUPLICATE_TITLE = "Barbell squats plan title";
 
-    @Override
-    public WorkoutPlanTo entity(boolean isNew) {
+    public static WorkoutPlanTo example(boolean isNew) {
         return new WorkoutPlanTo(
                 isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"),
                 workoutSchemaSnapshot()
-                , "Push-up training",
-                "Push-up description"
+                , "Push-up plan title",
+                "Push-up plan description"
         );
+    }
+
+    @Override
+    public WorkoutPlanTo entity(boolean isNew) {
+        return example(isNew);
     }
 
     @Override
@@ -31,14 +35,14 @@ public class WorkoutPlanToTestDataStore implements TestDataStore<WorkoutPlanTo> 
                 new WorkoutPlanTo(
                         isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"),
                         workoutSchemaSnapshot()
-                        , "Push-up training",
-                        "Push-up description"
+                        , "Barbell squats plan title",
+                        "Barbell squats plan description"
                 ),
                 new WorkoutPlanTo(
                         isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"),
-                        workoutSchemaSnapshot()
-                        , "Push-up training",
-                        "Push-up description"
+                        workoutSchemaSnapshot(),
+                        "Pull-up plan title",
+                        "Pull-up plan description"
                 )
         );
     }
@@ -46,10 +50,10 @@ public class WorkoutPlanToTestDataStore implements TestDataStore<WorkoutPlanTo> 
     @Override
     public WorkoutPlanTo requestEntity(boolean isNew) {
         return new WorkoutPlanTo(
-                isNew ? null : NEW_ID,
+                isNew ? null : newId(),
                 workoutSchemaSnapshot(),
-                "request title",
-                "request description"
+                "request plan title",
+                "request plan description"
         );
     }
 
@@ -60,19 +64,19 @@ public class WorkoutPlanToTestDataStore implements TestDataStore<WorkoutPlanTo> 
                         isNew ? null : newId(),
                         workoutSchemaSnapshot(),
                         "",
-                        "request description"
+                        "request plan description"
                 ),
                 new WorkoutPlanTo(
                         isNew ? newId() : null,
                         workoutSchemaSnapshot(),
-                        "request title",
-                        "request description"
+                        "request plan title",
+                        "request plan description"
                 ),
                 new WorkoutPlanTo(
                         isNew ? null : newId(),
                         null,
-                        "request title",
-                        "request description"
+                        "request plan title",
+                        "request plan description"
                 )
         );
     }
@@ -84,7 +88,7 @@ public class WorkoutPlanToTestDataStore implements TestDataStore<WorkoutPlanTo> 
                         isNew ? null : newId(),
                         workoutSchemaSnapshot(),
                         DUPLICATE_TITLE,
-                        "request description"
+                        "request plan description"
                 )
         );
     }
