@@ -15,12 +15,13 @@ import {Notification} from '@vaadin/notification';
 import '@vaadin/polymer-legacy-adapter';
 import '@vaadin/split-layout';
 import '@vaadin/text-field';
+import '@vaadin/text-area';
 import '@vaadin/integer-field';
 import '@vaadin/upload';
 import type Sort from 'Frontend/generated/dev/hilla/mappedtypes/Sort';
 import Direction from 'Frontend/generated/org/springframework/data/domain/Sort/Direction';
 import {html} from 'lit';
-import {customElement, property, query} from 'lit/decorators.js';
+import {customElement, property, query, state} from 'lit/decorators.js';
 import {View} from '../view';
 
 import {ExerciseEndpoint} from "Frontend/generated/endpoints";
@@ -29,8 +30,12 @@ import ExerciseToModel from 'Frontend/generated/ru/soft/common/to/ExerciseToMode
 
 @customElement('exercise-view')
 export class ExerciseView extends View {
+
     @query('#grid')
     private grid!: Grid;
+
+    @state()
+    private isDisableDeleteBtn = true;
 
     @property({type: Number})
     private gridSize = 0;
@@ -43,6 +48,9 @@ export class ExerciseView extends View {
         return html`
             <vaadin-split-layout>
                 <div class="grid-wrapper">
+                    <div class="toolbar flex gap-s">
+                        <vaadin-text-field placeholder="Filter by title" clear-button-visible></vaadin-text-field>
+                    </div>
                     <vaadin-grid
                             id="grid"
                             theme="no-border"
@@ -56,25 +64,31 @@ export class ExerciseView extends View {
                 </div>
                 <div class="editor-layout">
                     <div class="editor">
-                        <vaadin-form-layout
-                        >
+                        <vaadin-form-layout>
                             <vaadin-text-field
                                     label="Title"
+                                    required
                                     id="title"
                                     ${field(this.binder.model.title)}></vaadin-text-field>
-                            <vaadin-text-field
+                            <vaadin-text-area
                                     label="Description"
                                     id="description"
-                                    ${field(this.binder.model.description)}></vaadin-text-field>
+                                    ${field(this.binder.model.description)}></vaadin-text-area>
                             <vaadin-integer-field
                                     label="Complexity"
                                     id="complexity"
+                                    required
+                                    min="1"
+                                    max="10"
+                                    step-buttons-visible
                                     ${field(this.binder.model.complexity)}></vaadin-integer-field>
                         </vaadin-form-layout>
                     </div>
                     <vaadin-horizontal-layout class="button-layout">
                         <vaadin-button theme="primary" @click=${this.save}>Save</vaadin-button>
                         <vaadin-button theme="tertiary" @click=${this.cancel}>Cancel</vaadin-button>
+                        <vaadin-button ?disabled=${this.isDisableDeleteBtn} theme="error" @click=${this.delete}>Delete
+                        </vaadin-button>
                     </vaadin-horizontal-layout>
                 </div>
             </vaadin-split-layout>
@@ -99,6 +113,15 @@ export class ExerciseView extends View {
     async connectedCallback() {
         super.connectedCallback();
         this.gridSize = (await ExerciseEndpoint.count()) ?? 0;
+        this.classList.add(
+            'box-border',
+            'flex',
+            'flex-col',
+            'p-m',
+            'gap-s',
+            'w-full',
+            'h-full'
+        );
     }
 
     private async itemSelected(event: CustomEvent) {
@@ -108,29 +131,45 @@ export class ExerciseView extends View {
         if (item) {
             const fromBackend = await ExerciseEndpoint.get(item.id!);
             fromBackend ? this.binder.read(fromBackend) : this.refreshGrid();
+            this.isDisableDeleteBtn = false;
         } else {
             this.clearForm();
+            this.isDisableDeleteBtn = true;
         }
     }
 
     private async save() {
         try {
             const isNew = !this.binder.value.id;
-            await this.binder.submitTo(ExerciseEndpoint.update);
             if (isNew) {
                 // We added a new item
+                await this.binder.submitTo(ExerciseEndpoint.add);
                 this.gridSize++;
+            } else {
+                await this.binder.submitTo(ExerciseEndpoint.update);
             }
-            // if (isNew) {
-            //     // We added a new item
-            //     await this.binder.submitTo(ExerciseEndpoint.add);
-            //     this.gridSize++;
-            // } else {
-            //     await this.binder.submitTo(ExerciseEndpoint.update);
-            // }
             this.clearForm();
             this.refreshGrid();
             Notification.show(`ExerciseTo details stored.`, {position: 'bottom-start'});
+        } catch (error: any) {
+            if (error instanceof EndpointError) {
+                Notification.show(`Server error. ${error.message}`, {theme: 'error', position: 'bottom-start'});
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    private async delete() {
+        try {
+            const deletedId = this.binder.value.id;
+            if (deletedId !== undefined) {
+                await ExerciseEndpoint.delete(deletedId);
+                this.gridSize--;
+                this.clearForm();
+                this.refreshGrid();
+                Notification.show(`Delete ExerciseTo with id = ${deletedId}.`, {position: 'bottom-start'});
+            }
         } catch (error: any) {
             if (error instanceof EndpointError) {
                 Notification.show(`Server error. ${error.message}`, {theme: 'error', position: 'bottom-start'});

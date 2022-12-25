@@ -3,6 +3,7 @@ package ru.soft.webclient.endpoint;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import dev.hilla.Nonnull;
+import dev.hilla.exception.EndpointException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -87,8 +88,10 @@ abstract class BaseEndpointTest<TO extends HasId> {
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.NOT_FOUND.value())));
 
-        TO actual = endpoint().get(notExitingId);
-        Assertions.assertNull(actual);
+        EndpointException exception =
+                Assertions.assertThrows(EndpointException.class, () -> endpoint().get(notExitingId));
+
+        Assertions.assertTrue(exception.getMessage().contains("[404 Not Found]"));
     }
 
     @Test
@@ -108,7 +111,10 @@ abstract class BaseEndpointTest<TO extends HasId> {
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.NOT_FOUND.value())));
 
-        endpoint().delete(notExitingId);
+        EndpointException exception =
+                Assertions.assertThrows(EndpointException.class, () -> endpoint().delete(notExitingId));
+
+        Assertions.assertTrue(exception.getMessage().contains("[404 Not Found]"));
     }
 
     @Test
@@ -130,7 +136,10 @@ abstract class BaseEndpointTest<TO extends HasId> {
                             .willReturn(aResponse()
                                     .withStatus(HttpStatus.UNPROCESSABLE_ENTITY.value())));
 
-                    endpoint().update(invalid);
+                    EndpointException exception =
+                            Assertions.assertThrows(EndpointException.class, () -> endpoint().update(invalid));
+
+                    Assertions.assertTrue(exception.getMessage().contains("[422 Unprocessable Entity]"));
                 });
     }
 
@@ -143,7 +152,11 @@ abstract class BaseEndpointTest<TO extends HasId> {
                             .willReturn(aResponse()
                                     .withStatus(HttpStatus.UNPROCESSABLE_ENTITY.value())));
 
-                    endpoint().update(duplicate);
+
+                    EndpointException exception =
+                            Assertions.assertThrows(EndpointException.class, () -> endpoint().update(duplicate));
+
+                    Assertions.assertTrue(exception.getMessage().contains("[422 Unprocessable Entity]"));
                 });
     }
 //
