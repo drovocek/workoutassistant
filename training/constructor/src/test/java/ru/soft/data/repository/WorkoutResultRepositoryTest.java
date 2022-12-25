@@ -6,8 +6,8 @@ import ru.soft.common.testdata.TestDataStore;
 import ru.soft.data.BaseEntity;
 import ru.soft.data.model.WorkoutResult;
 import ru.soft.data.model.WorkoutSession;
-import ru.soft.testdata.model.WorkoutResultTestDataStore;
-import ru.soft.testdata.model.WorkoutSessionTestDataStore;
+import ru.soft.data.test.WorkoutResultTestDataStore;
+import ru.soft.data.test.WorkoutSessionTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
 import java.util.List;

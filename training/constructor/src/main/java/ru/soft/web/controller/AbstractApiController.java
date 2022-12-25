@@ -1,5 +1,6 @@
 package ru.soft.web.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -58,6 +59,7 @@ abstract class AbstractApiController<TO extends HasId> implements ApiController<
         return this.service.add(to);
     }
 
+    @Valid
     @Override
     @Transactional
     public void update(TO to) {

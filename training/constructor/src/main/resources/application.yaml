@@ -9,7 +9,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   sql:
     init:
-      data-locations: classpath:db/data.sql
+#      data-locations: classpath:db/data.sql
       schema-locations: classpath:db/schema.sql
       mode: always
 

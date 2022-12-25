@@ -92,7 +92,7 @@ export class ExerciseView extends View {
                 ignoreCase: false,
             })),
         };
-        const data = await ExerciseEndpoint.list({pageNumber: params.page, pageSize: params.pageSize, sort});
+        const data = await ExerciseEndpoint.getPage({pageNumber: params.page, pageSize: params.pageSize, sort});
         callback(data);
     }
 
@@ -121,6 +121,13 @@ export class ExerciseView extends View {
                 // We added a new item
                 this.gridSize++;
             }
+            // if (isNew) {
+            //     // We added a new item
+            //     await this.binder.submitTo(ExerciseEndpoint.add);
+            //     this.gridSize++;
+            // } else {
+            //     await this.binder.submitTo(ExerciseEndpoint.update);
+            // }
             this.clearForm();
             this.refreshGrid();
             Notification.show(`ExerciseTo details stored.`, {position: 'bottom-start'});

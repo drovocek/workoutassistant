@@ -1,4 +1,4 @@
-package ru.soft.testdata.model;
+package ru.soft.data.test;
 
 import org.springframework.stereotype.Component;
 import ru.soft.data.model.WorkoutPlan;

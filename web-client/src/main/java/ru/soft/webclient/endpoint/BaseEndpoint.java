@@ -11,9 +11,13 @@ import ru.soft.common.api.ApiController;
 import ru.soft.common.api.WebApi;
 import ru.soft.common.data.HasId;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @see <a href="https://hilla.dev/docs/lit/guides/endpoints">Endpoints Dcoumentation</a>
+ */
 @Slf4j
 @AnonymousAllowed
 @EndpointExposed
@@ -43,7 +47,7 @@ public abstract class BaseEndpoint<TO extends HasId> implements WebApi<TO> {
     }
 
     @Override
-    public void update(@Nonnull TO to) {
+    public void update(@Valid @Nonnull TO to) {
         log.info("update by {}", to);
         this.controller.update(to);
     }

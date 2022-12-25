@@ -4,7 +4,7 @@ import ru.soft.common.testdata.TestDataStore;
 import ru.soft.common.testdata.to.ExerciseToTestDataStore;
 import ru.soft.common.to.ExerciseTo;
 import ru.soft.data.model.Exercise;
-import ru.soft.testdata.model.ExerciseTestDataStore;
+import ru.soft.data.test.ExerciseTestDataStore;
 
 class ExerciseTOMapperTest extends AbstractTOMapperTest<Exercise, ExerciseTo> {
 

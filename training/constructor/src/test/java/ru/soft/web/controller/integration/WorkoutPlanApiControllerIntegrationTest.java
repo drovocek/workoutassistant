@@ -6,7 +6,7 @@ import ru.soft.common.testdata.TestDataStore;
 import ru.soft.common.testdata.to.WorkoutPlanToTestDataStore;
 import ru.soft.common.to.WorkoutPlanTo;
 import ru.soft.data.model.WorkoutPlan;
-import ru.soft.testdata.model.WorkoutPlanTestDataStore;
+import ru.soft.data.test.WorkoutPlanTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
 @SpringBootTest

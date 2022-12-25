@@ -2,7 +2,7 @@ package ru.soft.data.repository;
 
 import ru.soft.common.testdata.TestDataStore;
 import ru.soft.data.model.WorkoutSession;
-import ru.soft.testdata.model.WorkoutSessionTestDataStore;
+import ru.soft.data.test.WorkoutSessionTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
 class WorkoutSessionRepositoryTest extends BaseRepositoryTest<WorkoutSession> {

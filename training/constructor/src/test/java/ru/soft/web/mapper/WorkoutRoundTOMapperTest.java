@@ -4,7 +4,7 @@ import ru.soft.common.testdata.TestDataStore;
 import ru.soft.common.testdata.to.WorkoutRoundToTestDataStore;
 import ru.soft.common.to.WorkoutRoundTo;
 import ru.soft.data.model.WorkoutRound;
-import ru.soft.testdata.model.WorkoutRoundTestDataStore;
+import ru.soft.data.test.WorkoutRoundTestDataStore;
 
 class WorkoutRoundTOMapperTest extends AbstractTOMapperTest<WorkoutRound, WorkoutRoundTo> {
 

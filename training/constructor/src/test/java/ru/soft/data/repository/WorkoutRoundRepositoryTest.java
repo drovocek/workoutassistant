@@ -2,7 +2,7 @@ package ru.soft.data.repository;
 
 import ru.soft.common.testdata.TestDataStore;
 import ru.soft.data.model.WorkoutRound;
-import ru.soft.testdata.model.WorkoutRoundTestDataStore;
+import ru.soft.data.test.WorkoutRoundTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
 class WorkoutRoundRepositoryTest extends BaseRepositoryTest<WorkoutRound> {

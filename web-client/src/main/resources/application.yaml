@@ -11,7 +11,12 @@ spring:
   sql:
     init:
       mode: always
-#  cloud:
+#https://arnoldgalovics.com/feign-fallback/
+  cloud:
+    openfeign:
+      circuit breaker:
+        enabled: true
+
 #    openfeign:
 #      client:
 #        config:
@@ -19,6 +24,10 @@ spring:
 #            url: http://localhost:9000
 feign:
   url: http://localhost:9000
+
+
+
+
 
 
 
