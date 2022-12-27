@@ -3,12 +3,15 @@ package ru.soft.webclient.data.entity;
 import dev.hilla.Nonnull;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 import java.time.LocalDate;
 
 @Entity
 public class SamplePerson extends AbstractEntity {
 
-    @Nonnull
+//    @Nonnull
+    @NotBlank
     private String firstName;
     @Nonnull
     private String lastName;

@@ -1,7 +1,12 @@
 import { RouterLocation } from '@vaadin/router';
 import { makeAutoObservable } from 'mobx';
+import { ModelStore } from "./model-store";
+import {UiStore} from "Frontend/stores/ui-store";
 
 export class AppStore {
+  modelStore = new ModelStore();
+  uiStore = new UiStore();
+
   applicationName = 'Workout assistant';
 
   // The location, relative to the base path, e.g. "hello" when viewing "/hello"
@@ -31,3 +36,6 @@ export class AppStore {
 }
 
 export const appStore = new AppStore();
+export const modelStore = appStore.modelStore;
+export const uiStore = appStore.uiStore;
+

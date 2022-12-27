@@ -25,16 +25,6 @@ export const views: ViewRoute[] = [
     },
   },
   {
-    path: 'hello-world',
-    component: 'hello-world-view',
-    icon: 'la la-globe',
-    title: 'Hello World',
-    action: async (_context, _command) => {
-      await import('./views/helloworld/hello-world-view');
-      return;
-    },
-  },
-  {
     path: 'exercise',
     component: 'exercise-view',
     icon: 'la la-globe',

@@ -1,4 +1,4 @@
-import {Binder, field} from '@hilla/form';
+import {Binder, field, ValidationError} from '@hilla/form';
 import {EndpointError} from '@hilla/frontend';
 import '@vaadin/button';
 import '@vaadin/date-picker';
@@ -142,8 +142,16 @@ export class MasterDetailView extends View {
 
     private async save() {
         try {
+            console.log(1)
             const isNew = !this.binder.value.id;
-            await this.binder.submitTo(SamplePersonEndpoint.update);
+            console.log(2)
+            const errors = await this.binder.validate();
+            if (errors.length) {
+                throw new ValidationError(errors);
+            }
+            // await this.binder.validate()
+            // await this.binder.submitTo(SamplePersonEndpoint.update);
+            console.log(3)
             if (isNew) {
                 // We added a new item
                 this.gridSize++;

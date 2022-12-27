@@ -68,21 +68,9 @@ export class MainLayout extends Layout {
   private getMenuRoutes(): RouteInfo[] {
     return [
       {
-        path: 'about',
-        title: 'About',
-        icon: 'la la-file',
-      },
-
-      {
         path: 'master-detail',
         title: 'Master-Detail',
         icon: 'la la-columns',
-      },
-
-      {
-        path: 'hello-world',
-        title: 'Hello World',
-        icon: 'la la-globe',
       },
       {
         path: 'exercise',
