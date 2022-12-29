@@ -70,17 +70,24 @@ export class ExerciseForm extends View {
                             label="Complexity"
                             id="complexity"
                             step-buttons-visible
+                            min="1"
+                            max="10"
                             ${field(model.complexity)}></vaadin-integer-field>
                 </vaadin-form-layout>
             </div>
             <div class="flex gap-s button-layout">
-                <vaadin-button theme="primary" @click=${this.save}>
+                <vaadin-button theme="primary" 
+                               @click=${this.save}>
                     ${this.binder.value.id ? 'Save' : 'Create'}
                 </vaadin-button>
-                <vaadin-button theme="tertiary" @click=${exerciseViewStore.cancelEdit}>
+                <vaadin-button theme="tertiary" 
+                               @click=${exerciseViewStore.cancelEdit}>
                     Cancel
                 </vaadin-button>
-                <vaadin-button theme="error" @click=${exerciseViewStore.delete} ?disabled=${!this.binder.value.id}>
+                <vaadin-button class="deleteBtn"
+                               theme="error" 
+                               @click=${exerciseViewStore.delete} 
+                               ?disabled=${!this.binder.value.id}>
                     Delete
                 </vaadin-button>
             </div>

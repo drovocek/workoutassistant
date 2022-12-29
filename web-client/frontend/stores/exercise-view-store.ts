@@ -17,7 +17,7 @@ class ExerciseViewStore {
 
     get filteredExercises() {
         const filter = new RegExp(this.filterText, 'i');
-        const contacts = modelStore.exercices;
+        const contacts = modelStore.exercises;
         return contacts.filter((exercise) =>
             filter.test(`${exercise.title} ${exercise.description}`)
         );
@@ -28,7 +28,10 @@ class ExerciseViewStore {
     }
 
     editNew() {
-        this.selectedExercise = ExerciseToModel.createEmptyValue();
+        let defaultValue = ExerciseToModel.createEmptyValue();
+        defaultValue.complexity = 5;
+        console.log(defaultValue)
+        this.selectedExercise = defaultValue;
     }
 
     cancelEdit() {

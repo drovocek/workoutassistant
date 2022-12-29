@@ -18,14 +18,12 @@ import '@vaadin/upload'
 import {html} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
 import {View} from '../view';
-import './exercise-form';
 import {exerciseViewStore} from "Frontend/stores/exercise-view-store";
 import {uiStore} from "Frontend/stores/app-store";
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
-import ExerciseToModel from "Frontend/generated/ru/soft/common/to/ExerciseToModel";
 
-@customElement('exercise-view')
-export class ExerciseView extends View {
+@customElement('workoutround-view')
+export class WorkoutRoundView extends View {
 
     @query('#grid')
     private grid!: Grid;
@@ -64,7 +62,7 @@ export class ExerciseView extends View {
                         @input=${this.updateFilter}
                         clear-button-visible
                 ></vaadin-text-field>
-                <vaadin-button @click=${this.clearForm}>Add exercise</vaadin-button>
+                <vaadin-button @click=${this.clearForm}>Add round</vaadin-button>
             </div>
             <div class="content flex gap-m h-full">
                 <vaadin-grid
@@ -77,8 +75,6 @@ export class ExerciseView extends View {
                     <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
                     <vaadin-grid-sort-column path="complexity" auto-width></vaadin-grid-sort-column>
                 </vaadin-grid>
-                <exercise-form class="flex flex-col gap-s"
-                               ?hidden=${!exerciseViewStore.selectedExercise}></exercise-form>
             </div>
             <vaadin-notification
                     theme=${uiStore.message.error ? 'error' : 'success'}

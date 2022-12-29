@@ -34,6 +34,16 @@ export const views: ViewRoute[] = [
       return;
     },
   },
+  {
+    path: 'rounds',
+    component: 'workoutround-view',
+    icon: 'la la-globe',
+    title: 'Rounds',
+    action: async (_context, _command) => {
+      await import('./views/workoutround/workoutround-view');
+      return;
+    },
+  },
 ];
 export const routes: ViewRoute[] = [
   {
