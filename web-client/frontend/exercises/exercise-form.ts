@@ -1,6 +1,6 @@
 import {html} from 'lit';
 import {customElement} from 'lit/decorators.js';
-import {View} from 'Frontend/views/view';
+import {View} from 'Frontend/common/views/view';
 import '@vaadin/button';
 import '@vaadin/combo-box';
 import '@vaadin/text-field';
@@ -8,8 +8,7 @@ import '@vaadin/text-area';
 import '@vaadin/integer-field';
 import '@vaadin/form-layout';
 import {Binder, field, Max, Min, NotBlank} from "@hilla/form";
-import {exerciseViewStore} from "Frontend/stores/exercise-view-store";
-import {uiStore} from "Frontend/stores/app-store";
+import {exerciseStore, uiStore} from "Frontend/common/stores/app-store";
 import {EndpointError} from "@hilla/frontend";
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import ExerciseToModel from "Frontend/generated/ru/soft/common/to/ExerciseToModel";
@@ -22,8 +21,8 @@ export class ExerciseForm extends View {
     constructor() {
         super();
         this.autorun(() => {
-            if (exerciseViewStore.selectedExercise) {
-                this.binder.read(exerciseViewStore.selectedExercise);
+            if (exerciseStore.selected) {
+                this.binder.read(exerciseStore.selected);
             } else {
                 this.binder.clear();
             }
@@ -76,17 +75,17 @@ export class ExerciseForm extends View {
                 </vaadin-form-layout>
             </div>
             <div class="flex gap-s button-layout">
-                <vaadin-button theme="primary" 
+                <vaadin-button theme="primary"
                                @click=${this.save}>
                     ${this.binder.value.id ? 'Save' : 'Create'}
                 </vaadin-button>
-                <vaadin-button theme="tertiary" 
-                               @click=${exerciseViewStore.cancelEdit}>
+                <vaadin-button theme="tertiary"
+                               @click=${exerciseStore.cancelEdit}>
                     Cancel
                 </vaadin-button>
                 <vaadin-button class="deleteBtn"
-                               theme="error" 
-                               @click=${exerciseViewStore.delete} 
+                               theme="error"
+                               @click=${exerciseStore.delete}
                                ?disabled=${!this.binder.value.id}>
                     Delete
                 </vaadin-button>
@@ -96,7 +95,11 @@ export class ExerciseForm extends View {
 
     async save() {
         try {
-            await this.binder.submitTo(exerciseViewStore.save);
+            if (this.binder.value.id) {
+                await this.binder.submitTo(exerciseStore.update);
+            } else {
+                await this.binder.submitTo(exerciseStore.add);
+            }
             this.binder.clear();
         } catch (error: any) {
             if (error instanceof EndpointError) {

@@ -11,7 +11,7 @@ import '@vaadin/tabs/vaadin-tab';
 import '@vaadin/vaadin-lumo-styles/vaadin-iconset';
 import { html } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { router } from '../index';
+import { router } from '../../index';
 import { appStore } from '../stores/app-store';
 import { Layout } from './view';
 

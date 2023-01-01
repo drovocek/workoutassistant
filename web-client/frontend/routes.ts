@@ -1,6 +1,6 @@
 import { Flow } from '@vaadin/flow-frontend';
 import type { Route } from '@vaadin/router';
-import './views/main-layout';
+import './common/views/main-layout';
 
 const { serverSideRoutes } = new Flow({
   imports: () => import('../build/frontend/generated-flow-imports'),
@@ -30,7 +30,7 @@ export const views: ViewRoute[] = [
     icon: 'la la-globe',
     title: 'Exercise',
     action: async (_context, _command) => {
-      await import('./views/exercise/exercise-view');
+      await import('./exercises/exercise-view');
       return;
     },
   },
@@ -40,7 +40,7 @@ export const views: ViewRoute[] = [
     icon: 'la la-globe',
     title: 'Rounds',
     action: async (_context, _command) => {
-      await import('./views/workoutround/workoutround-view');
+      await import('./rounds/round-view');
       return;
     },
   },

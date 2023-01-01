@@ -17,13 +17,12 @@ import '@vaadin/integer-field';
 import '@vaadin/upload'
 import {html} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
-import {View} from '../view';
-import {exerciseViewStore} from "Frontend/stores/exercise-view-store";
-import {uiStore} from "Frontend/stores/app-store";
+import {View} from '../common/views/view';
+import {roundStore, uiStore} from "Frontend/common/stores/app-store";
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 
 @customElement('workoutround-view')
-export class WorkoutRoundView extends View {
+export class RoundView extends View {
 
     @query('#grid')
     private grid!: Grid;
@@ -45,7 +44,7 @@ export class WorkoutRoundView extends View {
             'h-full'
         );
         this.autorun(() => {
-            if (exerciseViewStore.selectedExercise) {
+            if (roundStore.selected) {
                 this.classList.add("editing");
             } else {
                 this.classList.remove("editing");
@@ -58,7 +57,7 @@ export class WorkoutRoundView extends View {
             <div class="toolbar flex gap-s">
                 <vaadin-text-field
                         placeholder="Filter by name"
-                        .value=${exerciseViewStore.filterText}
+                        .value=${roundStore.filterText}
                         @input=${this.updateFilter}
                         clear-button-visible
                 ></vaadin-text-field>
@@ -69,11 +68,11 @@ export class WorkoutRoundView extends View {
                         id="grid"
                         theme="no-border"
                         .size=${this.gridSize}
-                        .items=${exerciseViewStore.filteredExercises}
+                        .items=${roundStore.filtered}
                         @active-item-changed=${this.handleGridSelection}>
                     <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
                     <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
-                    <vaadin-grid-sort-column path="complexity" auto-width></vaadin-grid-sort-column>
+                    <vaadin-grid-sort-column path="workoutRoundSchemaSnapshot" auto-width></vaadin-grid-sort-column>
                 </vaadin-grid>
             </div>
             <vaadin-notification
@@ -87,7 +86,7 @@ export class WorkoutRoundView extends View {
     }
 
     private updateFilter(e: { target: HTMLInputElement }) {
-        exerciseViewStore.updateFilter(e.target.value);
+        roundStore.updateFilter(e.target.value);
     }
 
     private handleGridSelection(event: CustomEvent) {
@@ -99,10 +98,10 @@ export class WorkoutRoundView extends View {
             return;
         }
 
-        exerciseViewStore.setSelectedExercise(item);
+        roundStore.setSelected(item);
     }
 
     private clearForm() {
-        exerciseViewStore.editNew();
+        roundStore.editNew();
     }
 }

@@ -24,7 +24,7 @@ import SamplePersonModel from 'Frontend/generated/ru/soft/webclient/data/entity/
 import * as SamplePersonEndpoint from 'Frontend/generated/SamplePersonEndpoint';
 import {html} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
-import {View} from '../view';
+import {View} from '../../common/views/view';
 
 @customElement('master-detail-view')
 export class MasterDetailView extends View {

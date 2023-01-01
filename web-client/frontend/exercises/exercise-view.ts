@@ -17,12 +17,10 @@ import '@vaadin/integer-field';
 import '@vaadin/upload'
 import {html} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
-import {View} from '../view';
+import {View} from '../common/views/view';
 import './exercise-form';
-import {exerciseViewStore} from "Frontend/stores/exercise-view-store";
-import {uiStore} from "Frontend/stores/app-store";
+import {exerciseStore, uiStore} from "Frontend/common/stores/app-store";
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
-import ExerciseToModel from "Frontend/generated/ru/soft/common/to/ExerciseToModel";
 
 @customElement('exercise-view')
 export class ExerciseView extends View {
@@ -47,7 +45,7 @@ export class ExerciseView extends View {
             'h-full'
         );
         this.autorun(() => {
-            if (exerciseViewStore.selectedExercise) {
+            if (exerciseStore.selected) {
                 this.classList.add("editing");
             } else {
                 this.classList.remove("editing");
@@ -60,7 +58,7 @@ export class ExerciseView extends View {
             <div class="toolbar flex gap-s">
                 <vaadin-text-field
                         placeholder="Filter by name"
-                        .value=${exerciseViewStore.filterText}
+                        .value=${exerciseStore.filterText}
                         @input=${this.updateFilter}
                         clear-button-visible
                 ></vaadin-text-field>
@@ -71,14 +69,14 @@ export class ExerciseView extends View {
                         id="grid"
                         theme="no-border"
                         .size=${this.gridSize}
-                        .items=${exerciseViewStore.filteredExercises}
+                        .items=${exerciseStore.filtered}
                         @active-item-changed=${this.handleGridSelection}>
                     <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
                     <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
                     <vaadin-grid-sort-column path="complexity" auto-width></vaadin-grid-sort-column>
                 </vaadin-grid>
                 <exercise-form class="flex flex-col gap-s"
-                               ?hidden=${!exerciseViewStore.selectedExercise}></exercise-form>
+                               ?hidden=${!exerciseStore.selected}></exercise-form>
             </div>
             <vaadin-notification
                     theme=${uiStore.message.error ? 'error' : 'success'}
@@ -91,7 +89,7 @@ export class ExerciseView extends View {
     }
 
     private updateFilter(e: { target: HTMLInputElement }) {
-        exerciseViewStore.updateFilter(e.target.value);
+        exerciseStore.updateFilter(e.target.value);
     }
 
     private handleGridSelection(event: CustomEvent) {
@@ -103,10 +101,10 @@ export class ExerciseView extends View {
             return;
         }
 
-        exerciseViewStore.setSelectedExercise(item);
+        exerciseStore.setSelected(item);
     }
 
     private clearForm() {
-        exerciseViewStore.editNew();
+        exerciseStore.editNew();
     }
 }

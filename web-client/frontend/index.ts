@@ -1,6 +1,6 @@
 import { Router } from '@vaadin/router';
 import { routes } from './routes';
-import { appStore } from './stores/app-store';
+import { appStore } from './common/stores/app-store';
 
 export const router = new Router(document.querySelector('#outlet'));
 
