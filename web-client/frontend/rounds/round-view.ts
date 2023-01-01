@@ -3,7 +3,7 @@ import '@vaadin/date-picker';
 import '@vaadin/date-time-picker';
 import '@vaadin/form-layout';
 import '@vaadin/grid';
-import type {Grid} from '@vaadin/grid';
+import type {Grid, GridActiveItemChangedEvent} from '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-sort-column';
 import '@vaadin/horizontal-layout';
 import '@vaadin/icon';
@@ -16,12 +16,14 @@ import '@vaadin/text-area';
 import '@vaadin/integer-field';
 import '@vaadin/upload'
 import {html} from 'lit';
-import {customElement, property, query} from 'lit/decorators.js';
+import {customElement, property, query, state} from 'lit/decorators.js';
 import {View} from '../common/views/view';
 import {roundStore, uiStore} from "Frontend/common/stores/app-store";
-import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
+import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
+import {gridRowDetailsRenderer} from "@vaadin/grid/lit";
+import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
 
-@customElement('workoutround-view')
+@customElement('round-view')
 export class RoundView extends View {
 
     @query('#grid')
@@ -29,6 +31,12 @@ export class RoundView extends View {
 
     @property({type: Number})
     private gridSize = 0;
+
+    @state()
+    private detailsOpenedItem: WorkoutRoundTo[] = [];
+
+    @state()
+    private detailsData: Array<WorkoutStationSnapshot | undefined> = [];
 
     private firstSelectionEvent = true;
 
@@ -69,10 +77,40 @@ export class RoundView extends View {
                         theme="no-border"
                         .size=${this.gridSize}
                         .items=${roundStore.filtered}
-                        @active-item-changed=${this.handleGridSelection}>
+                        .detailsOpenedItems="${this.detailsOpenedItem}"
+                        @active-item-changed="${(e: GridActiveItemChangedEvent<WorkoutRoundTo>) => (this.detailsOpenedItem = [e.detail.value])}"
+                        ${gridRowDetailsRenderer<WorkoutRoundTo>(
+                                (round) => {
+                                    this.detailsData = [];
+
+                                    console.log(round.roundSchema)
+                                    if (round.roundSchema && round.roundSchema.roundStations) {
+                                        this.detailsData = round.roundSchema.roundStations;
+                                    }
+
+                                    return html`
+                                        <vaadin-grid .items=${this.detailsData}>
+                                            <vaadin-grid-sort-column path="exercise.title"
+                                                                     auto-width></vaadin-grid-sort-column>
+                                            <vaadin-grid-sort-column path="exercise.description"
+                                                                     auto-width></vaadin-grid-sort-column>
+                                            <vaadin-grid-sort-column path="exercise.complexity"
+                                                                     auto-width></vaadin-grid-sort-column>
+                                            <vaadin-grid-sort-column path="repetitions"
+                                                                     auto-width></vaadin-grid-sort-column>
+                                            <vaadin-grid-sort-column path="weight"
+                                                                     auto-width></vaadin-grid-sort-column>
+                                            <vaadin-grid-sort-column path="duration"
+                                                                     auto-width></vaadin-grid-sort-column>
+                                            <vaadin-grid-sort-column path="rest"
+                                                                     auto-width></vaadin-grid-sort-column>
+                                        </vaadin-grid>
+                                    `
+                                },
+                                []
+                        )}>
                     <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
                     <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
-                    <vaadin-grid-sort-column path="workoutRoundSchemaSnapshot" auto-width></vaadin-grid-sort-column>
                 </vaadin-grid>
             </div>
             <vaadin-notification
@@ -89,8 +127,12 @@ export class RoundView extends View {
         roundStore.updateFilter(e.target.value);
     }
 
+    private showDetails() {
+
+    }
+
     private handleGridSelection(event: CustomEvent) {
-        const item: ExerciseTo = event.detail.value as ExerciseTo;
+        const item: WorkoutRoundTo = event.detail.value as WorkoutRoundTo;
         this.grid.selectedItems = item ? [item] : [];
 
         if (this.firstSelectionEvent) {

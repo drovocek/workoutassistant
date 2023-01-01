@@ -20,7 +20,7 @@ public class WorkoutRoundTOMapper implements TOMapper<WorkoutRound, WorkoutRound
         return WorkoutRound.builder()
                 .id(to.id())
                 .isNew(to.id() == null)
-                .workoutRoundSchemaSnapshot(to.workoutRoundSchemaSnapshot())
+                .workoutRoundSchemaSnapshot(to.roundSchema())
                 .title(to.title())
                 .description(to.description())
                 .build();

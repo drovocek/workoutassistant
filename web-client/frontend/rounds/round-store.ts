@@ -50,6 +50,7 @@ export class RoundStore {
     }
 
     setSelected(selected: WorkoutRoundTo) {
+        console.log(selected);
         this.selected = selected;
     }
 
