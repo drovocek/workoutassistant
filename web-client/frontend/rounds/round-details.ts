@@ -38,19 +38,22 @@ export class RoundDetails extends View {
 
     private selected: ExerciseTo | undefined;
 
+    private clearDraggedItem = () => {
+        delete this.draggedItem;
+    };
+
+    private startDraggingItem = (event: GridDragStartEvent<WorkoutStationSnapshot>) => {
+        this.draggedItem = event.detail.draggedItems[0];
+    };
+
     render() {
         return html`
             <vaadin-grid
                     .items=${this.detailsData}
                     rows-draggable
                     drop-mode="between"
-                    @grid-dragstart="${(event: GridDragStartEvent<WorkoutStationSnapshot>) => {
-                        this.draggedItem = event.detail.draggedItems[0];
-                    }}"
-                    @grid-dragend="${() => {
-                        delete this.draggedItem;
-                    }}"
-
+                    @grid-dragstart="${this.startDraggingItem}"
+                    @grid-dragend="${this.clearDraggedItem}"
                     @grid-drop="${(event: GridDropEvent<WorkoutStationSnapshot>) => {
                         const {dropTargetItem, dropLocation} = event.detail;
                         if (this.draggedItem && dropTargetItem !== this.draggedItem) {
