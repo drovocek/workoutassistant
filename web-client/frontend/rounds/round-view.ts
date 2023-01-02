@@ -16,6 +16,7 @@ import '@vaadin/text-area';
 import '@vaadin/integer-field';
 import '@vaadin/upload'
 import './round-details';
+import './round-exercise-selector';
 import {html} from 'lit';
 import {customElement, property, query, state} from 'lit/decorators.js';
 import {View} from '../common/views/view';
@@ -34,6 +35,9 @@ export class RoundView extends View {
 
     @state()
     private detailsOpenedItem: WorkoutRoundTo[] = [];
+
+    @state()
+    private detailsClosed: boolean = true;
 
     private firstSelectionEvent = true;
 
@@ -79,6 +83,7 @@ export class RoundView extends View {
                         ${gridRowDetailsRenderer<WorkoutRoundTo>(
                                 (round) => {
                                     let detailsData = this.extractDetailsData(round);
+                                    this.detailsClosed = !this.detailsClosed;
                                     return html`
                                         <round-details .detailsData="${detailsData}"></round-details>
                                     `
@@ -88,6 +93,8 @@ export class RoundView extends View {
                     <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
                     <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
                 </vaadin-grid>
+                <round-exercise-selector class="flex flex-col gap-s"
+                                         ?hidden=${this.detailsClosed}></round-exercise-selector>
             </div>
             <vaadin-notification
                     theme=${uiStore.message.error ? 'error' : 'success'}

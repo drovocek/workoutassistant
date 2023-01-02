@@ -15,3 +15,7 @@ round-view round-details {
 round-view .grid-wrapper {
     width: 100%;
 }
+
+round-view round-exercise-selector {
+    width: 25em;
+}

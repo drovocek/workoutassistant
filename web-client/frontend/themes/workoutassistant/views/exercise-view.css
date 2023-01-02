@@ -40,3 +40,7 @@ exercise-view .button-layout .deleteBtn {
 exercise-view .grid-wrapper {
     width: 100%;
 }
+
+exercise-view exercise-form {
+    width: 25em;
+}
