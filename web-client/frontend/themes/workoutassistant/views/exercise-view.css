@@ -4,11 +4,6 @@ exercise-view {
     height: 100%;
 }
 
-exercise-view vaadin-split-layout {
-    width: 100%;
-    height: 100%;
-}
-
 exercise-view vaadin-grid {
     height: 100%;
 }

@@ -15,76 +15,135 @@ import '@vaadin/text-area';
 import '@vaadin/integer-field';
 import '@vaadin/upload'
 import '@vaadin/confirm-dialog'
-import {html} from 'lit';
+import {css, html, LitElement} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
-import {View} from '../common/views/view';
 import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
 import {GridDragStartEvent, GridDropEvent} from "@vaadin/grid";
 import {columnBodyRenderer, GridColumnBodyLitRenderer} from "@vaadin/grid/lit";
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import {ConfirmDialogOpenedChangedEvent} from "@vaadin/confirm-dialog";
+import {appStore, exerciseStore} from "Frontend/common/stores/app-store";
+import WorkoutStationSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshotModel";
+import ExerciseToModel from "Frontend/generated/ru/soft/common/to/ExerciseToModel";
+import ExerciseSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/ExerciseSnapshotModel";
 
 @customElement('round-details')
-export class RoundDetails extends View {
+export class RoundDetails extends LitElement {
 
     @state()
     public detailsData: Array<WorkoutStationSnapshot | undefined> = [];
 
     @state()
-    private draggedItem?: WorkoutStationSnapshot;
-
-    @state()
     private dialogOpened: boolean = false;
 
-    private selected: ExerciseTo | undefined;
+    private selected: ExerciseTo = ExerciseToModel.createEmptyValue();
 
-    private clearDraggedItem = () => {
-        delete this.draggedItem;
+    @state()
+    private draggedStation?: WorkoutStationSnapshot;
+
+    private clearDraggedStation = () => {
+        delete this.draggedStation;
     };
 
-    private startDraggingItem = (event: GridDragStartEvent<WorkoutStationSnapshot>) => {
-        this.draggedItem = event.detail.draggedItems[0];
+    private storeDraggingStation = (event: GridDragStartEvent<WorkoutStationSnapshot>) => {
+        this.draggedStation = event.detail.draggedItems[0];
     };
+
+    @state()
+    private draggedExercise?: ExerciseTo;
+
+    private clearDraggedExercise = () => {
+        this.draggedExercise = undefined;
+    };
+
+    private storeDraggingExercise = (event: GridDragStartEvent<ExerciseTo>) => {
+        this.draggedExercise = event.detail.draggedItems[0];
+    };
+
+    async connectedCallback() {
+        super.connectedCallback();
+        this.classList.add(
+            'box-border',
+            'flex',
+            'flex-col',
+            'p-m',
+            'gap-s',
+            'w-full',
+            'h-full'
+        );
+    }
+
+    static get styles() {
+        return css`
+          .grids-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+          }
+
+          vaadin-grid {
+            width: 300px;
+            height: 300px;
+            margin-left: 0.5rem;
+            margin-top: 0.5rem;
+            align-self: unset;
+          }
+        `;
+    }
 
     render() {
         return html`
-            <vaadin-grid
-                    .items=${this.detailsData}
-                    rows-draggable
-                    drop-mode="between"
-                    @grid-dragstart="${this.startDraggingItem}"
-                    @grid-dragend="${this.clearDraggedItem}"
-                    @grid-drop="${(event: GridDropEvent<WorkoutStationSnapshot>) => {
-                        const {dropTargetItem, dropLocation} = event.detail;
-                        if (this.draggedItem && dropTargetItem !== this.draggedItem) {
-                            const draggedItemIndex = this.detailsData.indexOf(this.draggedItem);
-                            this.detailsData.splice(draggedItemIndex, 1);
-                            const dropIndex = this.detailsData.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
-                            this.detailsData.splice(dropIndex, 0, this.draggedItem);
-                            this.detailsData = [...this.detailsData];
-                            console.log(this.detailsData)
-                        }
-                    }}"
-            >
-                <vaadin-grid-sort-column path="exercise.title"
-                                         auto-width></vaadin-grid-sort-column>
-                <vaadin-grid-sort-column path="exercise.description"
-                                         auto-width></vaadin-grid-sort-column>
-                <vaadin-grid-sort-column path="exercise.complexity"
-                                         auto-width></vaadin-grid-sort-column>
-                <vaadin-grid-sort-column path="repetitions"
-                                         auto-width></vaadin-grid-sort-column>
-                <vaadin-grid-sort-column path="weight"
-                                         auto-width></vaadin-grid-sort-column>
-                <vaadin-grid-sort-column path="duration"
-                                         auto-width></vaadin-grid-sort-column>
-                <vaadin-grid-sort-column path="rest"
-                                         auto-width></vaadin-grid-sort-column>
-                <vaadin-grid-column
-                        header="Manage"
-                        ${columnBodyRenderer(this.removeBtnRenderer, [])}
-                ></vaadin-grid-column>
-            </vaadin-grid>
+            <div class="grids-container">
+                <vaadin-grid
+                        .items=${this.detailsData}
+                        rows-draggable
+                        drop-mode="between"
+                        @grid-dragstart="${this.storeDraggingStation}"
+                        @grid-dragend="${this.clearDraggedStation}"
+                        @grid-drop="${(event: GridDropEvent<WorkoutStationSnapshot>) => {
+                            const {dropTargetItem, dropLocation} = event.detail;
+                            if (this.draggedExercise !== undefined && this.isAnExercise(this.draggedExercise)) {
+                                const draggedItem = this.asDefaultStation(this.draggedExercise)
+                                const dropIndex = this.detailsData.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
+                                this.detailsData.splice(dropIndex, 0, draggedItem);
+                                this.detailsData = [...this.detailsData];
+                            } else if (this.draggedStation && dropTargetItem !== this.draggedStation) {
+                                const draggedItemIndex = this.detailsData.indexOf(this.draggedStation);
+                                this.detailsData.splice(draggedItemIndex, 1);
+                                const dropIndex = this.detailsData.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
+                                this.detailsData.splice(dropIndex, 0, this.draggedStation);
+                                this.detailsData = [...this.detailsData];
+                            }
+                        }}"
+                >
+                    <vaadin-grid-sort-column path="exercise.title"
+                                             auto-width></vaadin-grid-sort-column>
+                    <vaadin-grid-sort-column path="exercise.description"
+                                             auto-width></vaadin-grid-sort-column>
+                    <vaadin-grid-sort-column path="exercise.complexity"
+                                             auto-width></vaadin-grid-sort-column>
+                    <vaadin-grid-sort-column path="repetitions"
+                                             auto-width></vaadin-grid-sort-column>
+                    <vaadin-grid-sort-column path="weight"
+                                             auto-width></vaadin-grid-sort-column>
+                    <vaadin-grid-sort-column path="duration"
+                                             auto-width></vaadin-grid-sort-column>
+                    <vaadin-grid-sort-column path="rest"
+                                             auto-width></vaadin-grid-sort-column>
+                    <vaadin-grid-column
+                            header="Manage"
+                            ${columnBodyRenderer(this.removeBtnRenderer, [])}
+                    ></vaadin-grid-column>
+                </vaadin-grid>
+                <vaadin-grid
+                        .items="${appStore.exerciseStore.filtered}"
+                        rows-draggable
+                        drop-mode="between"
+                        @grid-dragstart="${this.storeDraggingExercise}"
+                        @grid-dragend="${this.clearDraggedExercise}">
+                    <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
+                </vaadin-grid>
+            </div>
             <vaadin-confirm-dialog
                     header='Delete station for "${this.selected?.title}"?'
                     cancel
@@ -100,12 +159,25 @@ export class RoundDetails extends View {
         `;
     }
 
-    openedChanged(e: ConfirmDialogOpenedChangedEvent) {
+    private isAnExercise(obj: any) {
+        return obj !== undefined && 'id' in obj && 'title' in obj && 'description' in obj && 'complexity' in obj;
+    }
+
+    private asDefaultStation(exercise: ExerciseTo): WorkoutStationSnapshot {
+        const station = WorkoutStationSnapshotModel.createEmptyValue();
+        const exerciseSnapshot = ExerciseSnapshotModel.createEmptyValue();
+        exerciseSnapshot.title = exercise.title;
+        exerciseSnapshot.description = exercise.description;
+        exerciseSnapshot.complexity = exercise.complexity;
+        station.exercise = exerciseSnapshot;
+        return station;
+    }
+
+    private openedChanged(e: ConfirmDialogOpenedChangedEvent) {
         this.dialogOpened = e.detail.value;
     }
 
     private removeSelected() {
-        console.log("REMOVE")
         this.detailsData = this.detailsData
             .filter((station) => {
                 return station?.exercise.title !== this.selected?.title;
