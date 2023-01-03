@@ -16,7 +16,7 @@ import '@vaadin/text-area';
 import '@vaadin/integer-field';
 import '@vaadin/upload'
 import './round-details';
-import './round-exercise-selector';
+import './exercise-selector';
 import {html} from 'lit';
 import {customElement, property, query, state} from 'lit/decorators.js';
 import {View} from '../common/views/view';
@@ -27,11 +27,12 @@ import {gridRowDetailsRenderer} from "@vaadin/grid/lit";
 @customElement('round-view')
 export class RoundView extends View {
 
+    // private selected: ExerciseTo = ExerciseToModel.createEmptyValue();
+    // @state()
+    // private dialogOpened: boolean = false;
+
     @query('#grid')
     private grid!: Grid;
-
-    @property({type: Number})
-    private gridSize = 0;
 
     @state()
     private detailsOpenedItem: WorkoutRoundTo[] = [];
@@ -63,48 +64,101 @@ export class RoundView extends View {
 
     render() {
         return html`
-            <div class="toolbar flex gap-s">
-                <vaadin-text-field
-                        placeholder="Filter by name"
-                        .value=${roundStore.filterText}
-                        @input=${this.updateFilter}
-                        clear-button-visible
-                ></vaadin-text-field>
-                <vaadin-button @click=${this.clearForm}>Add round</vaadin-button>
-            </div>
-            <div class="content flex gap-m h-full">
-                <vaadin-grid
-                        id="grid"
-                        theme="no-border"
-                        .size=${this.gridSize}
-                        .items=${roundStore.filtered}
-                        .detailsOpenedItems="${this.detailsOpenedItem}"
-                        @active-item-changed="${(e: GridActiveItemChangedEvent<WorkoutRoundTo>) => (this.detailsOpenedItem = [e.detail.value])}"
-                        ${gridRowDetailsRenderer<WorkoutRoundTo>(
-                                (round) => {
-                                    let detailsData = this.extractDetailsData(round);
-                                    this.detailsClosed = !this.detailsClosed;
-                                    return html`
-                                        <round-details .detailsData="${detailsData}"></round-details>
-                                    `
-                                },
-                                []
-                        )}>
-                    <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
-                    <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
-                </vaadin-grid>
-                <round-exercise-selector class="flex flex-col gap-s"
-                                         ?hidden=${this.detailsClosed}></round-exercise-selector>
-            </div>
+            <vaadin-horizontal-layout class="h-full">
+                <div class="w-full">
+                    <div class="toolbar flex gap-s">
+                        <vaadin-text-field
+                                placeholder="Filter by name"
+                                .value=${roundStore.filterText}
+                                @input=${this.updateFilter}
+                                clear-button-visible
+                        ></vaadin-text-field>
+                        <vaadin-button @click=${this.clearForm}>Add round</vaadin-button>
+                        <vaadin-button
+                                theme="error tertiary icon">
+                            <vaadin-icon icon="vaadin:trash"></vaadin-icon>
+                        </vaadin-button>
+                    </div>
+                    <div class="content flex gap-m h-full">
+                        <vaadin-grid
+                                id="grid"
+                                theme="no-border"
+                                .items=${roundStore.filtered}
+                                .detailsOpenedItems="${this.detailsOpenedItem}"
+                                @active-item-changed="${this.updateOpened()}"
+                                ${this.renderDetails()}>
+                            <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
+                            <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
+                        </vaadin-grid>
+                    </div>
+                </div>
+                <exercise-selector ?hidden=${this.detailsClosed}></exercise-selector>
+            </vaadin-horizontal-layout>
             <vaadin-notification
                     theme=${uiStore.message.error ? 'error' : 'success'}
                     position="bottom-start"
                     .opened=${uiStore.message.open}
-                    .renderer=${(root: HTMLElement) =>
-                            (root.textContent = uiStore.message.text)}>
+                    .renderer=${(root: HTMLElement) => (root.textContent = uiStore.message.text)}>
             </vaadin-notification>
         `;
     }
+
+    private updateOpened() {
+        return (e: GridActiveItemChangedEvent<WorkoutRoundTo>) => {
+            this.detailsOpenedItem = [e.detail.value];
+            this.detailsClosed = this.detailsOpenedItem[0] == null;
+        };
+    }
+
+    private renderDetails() {
+        return gridRowDetailsRenderer<WorkoutRoundTo>(
+            (round) => {
+                let detailsData = this.extractDetailsData(round);
+                return html`
+                    <round-details class="h-full" .detailsData="${detailsData}"></round-details>
+                `
+            },
+            []
+        );
+    }
+
+    //
+    // private openedChanged(e: ConfirmDialogOpenedChangedEvent) {
+    //     this.dialogOpened = e.detail.value;
+    // }
+    //
+    private removeSelected() {
+
+        // this.detailsData = this.detailsData
+        //     .filter((station) => {
+        //         return station?.exercise.title !== this.selected?.title;
+        //     });
+    };
+
+// <vaadin-confirm-dialog
+//     header='Delete station for "${this.selected?.title}"?'
+//     cancel
+// @cancel="${() => this.dialogOpened = false}"
+//     confirm-text="Delete"
+//     confirm-theme="error primary"
+// @confirm="${this.removeSelected}"
+// .opened="${this.dialogOpened}"
+// @opened-changed="${this.openedChanged}"
+//         >
+//         Are you sure you want to permanently delete this item?
+//     </vaadin-confirm-dialog>
+
+    // private removeBtnRenderer: GridColumnBodyLitRenderer<WorkoutStationSnapshot> = ({exercise}) => html`
+    //     <vaadin-button
+    //             theme="error tertiary icon"
+    //             @click="${() => {
+    //     this.selected = exercise;
+    //     this.dialogOpened = true;
+    // }}"
+    //     >
+    //         <vaadin-icon icon="vaadin:trash"></vaadin-icon>
+    //     </vaadin-button>
+    // `;
 
     private updateFilter(e: { target: HTMLInputElement }) {
         roundStore.updateFilter(e.target.value);
