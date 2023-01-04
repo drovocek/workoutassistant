@@ -12,6 +12,11 @@ spring:
 #      data-locations: classpath:db/data.sql
       schema-locations: classpath:db/schema.sql
       mode: always
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8181/realms/workout-assistant-realm/protocol/openid-connect/certs
 
 springdoc:
   swagger-ui.path: /

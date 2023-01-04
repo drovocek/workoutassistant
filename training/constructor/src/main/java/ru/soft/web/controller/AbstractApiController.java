@@ -13,8 +13,8 @@ import ru.soft.service.BaseApiService;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.soft.utils.ValidationUtil.checkNew;
-import static ru.soft.utils.ValidationUtil.checkNotNew;
+import static ru.soft.web.utils.ValidationUtil.checkNew;
+import static ru.soft.web.utils.ValidationUtil.checkNotNew;
 
 @Slf4j
 abstract class AbstractApiController<TO extends HasId> implements ApiController<TO> {

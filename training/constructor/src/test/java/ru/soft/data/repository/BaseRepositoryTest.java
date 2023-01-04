@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static ru.soft.utils.ValidationUtil.ENTITY_NOT_FOUND_TEMPLATE;
+import static ru.soft.web.utils.ValidationUtil.ENTITY_NOT_FOUND_TEMPLATE;
 
 @DataJdbcTest
 abstract class BaseRepositoryTest<T extends BaseEntity> extends TestContainerHolder {

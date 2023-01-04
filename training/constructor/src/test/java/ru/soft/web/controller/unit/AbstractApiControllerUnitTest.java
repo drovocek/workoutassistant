@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.soft.utils.ValidationUtil.ENTITY_NOT_FOUND_TEMPLATE;
+import static ru.soft.web.utils.ValidationUtil.ENTITY_NOT_FOUND_TEMPLATE;
 
 //https://www.baeldung.com/spring-boot-testing
 @WebMvcTest

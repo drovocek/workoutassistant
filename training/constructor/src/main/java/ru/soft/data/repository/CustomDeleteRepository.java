@@ -5,7 +5,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.UUID;
 
-import static ru.soft.utils.ValidationUtil.checkModification;
+import static ru.soft.web.utils.ValidationUtil.checkModification;
 
 @NoRepositoryBean
 public interface CustomDeleteRepository {

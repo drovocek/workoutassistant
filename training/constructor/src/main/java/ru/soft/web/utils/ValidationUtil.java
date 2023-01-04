@@ -1,4 +1,4 @@
-package ru.soft.utils;
+package ru.soft.web.utils;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;

@@ -13,8 +13,8 @@ import ru.soft.web.mapper.TOMapper;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.soft.utils.ValidationUtil.checkNew;
-import static ru.soft.utils.ValidationUtil.checkNotNew;
+import static ru.soft.web.utils.ValidationUtil.checkNew;
+import static ru.soft.web.utils.ValidationUtil.checkNotNew;
 
 @Slf4j
 abstract class AbstractApiService<T extends BaseEntity, TO extends HasId> implements BaseApiService<TO> {
