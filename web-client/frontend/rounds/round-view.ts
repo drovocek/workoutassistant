@@ -3,7 +3,7 @@ import '@vaadin/date-picker';
 import '@vaadin/date-time-picker';
 import '@vaadin/form-layout';
 import '@vaadin/grid';
-import type {Grid, GridActiveItemChangedEvent} from '@vaadin/grid';
+import type {Grid} from '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-sort-column';
 import '@vaadin/horizontal-layout';
 import '@vaadin/icon';
@@ -15,6 +15,7 @@ import '@vaadin/text-field';
 import '@vaadin/text-area';
 import '@vaadin/integer-field';
 import '@vaadin/upload'
+import './round-form';
 import './round-details';
 import './exercise-selector';
 import {html} from 'lit';
@@ -22,7 +23,7 @@ import {customElement, query, state} from 'lit/decorators.js';
 import {View} from '../common/views/view';
 import {roundStore, uiStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
-import {gridRowDetailsRenderer} from "@vaadin/grid/lit";
+import {columnBodyRenderer, gridRowDetailsRenderer} from "@vaadin/grid/lit";
 
 @customElement('round-view')
 export class RoundView extends View {
@@ -84,12 +85,20 @@ export class RoundView extends View {
                                 id="grid"
                                 theme="no-border"
                                 .items=${roundStore.filtered}
+                                @active-item-changed=${this.handleGridSelection}
                                 .detailsOpenedItems="${this.detailsOpenedItem}"
-                                @active-item-changed="${this.updateOpened}"
                                 ${this.renderDetails()}>
+                            <vaadin-grid-column
+                                    ${columnBodyRenderer<WorkoutRoundTo>(
+                                            (round) => this.renderDetailsButton(round),
+                                            []
+                                    )}
+                            ></vaadin-grid-column>
                             <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
                             <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
                         </vaadin-grid>
+                        <round-form class="flex flex-col gap-s"
+                                    ?hidden=${!roundStore.selected || !this.detailsClosed}></round-form>
                     </div>
                 </div>
                 <exercise-selector ?hidden=${this.detailsClosed}></exercise-selector>
@@ -103,8 +112,23 @@ export class RoundView extends View {
         `;
     }
 
-    private updateOpened(e: GridActiveItemChangedEvent<WorkoutRoundTo>) {
-        this.detailsOpenedItem = [e.detail.value];
+    private renderDetailsButton(round: WorkoutRoundTo) {
+        return html`
+            <vaadin-button
+                    title="Exercises"
+                    theme="tertiary icon"
+                    @click="${() => this.switchExercisesVisible(round)}">
+                <vaadin-icon icon="vaadin:chevron-down"></vaadin-icon>
+            </vaadin-button>
+        `
+    }
+
+    private switchExercisesVisible(round: WorkoutRoundTo) {
+        roundStore.cancelEdit();
+        const isOpened = this.detailsOpenedItem.includes(round);
+        this.detailsOpenedItem = isOpened
+            ? this.detailsOpenedItem.filter((r) => r !== round)
+            : [...this.detailsOpenedItem, round]
         let workoutRound = this.detailsOpenedItem[0];
         this.detailsClosed = workoutRound == null;
         if (workoutRound) {
@@ -124,44 +148,6 @@ export class RoundView extends View {
             []
         );
     }
-
-    //
-    // private openedChanged(e: ConfirmDialogOpenedChangedEvent) {
-    //     this.dialogOpened = e.detail.value;
-    // }
-    //
-    private removeSelected() {
-
-        // this.detailsData = this.detailsData
-        //     .filter((station) => {
-        //         return station?.exercise.title !== this.selected?.title;
-        //     });
-    };
-
-// <vaadin-confirm-dialog
-//     header='Delete station for "${this.selected?.title}"?'
-//     cancel
-// @cancel="${() => this.dialogOpened = false}"
-//     confirm-text="Delete"
-//     confirm-theme="error primary"
-// @confirm="${this.removeSelected}"
-// .opened="${this.dialogOpened}"
-// @opened-changed="${this.openedChanged}"
-//         >
-//         Are you sure you want to permanently delete this item?
-//     </vaadin-confirm-dialog>
-
-    // private removeBtnRenderer: GridColumnBodyLitRenderer<WorkoutStationSnapshot> = ({exercise}) => html`
-    //     <vaadin-button
-    //             theme="error tertiary icon"
-    //             @click="${() => {
-    //     this.selected = exercise;
-    //     this.dialogOpened = true;
-    // }}"
-    //     >
-    //         <vaadin-icon icon="vaadin:trash"></vaadin-icon>
-    //     </vaadin-button>
-    // `;
 
     private updateFilter(e: { target: HTMLInputElement }) {
         roundStore.updateFilter(e.target.value);
@@ -191,3 +177,42 @@ export class RoundView extends View {
         roundStore.editNew();
     }
 }
+
+
+//
+// private openedChanged(e: ConfirmDialogOpenedChangedEvent) {
+//     this.dialogOpened = e.detail.value;
+// }
+//
+//  private removeSelected() {
+
+// this.detailsData = this.detailsData
+//     .filter((station) => {
+//         return station?.exercise.title !== this.selected?.title;
+//     });
+//  };
+
+// <vaadin-confirm-dialog
+//     header='Delete station for "${this.selected?.title}"?'
+//     cancel
+// @cancel="${() => this.dialogOpened = false}"
+//     confirm-text="Delete"
+//     confirm-theme="error primary"
+// @confirm="${this.removeSelected}"
+// .opened="${this.dialogOpened}"
+// @opened-changed="${this.openedChanged}"
+//         >
+//         Are you sure you want to permanently delete this item?
+//     </vaadin-confirm-dialog>
+
+// private removeBtnRenderer: GridColumnBodyLitRenderer<WorkoutStationSnapshot> = ({exercise}) => html`
+//     <vaadin-button
+//             theme="error tertiary icon"
+//             @click="${() => {
+//     this.selected = exercise;
+//     this.dialogOpened = true;
+// }}"
+//     >
+//         <vaadin-icon icon="vaadin:trash"></vaadin-icon>
+//     </vaadin-button>
+// `;

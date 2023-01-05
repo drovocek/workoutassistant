@@ -22,9 +22,8 @@ import {GridActiveItemChangedEvent, GridDragStartEvent, GridDropEvent} from "@va
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import WorkoutStationSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshotModel";
 import ExerciseSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/ExerciseSnapshotModel";
-import {gridRowDetailsRenderer} from "@vaadin/grid/lit";
+import {columnBodyRenderer, gridRowDetailsRenderer} from "@vaadin/grid/lit";
 import {exerciseSelectorStore, roundStore} from "Frontend/common/stores/app-store";
-import {View} from "Frontend/common/views/view";
 
 @customElement('round-details')
 export class RoundDetails extends LitElement {
@@ -70,16 +69,39 @@ export class RoundDetails extends LitElement {
                     ${this.renderDetails()}>
                 <vaadin-grid-sort-column path="exercise.title"
                                          auto-width></vaadin-grid-sort-column>
-                <vaadin-grid-sort-column path="repetitions"
-                                         auto-width></vaadin-grid-sort-column>
-                <vaadin-grid-sort-column path="weight"
-                                         auto-width></vaadin-grid-sort-column>
-                <vaadin-grid-sort-column path="duration"
-                                         auto-width></vaadin-grid-sort-column>
-                <vaadin-grid-sort-column path="rest"
-                                         auto-width></vaadin-grid-sort-column>
+                <vaadin-grid-column
+                        ${columnBodyRenderer<WorkoutStationSnapshot>(
+                                (station) => this.renderStationBadge(station),
+                                []
+                        )}
+                ></vaadin-grid-column>
+                              
+                <!--          <vaadin-grid-sort-column path="repetitions"
+                                                  auto-width></vaadin-grid-sort-column>
+                         <vaadin-grid-sort-column path="weight"
+                                                  auto-width></vaadin-grid-sort-column>
+                         <vaadin-grid-sort-column path="duration"
+                                                  auto-width></vaadin-grid-sort-column>
+                         <vaadin-grid-sort-column path="rest"
+                                                  auto-width></vaadin-grid-sort-column>-->
             </vaadin-grid>
         `;
+    }
+
+    private renderStationBadge(station: WorkoutStationSnapshot) {
+        return html`
+            <span theme="badge" title="${station.exercise.description}">
+                 <vaadin-icon title="Repetitions" icon="vaadin:rotate-right" style="padding: var(--lumo-space-xs)"></vaadin-icon>
+                 <span title="Repetitions">${station.repetitions}</span>
+                 <vaadin-icon title="Weight" icon="vaadin:compile" style="padding: var(--lumo-space-xs)"></vaadin-icon>
+                 <span title="Weight">${station.weight}</span>
+                 <vaadin-icon title="Duration" icon="vaadin:stopwatch" style="padding: var(--lumo-space-xs)"></vaadin-icon>
+                 <span title="Duration">${station.duration}</span>
+                 <vaadin-icon title="Rest" icon="vaadin:coffee" style="padding: var(--lumo-space-xs)"></vaadin-icon>
+                 <span title="Rest">${station.rest}</span>
+            </span>
+
+        `
     }
 
     private updateOpened() {

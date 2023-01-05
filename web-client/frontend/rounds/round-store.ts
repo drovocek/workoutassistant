@@ -51,7 +51,7 @@ export class RoundStore {
         this.selected = null;
     }
 
-    setSelected(selected: WorkoutRoundTo) {
+    setSelected(selected: WorkoutRoundTo | null) {
         this.selected = selected;
     }
 

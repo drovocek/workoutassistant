@@ -42,7 +42,9 @@ export class ExerciseStore {
     }
 
     editNew() {
-        this.selected = ExerciseToModel.createEmptyValue();
+        let exerciseDefault = ExerciseToModel.createEmptyValue();
+        exerciseDefault.complexity = 5;
+        this.selected = exerciseDefault;
     }
 
     cancelEdit() {
@@ -84,9 +86,8 @@ export class ExerciseStore {
         }
     }
 
-    async delete(removed: ExerciseTo) {
+    public async delete(removed: ExerciseTo) {
         if (!removed.id) return;
-
         try {
             await ExerciseEndpoint.delete(removed.id);
             this.deleteLocal(removed);

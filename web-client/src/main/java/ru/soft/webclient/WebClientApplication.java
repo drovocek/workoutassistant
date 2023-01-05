@@ -27,6 +27,7 @@ import javax.sql.DataSource;
 @PWA(name = "Workout assistant", shortName = "Workout assistant", offlineResources = {})
 @NpmPackage(value = "@adobe/lit-mobx", version = "2.0.0")
 @NpmPackage(value = "mobx", version = "^6.3.5")
+@NpmPackage(value = "lit-icon", version = "1.0.1")
 @NpmPackage(value = "line-awesome", version = "1.3.0")
 @NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
 public class WebClientApplication extends SpringBootServletInitializer implements AppShellConfigurator {

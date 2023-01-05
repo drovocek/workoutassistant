@@ -12,17 +12,19 @@ import {exerciseStore, roundStore, uiStore} from "Frontend/common/stores/app-sto
 import {EndpointError} from "@hilla/frontend";
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import ExerciseToModel from "Frontend/generated/ru/soft/common/to/ExerciseToModel";
+import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
+import WorkoutRoundToModel from "Frontend/generated/ru/soft/common/to/WorkoutRoundToModel";
 
-@customElement('exercise-form')
-export class ExerciseForm extends View {
+@customElement('round-form')
+export class RoundForm extends View {
 
-    private binder = new Binder<ExerciseTo, ExerciseToModel>(this, ExerciseToModel);
+    private binder = new Binder<WorkoutRoundTo, WorkoutRoundToModel>(this, WorkoutRoundToModel);
 
     constructor() {
         super();
         this.autorun(() => {
-            if (exerciseStore.selected) {
-                this.binder.read(exerciseStore.selected);
+            if (roundStore.selected) {
+                this.binder.read(roundStore.selected);
             } else {
                 this.binder.clear();
             }
@@ -37,18 +39,6 @@ export class ExerciseForm extends View {
         this.binder.for(model.title).addValidator(
             new NotBlank({
                 message: 'Please enter a title'
-            }));
-
-        this.binder.for(model.complexity).addValidator(
-            new Min({
-                message: 'Not less then 1',
-                value: 1
-            }));
-
-        this.binder.for(model.complexity).addValidator(
-            new Max({
-                message: 'Not more then 10',
-                value: 10
             }));
     }
 
@@ -65,13 +55,6 @@ export class ExerciseForm extends View {
                             label="Description"
                             id="description"
                             ${field(model.description)}></vaadin-text-area>
-                    <vaadin-integer-field
-                            label="Complexity"
-                            id="complexity"
-                            step-buttons-visible
-                            min="1"
-                            max="10"
-                            ${field(model.complexity)}></vaadin-integer-field>
                 </vaadin-form-layout>
             </div>
             <div class="flex gap-s button-layout">
@@ -80,7 +63,7 @@ export class ExerciseForm extends View {
                     ${this.binder.value.id ? 'Save' : 'Create'}
                 </vaadin-button>
                 <vaadin-button theme="tertiary"
-                               @click=${exerciseStore.cancelEdit}>
+                               @click=${roundStore.cancelEdit}>
                     Cancel
                 </vaadin-button>
                 <vaadin-button class="deleteBtn"
@@ -96,9 +79,9 @@ export class ExerciseForm extends View {
     async save() {
         try {
             if (this.binder.value.id) {
-                await this.binder.submitTo(exerciseStore.update);
+                await this.binder.submitTo(roundStore.update);
             } else {
-                await this.binder.submitTo(exerciseStore.add);
+                await this.binder.submitTo(roundStore.add);
             }
             this.binder.clear();
         } catch (error: any) {
@@ -112,7 +95,7 @@ export class ExerciseForm extends View {
 
     async delete() {
         try {
-            await this.binder.submitTo(exerciseStore.delete);
+            await this.binder.submitTo(roundStore.delete);
             this.binder.clear();
         } catch (error: any) {
             if (error instanceof EndpointError) {

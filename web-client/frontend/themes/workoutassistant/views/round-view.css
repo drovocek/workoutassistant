@@ -8,6 +8,39 @@ round-view vaadin-grid {
     height: 100%;
 }
 
+round-view .editor-layout {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+}
+
+round-view .editor {
+    flex-grow: 1;
+    padding: var(--lumo-space-l);
+}
+
+round-view .button-layout {
+    width: 100%;
+    flex-wrap: wrap;
+    padding-bottom: var(--lumo-space-s);
+    padding-top: var(--lumo-space-s);
+    padding-left: var(--lumo-space-l);
+    padding-right: var(--lumo-space-l);
+    gap: var(--lumo-space-m);
+}
+
+round-view .button-layout .deleteBtn {
+
+}
+
+round-view round-form {
+    width: 25em;
+}
+
+
+
+
 round-view exercise-selector {
     width: 25em;
 }
+
