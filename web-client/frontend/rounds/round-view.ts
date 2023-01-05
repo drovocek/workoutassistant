@@ -18,7 +18,7 @@ import '@vaadin/upload'
 import './round-details';
 import './exercise-selector';
 import {html} from 'lit';
-import {customElement, property, query, state} from 'lit/decorators.js';
+import {customElement, query, state} from 'lit/decorators.js';
 import {View} from '../common/views/view';
 import {roundStore, uiStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
@@ -85,7 +85,7 @@ export class RoundView extends View {
                                 theme="no-border"
                                 .items=${roundStore.filtered}
                                 .detailsOpenedItems="${this.detailsOpenedItem}"
-                                @active-item-changed="${this.updateOpened()}"
+                                @active-item-changed="${this.updateOpened}"
                                 ${this.renderDetails()}>
                             <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
                             <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
@@ -103,19 +103,22 @@ export class RoundView extends View {
         `;
     }
 
-    private updateOpened() {
-        return (e: GridActiveItemChangedEvent<WorkoutRoundTo>) => {
-            this.detailsOpenedItem = [e.detail.value];
-            this.detailsClosed = this.detailsOpenedItem[0] == null;
-        };
+    private updateOpened(e: GridActiveItemChangedEvent<WorkoutRoundTo>) {
+        this.detailsOpenedItem = [e.detail.value];
+        let workoutRound = this.detailsOpenedItem[0];
+        this.detailsClosed = workoutRound == null;
+        if (workoutRound) {
+            roundStore.setDetailsOpenedStations(this.extractDetailsData(workoutRound));
+        } else {
+            roundStore.setDetailsOpenedStations([]);
+        }
     }
 
     private renderDetails() {
         return gridRowDetailsRenderer<WorkoutRoundTo>(
             (round) => {
-                let detailsData = this.extractDetailsData(round);
                 return html`
-                    <round-details class="h-full" .detailsData="${detailsData}"></round-details>
+                    <round-details class="h-full"></round-details>
                 `
             },
             []

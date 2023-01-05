@@ -20,19 +20,17 @@ import {customElement, state} from 'lit/decorators.js';
 import {GridDragStartEvent} from "@vaadin/grid";
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import {exerciseSelectorStore} from "Frontend/common/stores/app-store";
+import {View} from "Frontend/common/views/view";
 
 @customElement('exercise-selector')
-export class ExerciseSelector extends LitElement {
-
-    @state()
-    public draggedExercise?: ExerciseTo;
+export class ExerciseSelector extends View {
 
     private clearDraggedExercise = () => {
-        this.draggedExercise = undefined;
+        exerciseSelectorStore.setDraggedExercise(undefined);
     };
 
     private storeDraggingExercise = (event: GridDragStartEvent<ExerciseTo>) => {
-        this.draggedExercise = event.detail.draggedItems[0];
+        exerciseSelectorStore.setDraggedExercise(event.detail.draggedItems[0]);
     };
 
     render() {

@@ -3,11 +3,13 @@ import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo"
 import {WorkoutRoundEndpoint} from "Frontend/generated/endpoints";
 import {uiStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundToModel from "Frontend/generated/ru/soft/common/to/WorkoutRoundToModel";
+import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
 
 export class RoundStore {
     data: WorkoutRoundTo[] = [];
     filterText = '';
     selected: WorkoutRoundTo | null = null;
+    detailsOpenedStations: Array<WorkoutStationSnapshot | undefined> = [];
 
     constructor() {
         makeAutoObservable(
@@ -50,8 +52,11 @@ export class RoundStore {
     }
 
     setSelected(selected: WorkoutRoundTo) {
-        console.log(selected);
         this.selected = selected;
+    }
+
+    setDetailsOpenedStations(detailsOpenedStations: Array<WorkoutStationSnapshot | undefined>) {
+        this.detailsOpenedStations = detailsOpenedStations;
     }
 
     public async update(updatable: WorkoutRoundTo): Promise<void> {

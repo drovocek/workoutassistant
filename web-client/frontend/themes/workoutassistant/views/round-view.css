@@ -8,14 +8,6 @@ round-view vaadin-grid {
     height: 100%;
 }
 
-round-view round-details {
-    height: 100%;
-}
-
-round-view .grid-wrapper {
-    width: 100%;
-}
-
 round-view exercise-selector {
     width: 25em;
 }

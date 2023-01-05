@@ -1,9 +1,11 @@
 import {appStore} from 'Frontend/common/stores/app-store';
+import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import {makeAutoObservable} from "mobx";
 
 export class ExerciseSelectorStore {
 
     filterText = '';
+    public draggedExercise?: ExerciseTo;
 
     constructor() {
         makeAutoObservable(
@@ -12,6 +14,10 @@ export class ExerciseSelectorStore {
             },
             {autoBind: true}
         );
+    }
+
+    setDraggedExercise(draggedExercise?: ExerciseTo) {
+        this.draggedExercise = draggedExercise;
     }
 
     get filtered() {

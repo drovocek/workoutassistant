@@ -16,19 +16,21 @@ import '@vaadin/integer-field';
 import '@vaadin/upload'
 import '@vaadin/confirm-dialog'
 import {html, LitElement} from 'lit';
-import {customElement, property, state} from 'lit/decorators.js';
+import {customElement, state} from 'lit/decorators.js';
 import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
 import {GridActiveItemChangedEvent, GridDragStartEvent, GridDropEvent} from "@vaadin/grid";
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import WorkoutStationSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshotModel";
 import ExerciseSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/ExerciseSnapshotModel";
 import {gridRowDetailsRenderer} from "@vaadin/grid/lit";
+import {exerciseSelectorStore, roundStore} from "Frontend/common/stores/app-store";
+import {View} from "Frontend/common/views/view";
 
 @customElement('round-details')
 export class RoundDetails extends LitElement {
 
-    @property()
-    private detailsData: Array<WorkoutStationSnapshot | undefined> = [];
+    @state()
+    private detailsOpenedStations: Array<WorkoutStationSnapshot | undefined> = [];
 
     @state()
     private draggedStation?: WorkoutStationSnapshot;
@@ -47,10 +49,17 @@ export class RoundDetails extends LitElement {
     @state()
     public draggedExercise?: ExerciseTo;
 
+    async connectedCallback() {
+        super.connectedCallback();
+        if (roundStore.detailsOpenedStations) {
+            this.detailsOpenedStations = [...roundStore.detailsOpenedStations];
+        }
+    }
+
     render() {
         return html`
             <vaadin-grid
-                    .items=${this.detailsData}
+                    .items=${this.detailsOpenedStations}
                     rows-draggable
                     drop-mode="between"
                     @grid-dragstart="${this.storeDraggingStation}"
@@ -106,20 +115,19 @@ export class RoundDetails extends LitElement {
     private onGridDrop() {
         return (event: GridDropEvent<WorkoutStationSnapshot>) => {
             const {dropTargetItem, dropLocation} = event.detail;
-            console.log(event)
-            if (this.draggedExercise !== undefined && this.isAnExercise(this.draggedExercise)) {
+            if (exerciseSelectorStore.draggedExercise) {
                 console.log("1")
-                const draggedItem = this.asDefaultStation(this.draggedExercise)
-                const dropIndex = this.detailsData.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
-                this.detailsData.splice(dropIndex, 0, draggedItem);
-                this.detailsData = [...this.detailsData];
+                const draggedItem = this.asDefaultStation(exerciseSelectorStore.draggedExercise)
+                const dropIndex = this.detailsOpenedStations.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
+                this.detailsOpenedStations.splice(dropIndex, 0, draggedItem);
+                this.detailsOpenedStations = [...this.detailsOpenedStations];
             } else if (this.draggedStation && dropTargetItem !== this.draggedStation) {
                 console.log("2")
-                const draggedItemIndex = this.detailsData.indexOf(this.draggedStation);
-                this.detailsData.splice(draggedItemIndex, 1);
-                const dropIndex = this.detailsData.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
-                this.detailsData.splice(dropIndex, 0, this.draggedStation);
-                this.detailsData = [...this.detailsData];
+                const draggedItemIndex = this.detailsOpenedStations.indexOf(this.draggedStation);
+                this.detailsOpenedStations.splice(draggedItemIndex, 1);
+                const dropIndex = this.detailsOpenedStations.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
+                this.detailsOpenedStations.splice(dropIndex, 0, this.draggedStation);
+                this.detailsOpenedStations = [...this.detailsOpenedStations];
             }
         }
     }
