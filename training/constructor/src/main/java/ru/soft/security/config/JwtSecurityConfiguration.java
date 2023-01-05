@@ -15,9 +15,9 @@ public class JwtSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-//        http.authorizeHttpRequests(authorize ->
-//                        authorize.requestMatchers("/api/**").hasRole("USER")
-//                                .anyRequest().authenticated());
+        http.authorizeHttpRequests(authorize ->
+                        authorize.requestMatchers("/api/**").hasRole("USER")
+                                .anyRequest().authenticated());
         return buildJwt(http);
     }
 
@@ -25,8 +25,8 @@ public class JwtSecurityConfiguration {
         http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                //.oauth2ResourceServer(oauth2 -> oauth2.jwt(
-//                        jwt -> jwt.jwtAuthenticationConverter(JwtUtil::createJwtUser))) // https://github.com/spring-projects/spring-security/issues/7834
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(
+                        jwt -> jwt.jwtAuthenticationConverter(JwtUtil::createJwtUser))) // https://github.com/spring-projects/spring-security/issues/7834
                 .exceptionHandling()
                 .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
                 .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
