@@ -67,25 +67,29 @@ export class RoundForm extends View {
                     ${this.binder.value.id ? 'Save' : 'Create'}
                 </vaadin-button>
                 <vaadin-button theme="tertiary"
-                               @click=${roundStore.cancelEdit}>
+                               @click=${this.close}>
                     Cancel
                 </vaadin-button>
             </div>
         `;
     }
 
+    private close() {
+        this.hidden = true;
+    }
+
     save() {
         this.saveBtn.disabled = true;
         if (this.binder.value.id) {
             this.binder.submitTo(roundStore.update)
-                .then(()=>{
+                .then(() => {
                     this.binder.clear();
                     this.hidden = true;
                 })
                 .finally(() => this.saveBtn.disabled = false);
         } else {
             this.binder.submitTo(roundStore.add)
-                .then(()=>{
+                .then(() => {
                     this.binder.clear();
                     this.hidden = true;
                 })

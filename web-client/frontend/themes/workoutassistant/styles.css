@@ -9,12 +9,12 @@
 }
 
 @media (max-width: 700px) {
-    .editing .toolbar,
-    editing .grid {
-        display: none;
-    }
+    /*.editing .toolbar,*/
+    /*editing .grid {*/
+    /*    display: none;*/
+    /*}*/
 
-    .editing exercise-form {
+    exercise-form {
         width: 100%;
     }
 

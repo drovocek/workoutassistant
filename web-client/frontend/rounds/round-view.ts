@@ -42,6 +42,9 @@ export class RoundView extends View {
     @query('#deleteBtn')
     private deleteBtn!: Button;
 
+    @query('#actionPanel')
+    private actionPanel!: HTMLDivElement;
+
     @state()
     private detailsOpenedItem: WorkoutRoundTo[] = [];
 
@@ -77,7 +80,7 @@ export class RoundView extends View {
         return html`
             <vaadin-horizontal-layout class="h-full">
                 <div class="w-full">
-                    <div class="toolbar flex gap-s">
+                    <div id="actionPanel" class="toolbar flex gap-s" aria-disabled="true">
                         <vaadin-text-field
                                 .value=${roundStore.filterText}
                                 @input=${this.updateFilter}
@@ -239,7 +242,7 @@ export class RoundView extends View {
     delete() {
         this.deleteBtn.disabled = true;
         roundStore.delete()
-            .catch(() => this.deleteBtn.disabled = false);
+            .catch(() =>  this.copyBtn.disabled = false);
     }
 }
 
