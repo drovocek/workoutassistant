@@ -7,16 +7,18 @@ import '@vaadin/text-field';
 import '@vaadin/text-area';
 import '@vaadin/integer-field';
 import '@vaadin/form-layout';
-import {Binder, field, Max, Min, NotBlank} from "@hilla/form";
-import {exerciseStore, roundStore, uiStore} from "Frontend/common/stores/app-store";
-import {EndpointError} from "@hilla/frontend";
-import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
-import ExerciseToModel from "Frontend/generated/ru/soft/common/to/ExerciseToModel";
+import {Binder, field, NotBlank} from "@hilla/form";
+import {roundStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
 import WorkoutRoundToModel from "Frontend/generated/ru/soft/common/to/WorkoutRoundToModel";
+import {query} from "lit/decorators";
+import {Button} from "@vaadin/button";
 
 @customElement('round-form')
 export class RoundForm extends View {
+
+    @query('#saveBtn')
+    private saveBtn!: Button;
 
     private binder = new Binder<WorkoutRoundTo, WorkoutRoundToModel>(this, WorkoutRoundToModel);
 
@@ -38,7 +40,7 @@ export class RoundForm extends View {
 
         this.binder.for(model.title).addValidator(
             new NotBlank({
-                message: 'Please enter a title'
+                message: 'Enter a title'
             }));
     }
 
@@ -58,51 +60,36 @@ export class RoundForm extends View {
                 </vaadin-form-layout>
             </div>
             <div class="flex gap-s button-layout">
-                <vaadin-button theme="primary"
-                               @click=${this.save}>
+                <vaadin-button
+                        id="saveBtn"
+                        theme="primary"
+                        @click=${this.save}>
                     ${this.binder.value.id ? 'Save' : 'Create'}
                 </vaadin-button>
                 <vaadin-button theme="tertiary"
                                @click=${roundStore.cancelEdit}>
                     Cancel
                 </vaadin-button>
-                <vaadin-button class="deleteBtn"
-                               theme="error"
-                               @click=${this.delete}
-                               ?disabled=${!this.binder.value.id}>
-                    Delete
-                </vaadin-button>
             </div>
         `;
     }
 
-    async save() {
-        try {
-            if (this.binder.value.id) {
-                await this.binder.submitTo(roundStore.update);
-            } else {
-                await this.binder.submitTo(roundStore.add);
-            }
-            this.binder.clear();
-        } catch (error: any) {
-            if (error instanceof EndpointError) {
-                uiStore.showError(`Server error. ${error.message}`);
-            } else {
-                throw error;
-            }
-        }
-    }
-
-    async delete() {
-        try {
-            await this.binder.submitTo(roundStore.delete);
-            this.binder.clear();
-        } catch (error: any) {
-            if (error instanceof EndpointError) {
-                uiStore.showError(`Server error. ${error.message}`);
-            } else {
-                throw error;
-            }
+    save() {
+        this.saveBtn.disabled = true;
+        if (this.binder.value.id) {
+            this.binder.submitTo(roundStore.update)
+                .then(()=>{
+                    this.binder.clear();
+                    this.hidden = true;
+                })
+                .finally(() => this.saveBtn.disabled = false);
+        } else {
+            this.binder.submitTo(roundStore.add)
+                .then(()=>{
+                    this.binder.clear();
+                    this.hidden = true;
+                })
+                .finally(() => this.saveBtn.disabled = false);
         }
     }
 }

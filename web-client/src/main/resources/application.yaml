@@ -16,6 +16,10 @@ spring:
     openfeign:
       circuit breaker:
         enabled: true
+      httpclient:
+        connection-timeout: 160000000
+        ok-http:
+          read-timeout: 160000000
 
 #    openfeign:
 #      client:

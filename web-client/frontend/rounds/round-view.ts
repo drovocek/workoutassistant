@@ -24,6 +24,7 @@ import {View} from '../common/views/view';
 import {roundStore, uiStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
 import {columnBodyRenderer, gridRowDetailsRenderer} from "@vaadin/grid/lit";
+import {Button} from "@vaadin/button";
 
 @customElement('round-view')
 export class RoundView extends View {
@@ -35,11 +36,20 @@ export class RoundView extends View {
     @query('#grid')
     private grid!: Grid;
 
+    @query('#copyBtn')
+    private copyBtn!: Button;
+
+    @query('#deleteBtn')
+    private deleteBtn!: Button;
+
     @state()
     private detailsOpenedItem: WorkoutRoundTo[] = [];
 
     @state()
-    private detailsClosed: boolean = true;
+    private detailsVisible: boolean = false
+
+    @state()
+    private formVisible: boolean = false
 
     private firstSelectionEvent = true;
 
@@ -69,16 +79,52 @@ export class RoundView extends View {
                 <div class="w-full">
                     <div class="toolbar flex gap-s">
                         <vaadin-text-field
-                                placeholder="Filter by name"
                                 .value=${roundStore.filterText}
                                 @input=${this.updateFilter}
-                                clear-button-visible
-                        ></vaadin-text-field>
-                        <vaadin-button @click=${this.clearForm}>Add round</vaadin-button>
+                                clear-button-visible>
+                            <vaadin-icon slot="prefix" icon="vaadin:search"></vaadin-icon>
+                            <vaadin-tooltip slot="tooltip" text="Search field"></vaadin-tooltip>
+                        </vaadin-text-field>
                         <vaadin-button
+                                @click=${this.switchAddFormVisible}
+                                ?disabled=${roundStore.selected?.id || this.detailsVisible}
+                                title="add"
+                                theme="tertiary success icon">
+                            <vaadin-icon icon="vaadin:plus-circle-o"></vaadin-icon>
+                            <vaadin-tooltip slot="tooltip" text="Add button"></vaadin-tooltip>
+                        </vaadin-button>
+                        <vaadin-button
+                                @click=${this.switchEditFormVisible}
+                                ?disabled=${!roundStore.selected?.id || this.detailsVisible}
+                                title="edit"
+                                theme="tertiary icon">
+                            <vaadin-icon icon="vaadin:edit"></vaadin-icon>
+                            <vaadin-tooltip slot="tooltip" text="Edit button"></vaadin-tooltip>
+                        </vaadin-button>
+                        <vaadin-button
+                                id="copyBtn"
+                                @click=${this.copy}
+                                ?disabled=${!roundStore.selected?.id || this.detailsVisible}
+                                title="copy"
+                                theme="tertiary contrast icon">
+                            <vaadin-icon icon="vaadin:copy-o"></vaadin-icon>
+                            <vaadin-tooltip slot="tooltip" text="Copy button"></vaadin-tooltip>
+                        </vaadin-button>
+                        <vaadin-button
+                                id="deleteBtn"
+                                @click=${this.delete}
+                                ?disabled=${!roundStore.selected?.id || this.detailsVisible}
+                                title="delete"
                                 theme="error tertiary icon">
                             <vaadin-icon icon="vaadin:trash"></vaadin-icon>
+                            <vaadin-tooltip slot="tooltip" text="Delete button"></vaadin-tooltip>
                         </vaadin-button>
+                        <vaadin-notification
+                                theme=${uiStore.message.error ? 'error' : 'success'}
+                                position="bottom-start"
+                                .opened=${uiStore.message.open}
+                                .renderer=${(root: HTMLElement) => (root.textContent = uiStore.message.text)}>
+                        </vaadin-notification>
                     </div>
                     <div class="content flex gap-m h-full">
                         <vaadin-grid
@@ -88,72 +134,63 @@ export class RoundView extends View {
                                 @active-item-changed=${this.handleGridSelection}
                                 .detailsOpenedItems="${this.detailsOpenedItem}"
                                 ${this.renderDetails()}>
-                            <vaadin-grid-column
-                                    ${columnBodyRenderer<WorkoutRoundTo>(
-                                            (round) => this.renderDetailsButton(round),
-                                            []
-                                    )}
+                            <vaadin-grid-column ${this.renderDetailsButton()}
                             ></vaadin-grid-column>
                             <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
                             <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
                         </vaadin-grid>
                         <round-form class="flex flex-col gap-s"
-                                    ?hidden=${!roundStore.selected || !this.detailsClosed}></round-form>
+                                    ?hidden=${!this.formVisible || this.detailsVisible}></round-form>
                     </div>
                 </div>
-                <exercise-selector ?hidden=${this.detailsClosed}></exercise-selector>
+                <exercise-selector ?hidden=${!this.detailsVisible}></exercise-selector>
             </vaadin-horizontal-layout>
-            <vaadin-notification
-                    theme=${uiStore.message.error ? 'error' : 'success'}
-                    position="bottom-start"
-                    .opened=${uiStore.message.open}
-                    .renderer=${(root: HTMLElement) => (root.textContent = uiStore.message.text)}>
-            </vaadin-notification>
         `;
     }
 
-    private renderDetailsButton(round: WorkoutRoundTo) {
-        return html`
-            <vaadin-button
-                    title="Exercises"
-                    theme="tertiary icon"
-                    @click="${() => this.switchExercisesVisible(round)}">
-                <vaadin-icon icon="vaadin:chevron-down"></vaadin-icon>
-            </vaadin-button>
-        `
-    }
-
-    private switchExercisesVisible(round: WorkoutRoundTo) {
-        roundStore.cancelEdit();
-        const isOpened = this.detailsOpenedItem.includes(round);
-        this.detailsOpenedItem = isOpened
-            ? this.detailsOpenedItem.filter((r) => r !== round)
-            : [...this.detailsOpenedItem, round]
-        let workoutRound = this.detailsOpenedItem[0];
-        this.detailsClosed = workoutRound == null;
-        if (workoutRound) {
-            roundStore.setDetailsOpenedStations(this.extractDetailsData(workoutRound));
-        } else {
-            roundStore.setDetailsOpenedStations([]);
+    private switchDetailsVisible(round: WorkoutRoundTo) {
+        return () => {
+            this.closeForm();
+            const isOpened = this.detailsOpenedItem.includes(round);
+            this.detailsOpenedItem = isOpened
+                ? this.detailsOpenedItem.filter((r) => r !== round)
+                : [...this.detailsOpenedItem, round]
+            let workoutRound = this.detailsOpenedItem[0];
+            this.detailsVisible = workoutRound != null;
         }
     }
 
     private renderDetails() {
         return gridRowDetailsRenderer<WorkoutRoundTo>(
             (round) => {
+                const stations = this.extractStations(round);
                 return html`
-                    <round-details class="h-full"></round-details>
+                    <round-details .stations="${stations}" class="h-full"></round-details>
                 `
             },
             []
         );
     }
 
+    private renderDetailsButton() {
+        return columnBodyRenderer<WorkoutRoundTo>(
+            (round) => {
+                return html`
+                    <vaadin-button
+                            title="Exercises"
+                            theme="tertiary icon"
+                            @click="${this.switchDetailsVisible(round)}">
+                        <vaadin-icon icon="vaadin:chevron-down"></vaadin-icon>
+                    </vaadin-button>
+                `
+            });
+    }
+
     private updateFilter(e: { target: HTMLInputElement }) {
         roundStore.updateFilter(e.target.value);
     }
 
-    private extractDetailsData(round: WorkoutRoundTo) {
+    private extractStations(round: WorkoutRoundTo) {
         if (round.roundSchema && round.roundSchema.roundStations) {
             return round.roundSchema.roundStations;
         } else {
@@ -162,6 +199,8 @@ export class RoundView extends View {
     }
 
     private handleGridSelection(event: CustomEvent) {
+        this.closeForm();
+
         const item: WorkoutRoundTo = event.detail.value as WorkoutRoundTo;
         this.grid.selectedItems = item ? [item] : [];
 
@@ -173,8 +212,34 @@ export class RoundView extends View {
         roundStore.setSelected(item);
     }
 
-    private clearForm() {
-        roundStore.editNew();
+    private switchEditFormVisible() {
+        this.formVisible = !this.formVisible;
+    }
+
+    private closeForm() {
+        roundStore.cancelEdit();
+        this.formVisible = false;
+    }
+
+    private switchAddFormVisible() {
+        if (roundStore.hasSelected()) {
+            this.closeForm();
+        } else {
+            roundStore.editNew();
+            this.formVisible = true;
+        }
+    }
+
+    copy() {
+        this.copyBtn.disabled = true;
+        roundStore.copy()
+            .finally(() => this.copyBtn.disabled = false);
+    }
+
+    delete() {
+        this.deleteBtn.disabled = true;
+        roundStore.delete()
+            .catch(() => this.deleteBtn.disabled = false);
     }
 }
 

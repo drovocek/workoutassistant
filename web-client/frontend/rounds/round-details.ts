@@ -15,21 +15,23 @@ import '@vaadin/text-area';
 import '@vaadin/integer-field';
 import '@vaadin/upload'
 import '@vaadin/confirm-dialog'
+import '@vaadin/vertical-layout';
 import {html, LitElement} from 'lit';
-import {customElement, state} from 'lit/decorators.js';
+import {customElement, property, state} from 'lit/decorators.js';
 import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
 import {GridActiveItemChangedEvent, GridDragStartEvent, GridDropEvent} from "@vaadin/grid";
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import WorkoutStationSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshotModel";
 import ExerciseSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/ExerciseSnapshotModel";
 import {columnBodyRenderer, gridRowDetailsRenderer} from "@vaadin/grid/lit";
-import {exerciseSelectorStore, roundStore} from "Frontend/common/stores/app-store";
+import {exerciseSelectorStore} from "Frontend/common/stores/app-store";
+import {applyTheme} from "Frontend/generated/theme";
 
 @customElement('round-details')
 export class RoundDetails extends LitElement {
 
-    @state()
-    private detailsOpenedStations: Array<WorkoutStationSnapshot | undefined> = [];
+    @property()
+    public stations: Array<WorkoutStationSnapshot> = [];
 
     @state()
     private draggedStation?: WorkoutStationSnapshot;
@@ -48,17 +50,16 @@ export class RoundDetails extends LitElement {
     @state()
     public draggedExercise?: ExerciseTo;
 
-    async connectedCallback() {
-        super.connectedCallback();
-        if (roundStore.detailsOpenedStations) {
-            this.detailsOpenedStations = [...roundStore.detailsOpenedStations];
-        }
+    protected createRenderRoot() {
+        const root = super.createRenderRoot();
+        applyTheme(root);
+        return root;
     }
 
     render() {
         return html`
             <vaadin-grid
-                    .items=${this.detailsOpenedStations}
+                    .items=${this.stations}
                     rows-draggable
                     drop-mode="between"
                     @grid-dragstart="${this.storeDraggingStation}"
@@ -67,40 +68,42 @@ export class RoundDetails extends LitElement {
                     .detailsOpenedItems="${this.detailsOpenedItem}"
                     @active-item-changed="${this.updateOpened()}"
                     ${this.renderDetails()}>
-                <vaadin-grid-sort-column path="exercise.title"
-                                         auto-width></vaadin-grid-sort-column>
                 <vaadin-grid-column
                         ${columnBodyRenderer<WorkoutStationSnapshot>(
                                 (station) => this.renderStationBadge(station),
                                 []
                         )}
                 ></vaadin-grid-column>
-                              
-                <!--          <vaadin-grid-sort-column path="repetitions"
-                                                  auto-width></vaadin-grid-sort-column>
-                         <vaadin-grid-sort-column path="weight"
-                                                  auto-width></vaadin-grid-sort-column>
-                         <vaadin-grid-sort-column path="duration"
-                                                  auto-width></vaadin-grid-sort-column>
-                         <vaadin-grid-sort-column path="rest"
-                                                  auto-width></vaadin-grid-sort-column>-->
             </vaadin-grid>
         `;
     }
 
     private renderStationBadge(station: WorkoutStationSnapshot) {
-        return html`
-            <span theme="badge" title="${station.exercise.description}">
-                 <vaadin-icon title="Repetitions" icon="vaadin:rotate-right" style="padding: var(--lumo-space-xs)"></vaadin-icon>
-                 <span title="Repetitions">${station.repetitions}</span>
-                 <vaadin-icon title="Weight" icon="vaadin:compile" style="padding: var(--lumo-space-xs)"></vaadin-icon>
-                 <span title="Weight">${station.weight}</span>
-                 <vaadin-icon title="Duration" icon="vaadin:stopwatch" style="padding: var(--lumo-space-xs)"></vaadin-icon>
-                 <span title="Duration">${station.duration}</span>
-                 <vaadin-icon title="Rest" icon="vaadin:coffee" style="padding: var(--lumo-space-xs)"></vaadin-icon>
-                 <span title="Rest">${station.rest}</span>
-            </span>
+        let badgeThemes = "badge";
+        const complexity = station.exercise.complexity;
+        if (complexity < 3) {
+            badgeThemes = badgeThemes.concat(" success");
+        } else if (complexity > 4) {
+            badgeThemes = badgeThemes.concat(" error");
+        }
 
+        return html`
+            <vaadin-vertical-layout style="line-height: var(--lumo-line-height-m);">
+                <span theme="badge contrast" title="${station.exercise.description}">${station.exercise.title}</span>
+                <span theme=${badgeThemes} title="${station.exercise.description}">
+                     <vaadin-icon title="Repetitions" icon="vaadin:rotate-right"
+                                  style="padding: var(--lumo-space-xs)"></vaadin-icon>
+                     <span title="Repetitions">${station.repetitions}</span>
+                     <vaadin-icon title="Weight" icon="vaadin:compile"
+                                  style="padding: var(--lumo-space-xs)"></vaadin-icon>
+                     <span title="Weight">${station.weight}</span>
+                     <vaadin-icon title="Duration" icon="vaadin:stopwatch"
+                                  style="padding: var(--lumo-space-xs)"></vaadin-icon>
+                     <span title="Duration">${station.duration}</span>
+                     <vaadin-icon title="Rest" icon="vaadin:coffee" style="padding: var(--lumo-space-xs)"></vaadin-icon>
+                     <span title="Rest">${station.rest}</span>
+                </span>
+            </vaadin-vertical-layout>
         `
     }
 
@@ -138,18 +141,16 @@ export class RoundDetails extends LitElement {
         return (event: GridDropEvent<WorkoutStationSnapshot>) => {
             const {dropTargetItem, dropLocation} = event.detail;
             if (exerciseSelectorStore.draggedExercise) {
-                console.log("1")
                 const draggedItem = this.asDefaultStation(exerciseSelectorStore.draggedExercise)
-                const dropIndex = this.detailsOpenedStations.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
-                this.detailsOpenedStations.splice(dropIndex, 0, draggedItem);
-                this.detailsOpenedStations = [...this.detailsOpenedStations];
+                const dropIndex = this.stations.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
+                this.stations.splice(dropIndex, 0, draggedItem);
+                this.stations = [...this.stations];
             } else if (this.draggedStation && dropTargetItem !== this.draggedStation) {
-                console.log("2")
-                const draggedItemIndex = this.detailsOpenedStations.indexOf(this.draggedStation);
-                this.detailsOpenedStations.splice(draggedItemIndex, 1);
-                const dropIndex = this.detailsOpenedStations.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
-                this.detailsOpenedStations.splice(dropIndex, 0, this.draggedStation);
-                this.detailsOpenedStations = [...this.detailsOpenedStations];
+                const draggedItemIndex = this.stations.indexOf(this.draggedStation);
+                this.stations.splice(draggedItemIndex, 1);
+                const dropIndex = this.stations.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
+                this.stations.splice(dropIndex, 0, this.draggedStation);
+                this.stations = [...this.stations];
             }
         }
     }
