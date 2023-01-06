@@ -4,8 +4,10 @@ import {WorkoutRoundEndpoint} from "Frontend/generated/endpoints";
 import {roundStore, uiStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundToModel from "Frontend/generated/ru/soft/common/to/WorkoutRoundToModel";
 import {EndpointError} from "@hilla/frontend";
+import {GeneralStore} from "Frontend/common/stores/general-store";
+import {randomString} from "Frontend/common/app-utils";
 
-export class RoundStore {
+export class RoundStore implements GeneralStore<WorkoutRoundTo> {
     data: WorkoutRoundTo[] = [];
     filterText = '';
     selected: WorkoutRoundTo | null = null;
@@ -38,20 +40,12 @@ export class RoundStore {
         );
     }
 
-    hasSelected(): boolean {
-        return this.selected != null;
-    }
-
     updateFilter(filterText: string) {
         this.filterText = filterText;
     }
 
-    editNew() {
-        this.selected = WorkoutRoundToModel.createEmptyValue();
-    }
-
-    cancelEdit() {
-        this.selected = null;
+    hasSelected(): boolean {
+        return this.selected !== null;
     }
 
     setSelected(selected: WorkoutRoundTo | null) {
@@ -82,7 +76,7 @@ export class RoundStore {
         if (!original) return;
 
         let copy = WorkoutRoundToModel.createEmptyValue();
-        copy.title = original.title + ' Copy ' + this.randomString(5);
+        copy.title = original.title + ' Copy ' + randomString(5);
         copy.description = original.description;
         copy.roundSchema = JSON.parse(JSON.stringify(original.roundSchema));
 
@@ -92,16 +86,6 @@ export class RoundStore {
                 uiStore.showSuccess('Round copy.');
             })
             .catch(this.processErr);
-    }
-
-    private randomString(length: number) {
-        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
-        const charLength = chars.length;
-        let result = '';
-        for (let i = 0; i < length; i++) {
-            result += chars.charAt(Math.floor(Math.random() * charLength));
-        }
-        return result;
     }
 
     private saveLocal(saved: WorkoutRoundTo) {
@@ -132,15 +116,17 @@ export class RoundStore {
 
     async delete() {
         const removed = roundStore.selected;
-        if (!removed || !removed.id) return;
-
-        await WorkoutRoundEndpoint.delete(removed.id)
+        if (!removed) return;
+        let id = removed.id;
+        if (!id) return;
+        await WorkoutRoundEndpoint.delete(id)
             .then(() => {
                 this.deleteLocal(removed);
                 uiStore.showSuccess('Round deleted.');
                 this.setSelected(null);
             })
             .catch(this.processErr);
+
     }
 
     private deleteLocal(removed: WorkoutRoundTo) {
@@ -154,5 +140,9 @@ export class RoundStore {
         } else {
             throw err;
         }
+    }
+
+    createNew(): WorkoutRoundTo {
+        return WorkoutRoundToModel.createEmptyValue();
     }
 }

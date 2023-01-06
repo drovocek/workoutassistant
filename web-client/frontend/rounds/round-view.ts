@@ -1,30 +1,18 @@
-import '@vaadin/button';
-import '@vaadin/date-picker';
-import '@vaadin/date-time-picker';
-import '@vaadin/form-layout';
 import '@vaadin/grid';
 import type {Grid} from '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-sort-column';
 import '@vaadin/horizontal-layout';
-import '@vaadin/icon';
-import '@vaadin/icons';
-import '@vaadin/notification';
-import '@vaadin/polymer-legacy-adapter';
-import '@vaadin/split-layout';
-import '@vaadin/text-field';
-import '@vaadin/text-area';
-import '@vaadin/integer-field';
-import '@vaadin/upload'
 import './round-form';
 import './round-details';
 import './exercise-selector';
+import './round-action-panel';
 import {html} from 'lit';
 import {customElement, query, state} from 'lit/decorators.js';
 import {View} from '../common/views/view';
-import {roundStore, uiStore} from "Frontend/common/stores/app-store";
+import {roundStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
 import {columnBodyRenderer, gridRowDetailsRenderer} from "@vaadin/grid/lit";
-import {Button} from "@vaadin/button";
+import {AppForm} from "Frontend/common/components/app-form";
 
 @customElement('round-view')
 export class RoundView extends View {
@@ -36,23 +24,14 @@ export class RoundView extends View {
     @query('#grid')
     private grid!: Grid;
 
-    @query('#copyBtn')
-    private copyBtn!: Button;
-
-    @query('#deleteBtn')
-    private deleteBtn!: Button;
-
-    @query('#actionPanel')
-    private actionPanel!: HTMLDivElement;
+    @query('#form')
+    private form!: AppForm<WorkoutRoundTo>;
 
     @state()
     private detailsOpenedItem: WorkoutRoundTo[] = [];
 
     @state()
     private detailsVisible: boolean = false
-
-    @state()
-    private formVisible: boolean = false
 
     private firstSelectionEvent = true;
 
@@ -69,8 +48,10 @@ export class RoundView extends View {
         );
         this.autorun(() => {
             if (roundStore.selected) {
+                console.log("11111")
                 this.classList.add("editing");
             } else {
+                console.log("2222")
                 this.classList.remove("editing");
             }
         });
@@ -80,55 +61,7 @@ export class RoundView extends View {
         return html`
             <vaadin-horizontal-layout class="h-full">
                 <div class="w-full">
-                    <div id="actionPanel" class="toolbar flex gap-s" aria-disabled="true">
-                        <vaadin-text-field
-                                .value=${roundStore.filterText}
-                                @input=${this.updateFilter}
-                                clear-button-visible>
-                            <vaadin-icon slot="prefix" icon="vaadin:search"></vaadin-icon>
-                            <vaadin-tooltip slot="tooltip" text="Search field"></vaadin-tooltip>
-                        </vaadin-text-field>
-                        <vaadin-button
-                                @click=${this.switchAddFormVisible}
-                                ?disabled=${roundStore.selected?.id || this.detailsVisible}
-                                title="add"
-                                theme="tertiary success icon">
-                            <vaadin-icon icon="vaadin:plus-circle-o"></vaadin-icon>
-                            <vaadin-tooltip slot="tooltip" text="Add button"></vaadin-tooltip>
-                        </vaadin-button>
-                        <vaadin-button
-                                @click=${this.switchEditFormVisible}
-                                ?disabled=${!roundStore.selected?.id || this.detailsVisible}
-                                title="edit"
-                                theme="tertiary icon">
-                            <vaadin-icon icon="vaadin:edit"></vaadin-icon>
-                            <vaadin-tooltip slot="tooltip" text="Edit button"></vaadin-tooltip>
-                        </vaadin-button>
-                        <vaadin-button
-                                id="copyBtn"
-                                @click=${this.copy}
-                                ?disabled=${!roundStore.selected?.id || this.detailsVisible}
-                                title="copy"
-                                theme="tertiary contrast icon">
-                            <vaadin-icon icon="vaadin:copy-o"></vaadin-icon>
-                            <vaadin-tooltip slot="tooltip" text="Copy button"></vaadin-tooltip>
-                        </vaadin-button>
-                        <vaadin-button
-                                id="deleteBtn"
-                                @click=${this.delete}
-                                ?disabled=${!roundStore.selected?.id || this.detailsVisible}
-                                title="delete"
-                                theme="error tertiary icon">
-                            <vaadin-icon icon="vaadin:trash"></vaadin-icon>
-                            <vaadin-tooltip slot="tooltip" text="Delete button"></vaadin-tooltip>
-                        </vaadin-button>
-                        <vaadin-notification
-                                theme=${uiStore.message.error ? 'error' : 'success'}
-                                position="bottom-start"
-                                .opened=${uiStore.message.open}
-                                .renderer=${(root: HTMLElement) => (root.textContent = uiStore.message.text)}>
-                        </vaadin-notification>
-                    </div>
+                    <round-action-panel class="toolbar flex gap-s"></round-action-panel>
                     <div class="content flex gap-m h-full">
                         <vaadin-grid
                                 id="grid"
@@ -142,8 +75,7 @@ export class RoundView extends View {
                             <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
                             <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
                         </vaadin-grid>
-                        <round-form class="flex flex-col gap-s"
-                                    ?hidden=${!this.formVisible || this.detailsVisible}></round-form>
+                        <round-form id="form" class="flex flex-col gap-s"></round-form>
                     </div>
                 </div>
                 <exercise-selector ?hidden=${!this.detailsVisible}></exercise-selector>
@@ -153,7 +85,7 @@ export class RoundView extends View {
 
     private switchDetailsVisible(round: WorkoutRoundTo) {
         return () => {
-            this.closeForm();
+            this.form.close();
             const isOpened = this.detailsOpenedItem.includes(round);
             this.detailsOpenedItem = isOpened
                 ? this.detailsOpenedItem.filter((r) => r !== round)
@@ -189,10 +121,6 @@ export class RoundView extends View {
             });
     }
 
-    private updateFilter(e: { target: HTMLInputElement }) {
-        roundStore.updateFilter(e.target.value);
-    }
-
     private extractStations(round: WorkoutRoundTo) {
         if (round.roundSchema && round.roundSchema.roundStations) {
             return round.roundSchema.roundStations;
@@ -202,7 +130,7 @@ export class RoundView extends View {
     }
 
     private handleGridSelection(event: CustomEvent) {
-        this.closeForm();
+        this.form.close();
 
         const item: WorkoutRoundTo = event.detail.value as WorkoutRoundTo;
         this.grid.selectedItems = item ? [item] : [];
@@ -213,36 +141,6 @@ export class RoundView extends View {
         }
 
         roundStore.setSelected(item);
-    }
-
-    private switchEditFormVisible() {
-        this.formVisible = !this.formVisible;
-    }
-
-    private closeForm() {
-        roundStore.cancelEdit();
-        this.formVisible = false;
-    }
-
-    private switchAddFormVisible() {
-        if (roundStore.hasSelected()) {
-            this.closeForm();
-        } else {
-            roundStore.editNew();
-            this.formVisible = true;
-        }
-    }
-
-    copy() {
-        this.copyBtn.disabled = true;
-        roundStore.copy()
-            .finally(() => this.copyBtn.disabled = false);
-    }
-
-    delete() {
-        this.deleteBtn.disabled = true;
-        roundStore.delete()
-            .catch(() =>  this.copyBtn.disabled = false);
     }
 }
 

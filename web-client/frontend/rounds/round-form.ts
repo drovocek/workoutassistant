@@ -13,25 +13,15 @@ import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo"
 import WorkoutRoundToModel from "Frontend/generated/ru/soft/common/to/WorkoutRoundToModel";
 import {query} from "lit/decorators";
 import {Button} from "@vaadin/button";
+import {AppForm} from "Frontend/common/components/app-form";
 
 @customElement('round-form')
-export class RoundForm extends View {
+export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
 
     @query('#saveBtn')
     private saveBtn!: Button;
 
     private binder = new Binder<WorkoutRoundTo, WorkoutRoundToModel>(this, WorkoutRoundToModel);
-
-    constructor() {
-        super();
-        this.autorun(() => {
-            if (roundStore.selected) {
-                this.binder.read(roundStore.selected);
-            } else {
-                this.binder.clear();
-            }
-        });
-    }
 
     protected firstUpdated(_changedProperties: any) {
         super.firstUpdated(_changedProperties);
@@ -74,8 +64,21 @@ export class RoundForm extends View {
         `;
     }
 
-    private close() {
+    public close() {
         this.hidden = true;
+    }
+
+    public open(round: WorkoutRoundTo) {
+        this.binder.read(round);
+        this.hidden = false;
+    }
+
+    public clear() {
+        this.binder.clear();
+    }
+
+    public visible() {
+        return !this.hidden;
     }
 
     save() {
