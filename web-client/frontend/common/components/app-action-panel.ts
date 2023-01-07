@@ -4,7 +4,7 @@ import '@vaadin/icons';
 import '@vaadin/notification';
 import '@vaadin/polymer-legacy-adapter';
 import {html} from 'lit';
-import {customElement, query} from 'lit/decorators.js';
+import {customElement, property, query} from 'lit/decorators.js';
 import {Button} from "@vaadin/button";
 import {GeneralStore} from "Frontend/common/stores/general-store";
 import {uiStore} from "Frontend/common/stores/app-store";
@@ -20,13 +20,16 @@ export abstract class AppActionPanel<T> extends View {
     @query('#deleteBtn')
     protected deleteBtn!: Button;
 
+    @property()
+    public targetFormId: string = "#form";
+
     protected form: AppForm<T> | null = null;
 
     protected abstract generalStore(): GeneralStore<T>;
 
     protected firstUpdated(_changedProperties: any) {
         super.firstUpdated(_changedProperties);
-        this.form = document.querySelector("#form") as unknown as AppForm<T>;
+        this.form = document.querySelector(this.targetFormId) as unknown as AppForm<T>;
     }
 
     protected render() {

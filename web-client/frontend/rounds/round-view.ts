@@ -24,7 +24,7 @@ export class RoundView extends View {
     @query('#grid')
     private grid!: Grid;
 
-    @query('#form')
+    @query('#round-form')
     private form!: AppForm<WorkoutRoundTo>;
 
     @state()
@@ -46,22 +46,21 @@ export class RoundView extends View {
             'w-full',
             'h-full'
         );
-        this.autorun(() => {
-            if (roundStore.selected) {
-                console.log("11111")
-                this.classList.add("editing");
-            } else {
-                console.log("2222")
-                this.classList.remove("editing");
-            }
-        });
+        // this.autorun(() => {
+        //     if (roundStore.selected) {
+        //         this.classList.add("editing");
+        //     } else {
+        //         this.classList.remove("editing");
+        //     }
+        // });
+        this.classList.add("editing");
     }
 
     render() {
         return html`
             <vaadin-horizontal-layout class="h-full">
                 <div class="w-full">
-                    <round-action-panel class="toolbar flex gap-s"></round-action-panel>
+                    <round-action-panel ?hidden="${this.detailsVisible}" targetFormId="round-form" class="toolbar flex gap-s"></round-action-panel>
                     <div class="content flex gap-m h-full">
                         <vaadin-grid
                                 id="grid"
@@ -70,12 +69,12 @@ export class RoundView extends View {
                                 @active-item-changed=${this.handleGridSelection}
                                 .detailsOpenedItems="${this.detailsOpenedItem}"
                                 ${this.renderDetails()}>
-                            <vaadin-grid-column ${this.renderDetailsButton()}
+                            <vaadin-grid-column ${this.renderDetailsButton()} header="Details"
                             ></vaadin-grid-column>
                             <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
                             <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
                         </vaadin-grid>
-                        <round-form id="form" class="flex flex-col gap-s"></round-form>
+                        <round-form id="round-form" class="flex flex-col gap-s"></round-form>
                     </div>
                 </div>
                 <exercise-selector ?hidden=${!this.detailsVisible}></exercise-selector>

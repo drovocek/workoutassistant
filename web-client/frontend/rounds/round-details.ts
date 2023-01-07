@@ -155,10 +155,6 @@ export class RoundDetails extends LitElement {
         }
     }
 
-    private isAnExercise(obj: any) {
-        return obj !== undefined && 'id' in obj && 'title' in obj && 'description' in obj && 'complexity' in obj;
-    }
-
     private asDefaultStation(exercise: ExerciseTo): WorkoutStationSnapshot {
         const station = WorkoutStationSnapshotModel.createEmptyValue();
         const exerciseSnapshot = ExerciseSnapshotModel.createEmptyValue();
