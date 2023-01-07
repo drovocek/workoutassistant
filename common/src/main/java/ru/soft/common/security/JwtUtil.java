@@ -1,4 +1,4 @@
-package ru.soft.security.config;
+package ru.soft.common.security;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +22,6 @@ public class JwtUtil {
             List<String> rolesList = (List<String>) realmAccess.get("roles");
             roles = new HashSet<>(rolesList);
         }
-        JwtUser jwtUser = new JwtUser(jwt, roles, null);
-        System.out.println("!!!!!!!!!");
-        System.out.println(jwtUser.getRoles());
-        log.info(jwtUser.toString());
-        return jwtUser;
+        return new JwtUser(jwt, roles, null);
     }
 }
