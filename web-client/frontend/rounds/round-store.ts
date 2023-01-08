@@ -5,7 +5,7 @@ import {roundStore, uiStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundToModel from "Frontend/generated/ru/soft/common/to/WorkoutRoundToModel";
 import {EndpointError} from "@hilla/frontend";
 import {GeneralStore} from "Frontend/common/stores/general-store";
-import {deepEquals, randomString} from "Frontend/common/utils/app-utils";
+import {deepEquals, processErr, randomString} from "Frontend/common/utils/app-utils";
 import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
 
 export class RoundStore implements GeneralStore<WorkoutRoundTo> {
@@ -63,7 +63,7 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
                 this.saveLocal(updatable);
                 uiStore.showSuccess('Exercise updated.');
             })
-            .catch(this.processErr);
+            .catch(processErr);
     }
 
     public async add(stored: WorkoutRoundTo) {
@@ -72,7 +72,7 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
                 this.saveLocal(stored);
                 uiStore.showSuccess('Round created.');
             })
-            .catch(this.processErr);
+            .catch(processErr);
     }
 
     public async copy() {
@@ -88,8 +88,7 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
             .then(copy => {
                 this.saveLocalAfterSelected(copy);
                 uiStore.showSuccess('Round copy.');
-            })
-            .catch(this.processErr);
+            });
     }
 
     private saveLocal(saved: WorkoutRoundTo) {
@@ -125,25 +124,15 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         if (!id) return;
         await WorkoutRoundEndpoint.delete(id)
             .then(() => {
+                this.setSelected(null);
                 this.deleteLocal(removed);
                 uiStore.showSuccess('Round deleted.');
-                this.setSelected(null);
-            })
-            .catch(this.processErr);
+            });
 
     }
 
     private deleteLocal(removed: WorkoutRoundTo) {
         this.data = this.data.filter((c) => c.id !== removed.id);
-    }
-
-    protected processErr(err: any) {
-        console.log('Operation failed');
-        if (err instanceof EndpointError) {
-            uiStore.showError(`Server error. ${err.message}`);
-        } else {
-            throw err;
-        }
     }
 
     createNew(): WorkoutRoundTo {
@@ -213,6 +202,13 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         if (originalExists) {
             const dropIndex = roundStore.selectedDetailsItemChildData.indexOf(selected) + 1;
             roundStore.selectedDetailsItemChildData.splice(dropIndex, 0, copy);
+            this.updateOrder();
+        }
+    }
+
+    private updateOrder() {
+        for (let i = 0; i < this.selectedDetailsItemChildData.length; i++) {
+            this.selectedDetailsItemChildData[i].order = i;
         }
     }
 
@@ -221,14 +217,13 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         if (!selected) return;
         roundStore.selectedDetailsItemChildData = roundStore.selectedDetailsItemChildData
             .filter((station) => !deepEquals(station, selected));
+        this.setSelectedDetailsItemChild(null);
     }
 
     public async updateDetailsItem() {
         const selected = roundStore.selectedDetailsItem;
         if (!selected?.id) return;
-        for (let i = 0; i < this.selectedDetailsItemChildData.length; i++) {
-            this.selectedDetailsItemChildData[i].order = i;
-        }
+
         selected.roundSchema.roundStations = this.selectedDetailsItemChildData;
         await this.update(selected);
     }

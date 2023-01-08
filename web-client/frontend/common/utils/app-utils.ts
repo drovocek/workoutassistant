@@ -1,3 +1,6 @@
+import {EndpointError} from "@hilla/frontend";
+import {uiStore} from "Frontend/common/stores/app-store";
+
 export const randomString = function (length: number) {
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
     const charLength = chars.length;
@@ -9,7 +12,7 @@ export const randomString = function (length: number) {
 }
 
 export const deepEquals = function (object1: any, object2: any) {
-    if(object1 === undefined || object1=== null || object2 === undefined || object2=== null){
+    if (object1 === undefined || object1 === null || object2 === undefined || object2 === null) {
         return false;
     }
     const keys1 = Object.keys(object1);
@@ -33,4 +36,13 @@ export const deepEquals = function (object1: any, object2: any) {
 
 function isObject(object: any) {
     return object != null && typeof object === 'object';
+}
+
+export const processErr = function (err: any) {
+    console.log('Operation failed');
+    if (err instanceof EndpointError) {
+        uiStore.showError(`Server error. ${err.message}`);
+    } else {
+        throw err;
+    }
 }

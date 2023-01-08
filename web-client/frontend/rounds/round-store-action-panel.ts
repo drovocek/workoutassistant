@@ -22,6 +22,7 @@ import {AppActionPanel} from "Frontend/common/components/action-panel/app-action
 import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
 import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
 import {roundStore} from "Frontend/common/stores/app-store";
+import {processErr} from "Frontend/common/utils/app-utils";
 
 @customElement('round-store-action-panel')
 export class RoundStoreActionPanel extends AppActionPanel<WorkoutRoundTo | WorkoutStationSnapshot> {
@@ -51,22 +52,25 @@ export class RoundStoreActionPanel extends AppActionPanel<WorkoutRoundTo | Worko
     }
 
     public onDelete(): void {
-        this.deleteBtn.disabled = true;
         if (roundStore.hasSelectedDetailsItem()) {
             roundStore.deleteLocalSelectedDetailsItemChild();
         } else {
+            this.deleteBtn.disabled = true;
             roundStore.delete()
-                .finally(() => this.copyBtn.disabled = false);
+                .catch((err) => {
+                    this.deleteBtn.disabled = false;
+                    processErr(err);
+                });
         }
     };
 
     public onCopy(): void {
-        const selectedDetailsItemChild = roundStore.selectedDetailsItemChild;
-        if (selectedDetailsItemChild !== null) {
+        if (roundStore.hasSelectedDetailsItem()) {
             roundStore.copyLocalSelectedDetailsItemChild();
         } else {
             this.copyBtn.disabled = true;
             roundStore.copy()
+                .catch(processErr)
                 .finally(() => this.copyBtn.disabled = false);
         }
     };
