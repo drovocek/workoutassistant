@@ -3,7 +3,6 @@ import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo"
 import {WorkoutRoundEndpoint} from "Frontend/generated/endpoints";
 import {roundStore, uiStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundToModel from "Frontend/generated/ru/soft/common/to/WorkoutRoundToModel";
-import {EndpointError} from "@hilla/frontend";
 import {GeneralStore} from "Frontend/common/stores/general-store";
 import {deepEquals, processErr, randomString} from "Frontend/common/utils/app-utils";
 import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
@@ -155,13 +154,10 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         this.detailsItemChildFilterText = filterText;
     }
 
-    public updateDetailsItemChild(filterText: string) {
-        this.detailsItemChildFilterText = filterText;
-    }
-
     public setSelectedDetailsItem(detailsItem: WorkoutRoundTo | null): void {
         this.selectedDetailsItem = detailsItem;
         this.selectedDetailsItemChildData = this.selectedDetailsItem !== null ? this.extractStations(this.selectedDetailsItem) : [];
+        this.selectedDetailsItemChild = null;
     }
 
     public hasSelectedDetailsItem(): boolean {
@@ -215,7 +211,7 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
     public deleteLocalSelectedDetailsItemChild() {
         const selected = roundStore.selectedDetailsItemChild;
         if (!selected) return;
-        roundStore.selectedDetailsItemChildData = roundStore.selectedDetailsItemChildData
+        this.selectedDetailsItemChildData = roundStore.selectedDetailsItemChildData
             .filter((station) => !deepEquals(station, selected));
         this.setSelectedDetailsItemChild(null);
     }
@@ -226,5 +222,17 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
 
         selected.roundSchema.roundStations = this.selectedDetailsItemChildData;
         await this.update(selected);
+    }
+
+    public updateDetailsItemChild(updated: WorkoutStationSnapshot) {
+        const selected = roundStore.selectedDetailsItemChild;
+        if (!selected) return;
+        this.selectedDetailsItemChildData = this.selectedDetailsItemChildData.map((station) => {
+            if (deepEquals(station, selected)) {
+                return updated;
+            } else {
+                return station;
+            }
+        });
     }
 }
