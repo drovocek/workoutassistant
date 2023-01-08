@@ -224,7 +224,7 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         await this.update(selected);
     }
 
-    public updateDetailsItemChild(updated: WorkoutStationSnapshot) {
+    public updateLocalDetailsItemChild(updated: WorkoutStationSnapshot) {
         const selected = roundStore.selectedDetailsItemChild;
         if (!selected) return;
         this.selectedDetailsItemChildData = this.selectedDetailsItemChildData.map((station) => {
@@ -234,5 +234,11 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
                 return station;
             }
         });
+    }
+
+    public saveLocalDetailsItemChild(saved: WorkoutStationSnapshot[]) {
+        const selected = roundStore.selectedDetailsItemChild;
+        if (selected) return;
+        this.selectedDetailsItemChildData = [...this.selectedDetailsItemChildData, ...saved];
     }
 }

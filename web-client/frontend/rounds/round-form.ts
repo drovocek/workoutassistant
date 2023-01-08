@@ -8,7 +8,7 @@ import '@vaadin/text-area';
 import '@vaadin/integer-field';
 import '@vaadin/form-layout';
 import {Binder, field, NotBlank} from "@hilla/form";
-import {roundStore} from "Frontend/common/stores/app-store";
+import {exerciseStore, roundStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
 import WorkoutRoundToModel from "Frontend/generated/ru/soft/common/to/WorkoutRoundToModel";
 import {query} from "lit/decorators";
@@ -17,12 +17,22 @@ import {AppForm} from "Frontend/common/components/app-form";
 import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
 import WorkoutStationSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshotModel";
 import {FormLayoutResponsiveStep} from "@vaadin/form-layout";
+import {Grid} from "@vaadin/grid";
+import {columnBodyRenderer} from "@vaadin/grid/lit";
+import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
+import ExerciseSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/ExerciseSnapshotModel";
+import {Checkbox} from "@vaadin/checkbox";
 
 @customElement('round-form')
 export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
 
+    @query('#grid')
+    private grid!: Grid;
+
     @query('#saveBtn')
     private saveBtn!: Button;
+
+    private checked: Map<ExerciseTo, Checkbox> = new Map<ExerciseTo, Checkbox>();
 
     private roundBinder = new Binder<WorkoutRoundTo, WorkoutRoundToModel>(this, WorkoutRoundToModel);
     private stationBinder = new Binder<WorkoutStationSnapshot, WorkoutStationSnapshotModel>(this, WorkoutStationSnapshotModel);
@@ -46,7 +56,35 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
 
     render() {
         return html`
-            <div class="editor" ?hidden="${!roundStore.hasSelectedDetailsItem()}">
+            <div class="editor"
+                 ?hidden="${!roundStore.hasSelectedDetailsItem() ||
+                 roundStore.hasSelectedDetailsItemChild()}">
+                <div class="toolbar flex gap-s w-full">
+                    <vaadin-text-field
+                            class="w-full"
+                            placeholder="Filter by name"
+                            .value=${exerciseStore.filterText}
+                            @input=${this.updateFilter}
+                            clear-button-visible>
+                        <vaadin-icon slot="prefix" icon="vaadin:search"></vaadin-icon>
+                        <vaadin-tooltip slot="tooltip" text="Search field"></vaadin-tooltip>
+                    </vaadin-text-field>
+                </div>
+                <div class="content flex gap-m h-full">
+                    <vaadin-grid
+                            id="grid"
+                            theme="no-border hide-filter-header-row"
+                            .items=${exerciseStore.filtered}>
+                        <vaadin-grid-column header="Title"
+                                            ${columnBodyRenderer<ExerciseTo>(
+                                                    (exercise) => this.renderExerciseBadge(exercise),
+                                                    []
+                                            )}
+                        ></vaadin-grid-column>
+                    </vaadin-grid>
+                </div>
+            </div>
+            <div class="editor" ?hidden="${!roundStore.hasSelectedDetailsItemChild()}">
                 <vaadin-form-layout .responsiveSteps="${this.responsiveSteps}">
                     <vaadin-integer-field
                             label="Weight"
@@ -111,8 +149,39 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
         `;
     }
 
+    private updateFilter(e: { target: HTMLInputElement }) {
+        exerciseStore.updateFilter(e.target.value);
+        this.clearChecked();
+    }
+
+    private renderExerciseBadge(exercise: ExerciseTo) {
+        let badgeThemes = "badge";
+        const complexity = exercise.complexity;
+        if (complexity < 3) {
+            badgeThemes = badgeThemes.concat(" success");
+        } else if (complexity > 4) {
+            badgeThemes = badgeThemes.concat(" error");
+        }
+        return html`
+            <span>
+                <vaadin-checkbox @change="${(e: Event) => {
+                    let checked = (e.target as HTMLInputElement).checked;
+                    console.log(e.currentTarget)
+                    if (checked) {
+                        this.checked.set(exercise, e.currentTarget as Checkbox);
+                    } else {
+                        this.checked.delete(exercise);
+                    }
+                    console.log(this.checked)
+                }}"></vaadin-checkbox>
+                <span theme=${badgeThemes} title="${exercise.description}">${exercise.title}</span>
+            </span>
+        `
+    }
+
     public close(): void {
         this.hidden = true;
+        this.clearChecked();
     }
 
     public open(entity: WorkoutRoundTo | WorkoutStationSnapshot): void {
@@ -127,6 +196,14 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
     public clear(): void {
         this.roundBinder.clear();
         this.stationBinder.clear();
+        this.clearChecked();
+    }
+
+    private clearChecked() {
+        this.checked.forEach((value, key) => {
+            value.checked = false;
+        });
+        this.checked.clear();
     }
 
     public visible(): boolean {
@@ -162,14 +239,27 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
 
     private saveStationLocal(): void {
         if (roundStore.hasSelectedDetailsItemChild()) {
-            // console.log(this.stationBinder.validating)
-            if(!this.stationBinder.invalid){
-                // const station = this.stationBinder.(WorkoutStationSnapshotModel.createEmptyValue());
-                console.log(this.stationBinder.value)
-                roundStore.updateDetailsItemChild(this.stationBinder.value);
+            if (!this.stationBinder.invalid) {
+                roundStore.updateLocalDetailsItemChild(this.stationBinder.value);
             }
         } else {
-
+            if (this.checked.size > 0) {
+                let exercises = Array.from(this.checked, ([name]) => name);
+                let stations = exercises.map(exercise => this.asDefaultStation(exercise));
+                roundStore.saveLocalDetailsItemChild(stations);
+                this.clearChecked();
+            }
         }
+        this.close();
+    }
+
+    private asDefaultStation(exercise: ExerciseTo): WorkoutStationSnapshot {
+        const station = WorkoutStationSnapshotModel.createEmptyValue();
+        const exerciseSnapshot = ExerciseSnapshotModel.createEmptyValue();
+        exerciseSnapshot.title = exercise.title;
+        exerciseSnapshot.description = exercise.description;
+        exerciseSnapshot.complexity = exercise.complexity;
+        station.exercise = exerciseSnapshot;
+        return station;
     }
 }
