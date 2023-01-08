@@ -3,7 +3,7 @@ import {makeAutoObservable} from 'mobx';
 import {UiStore} from "Frontend/common/stores/ui-store";
 import {ExerciseStore} from "Frontend/exercises/exercise-store";
 import {RoundStore} from "Frontend/rounds/round-store";
-import {ExerciseSelectorStore} from "Frontend/rounds/exercise-selector-store";
+import {ExerciseSelectorStore} from "Frontend/rounds/selector/exercise-selector-store";
 
 export class AppStore {
     uiStore = new UiStore();

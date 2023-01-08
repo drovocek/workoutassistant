@@ -5,12 +5,21 @@ import {roundStore, uiStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundToModel from "Frontend/generated/ru/soft/common/to/WorkoutRoundToModel";
 import {EndpointError} from "@hilla/frontend";
 import {GeneralStore} from "Frontend/common/stores/general-store";
-import {randomString} from "Frontend/common/app-utils";
+import {deepEquals, randomString} from "Frontend/common/utils/app-utils";
+import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
 
 export class RoundStore implements GeneralStore<WorkoutRoundTo> {
     data: WorkoutRoundTo[] = [];
     filterText = '';
     selected: WorkoutRoundTo | null = null;
+
+    setSelected(selected: WorkoutRoundTo | null) {
+        this.selected = selected;
+    }
+
+    hasSelected(): boolean {
+        return this.selected !== null;
+    }
 
     constructor() {
         makeAutoObservable(
@@ -19,6 +28,9 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
                 selected: observable.ref,
                 initFromServer: false,
                 data: observable.shallow,
+                selectedDetailsItem: observable.ref,
+                selectedDetailsItemChildData: observable.shallow,
+                selectedDetailsItemChild: observable.ref,
             },
             {autoBind: true}
         );
@@ -42,14 +54,6 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
 
     updateFilter(filterText: string) {
         this.filterText = filterText;
-    }
-
-    hasSelected(): boolean {
-        return this.selected !== null;
-    }
-
-    setSelected(selected: WorkoutRoundTo | null) {
-        this.selected = selected;
     }
 
     public async update(updatable: WorkoutRoundTo) {
@@ -144,5 +148,88 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
 
     createNew(): WorkoutRoundTo {
         return WorkoutRoundToModel.createEmptyValue();
+    }
+
+    selectedDetailsItem: WorkoutRoundTo | null = null;
+    selectedDetailsItemChildData: WorkoutStationSnapshot[] = [];
+    selectedDetailsItemChild: WorkoutStationSnapshot | null = null;
+    detailsItemChildFilterText = '';
+
+    public get filteredDetailsItemChild() {
+        const filter = new RegExp(this.detailsItemChildFilterText, 'i');
+        return this.selectedDetailsItemChildData.filter((entity) =>
+            filter.test(`${entity.exercise.title}`)
+        );
+    }
+
+    public updateDetailsItemChildFilter(filterText: string) {
+        this.detailsItemChildFilterText = filterText;
+    }
+
+    public updateDetailsItemChild(filterText: string) {
+        this.detailsItemChildFilterText = filterText;
+    }
+
+    public setSelectedDetailsItem(detailsItem: WorkoutRoundTo | null): void {
+        this.selectedDetailsItem = detailsItem;
+        this.selectedDetailsItemChildData = this.selectedDetailsItem !== null ? this.extractStations(this.selectedDetailsItem) : [];
+    }
+
+    public hasSelectedDetailsItem(): boolean {
+        return this.selectedDetailsItem !== null;
+    }
+
+    public setSelectedDetailsItemChild(detailsItemChild: WorkoutStationSnapshot | null): void {
+        this.selectedDetailsItemChild = detailsItemChild;
+    }
+
+    public hasSelectedDetailsItemChild(): boolean {
+        return this.selectedDetailsItemChild !== null;
+    }
+
+    private extractStations(round: WorkoutRoundTo): WorkoutStationSnapshot[] {
+        if (round.roundSchema && round.roundSchema.roundStations) {
+            return round.roundSchema.roundStations as WorkoutStationSnapshot[];
+        } else {
+            return [];
+        }
+    }
+
+    public detailsItemIsOpened(detailsItem: WorkoutRoundTo): boolean {
+        return deepEquals(this.selectedDetailsItem, detailsItem);
+    }
+
+    public getSelectedItemsDetailAsArr(): WorkoutRoundTo[] {
+        return this.selectedDetailsItem !== null ? [this.selectedDetailsItem] : [];
+    }
+
+    public copyLocalSelectedDetailsItemChild() {
+        const selected = roundStore.selectedDetailsItemChild;
+        if (!selected) return;
+        const copy = {...selected};
+
+        const originalExists = roundStore.selectedDetailsItemChildData
+            .some((station) => deepEquals(station, selected));
+        if (originalExists) {
+            const dropIndex = roundStore.selectedDetailsItemChildData.indexOf(selected) + 1;
+            roundStore.selectedDetailsItemChildData.splice(dropIndex, 0, copy);
+        }
+    }
+
+    public deleteLocalSelectedDetailsItemChild() {
+        const selected = roundStore.selectedDetailsItemChild;
+        if (!selected) return;
+        roundStore.selectedDetailsItemChildData = roundStore.selectedDetailsItemChildData
+            .filter((station) => !deepEquals(station, selected));
+    }
+
+    public async updateDetailsItem() {
+        const selected = roundStore.selectedDetailsItem;
+        if (!selected?.id) return;
+        for (let i = 0; i < this.selectedDetailsItemChildData.length; i++) {
+            this.selectedDetailsItemChildData[i].order = i;
+        }
+        selected.roundSchema.roundStations = this.selectedDetailsItemChildData;
+        await this.update(selected);
     }
 }

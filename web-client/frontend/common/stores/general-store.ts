@@ -1,5 +1,5 @@
 export interface GeneralStore<T> {
-    filterText?: string;
+    filterText: string;
     selected: T | null;
     data: T[];
 

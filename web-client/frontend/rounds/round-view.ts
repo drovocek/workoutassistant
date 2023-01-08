@@ -1,13 +1,13 @@
 import '@vaadin/grid';
-import type {Grid} from '@vaadin/grid';
+import type {Grid, GridActiveItemChangedEvent} from '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-sort-column';
 import '@vaadin/horizontal-layout';
 import './round-form';
-import './round-details';
-import './exercise-selector';
-import './round-action-panel';
+import './details/round-details';
+import './selector/exercise-selector';
+import './round-store-action-panel';
 import {html} from 'lit';
-import {customElement, query, state} from 'lit/decorators.js';
+import {customElement, query} from 'lit/decorators.js';
 import {View} from '../common/views/view';
 import {roundStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
@@ -17,21 +17,11 @@ import {AppForm} from "Frontend/common/components/app-form";
 @customElement('round-view')
 export class RoundView extends View {
 
-    // private selected: ExerciseTo = ExerciseToModel.createEmptyValue();
-    // @state()
-    // private dialogOpened: boolean = false;
-
     @query('#grid')
     private grid!: Grid;
 
     @query('#round-form')
     private form!: AppForm<WorkoutRoundTo>;
-
-    @state()
-    private detailsOpenedItem: WorkoutRoundTo[] = [];
-
-    @state()
-    private detailsVisible: boolean = false
 
     private firstSelectionEvent = true;
 
@@ -46,13 +36,6 @@ export class RoundView extends View {
             'w-full',
             'h-full'
         );
-        // this.autorun(() => {
-        //     if (roundStore.selected) {
-        //         this.classList.add("editing");
-        //     } else {
-        //         this.classList.remove("editing");
-        //     }
-        // });
         this.classList.add("editing");
     }
 
@@ -60,48 +43,48 @@ export class RoundView extends View {
         return html`
             <vaadin-horizontal-layout class="h-full">
                 <div class="w-full">
-                    <round-action-panel ?hidden="${this.detailsVisible}" targetFormId="round-form" class="toolbar flex gap-s"></round-action-panel>
+                    <round-store-action-panel targetFormId="round-form"
+                                              class="toolbar flex gap-s"></round-store-action-panel>
                     <div class="content flex gap-m h-full">
                         <vaadin-grid
                                 id="grid"
                                 theme="no-border"
                                 .items=${roundStore.filtered}
                                 @active-item-changed=${this.handleGridSelection}
-                                .detailsOpenedItems="${this.detailsOpenedItem}"
+                                .detailsOpenedItems="${roundStore.getSelectedItemsDetailAsArr()}"
                                 ${this.renderDetails()}>
-                            <vaadin-grid-column ${this.renderDetailsButton()} header="Details"
-                            ></vaadin-grid-column>
-                            <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
+                            <vaadin-grid-column ${this.renderDetailsButton()} header="Title"></vaadin-grid-column>
                             <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
                         </vaadin-grid>
                         <round-form id="round-form" class="flex flex-col gap-s"></round-form>
                     </div>
                 </div>
-                <exercise-selector ?hidden=${!this.detailsVisible}></exercise-selector>
             </vaadin-horizontal-layout>
         `;
     }
 
     private switchDetailsVisible(round: WorkoutRoundTo) {
         return () => {
+            if(roundStore.hasSelectedDetailsItem()){
+                roundStore.updateDetailsItem();
+            }
             this.form.close();
-            const isOpened = this.detailsOpenedItem.includes(round);
-            this.detailsOpenedItem = isOpened
-                ? this.detailsOpenedItem.filter((r) => r !== round)
-                : [...this.detailsOpenedItem, round]
-            let workoutRound = this.detailsOpenedItem[0];
-            this.detailsVisible = workoutRound != null;
+            this.deselectAll();
+            const isOpened = roundStore.detailsItemIsOpened(round);
+            roundStore.setSelectedDetailsItem(isOpened ? null : round);
         }
+    }
+
+    private deselectAll() {
+        this.grid.selectedItems = [];
+        roundStore.setSelected(null);
     }
 
     private renderDetails() {
         return gridRowDetailsRenderer<WorkoutRoundTo>(
-            (round) => {
-                const stations = this.extractStations(round);
-                return html`
-                    <round-details .stations="${stations}" class="h-full"></round-details>
-                `
-            },
+            () => html`
+                <round-details></round-details>`
+            ,
             []
         );
     }
@@ -109,29 +92,25 @@ export class RoundView extends View {
     private renderDetailsButton() {
         return columnBodyRenderer<WorkoutRoundTo>(
             (round) => {
+                const isOpened = roundStore.detailsItemIsOpened(round);
                 return html`
                     <vaadin-button
                             title="Exercises"
-                            theme="tertiary icon"
+                            theme="tertiary contrast icon"
                             @click="${this.switchDetailsVisible(round)}">
-                        <vaadin-icon icon="vaadin:chevron-down"></vaadin-icon>
+                        <vaadin-icon ?hidden=${isOpened} icon="vaadin:chevron-right-small"></vaadin-icon>
+                        <vaadin-icon ?hidden=${!isOpened} icon="vaadin:chevron-down-small"></vaadin-icon>
                     </vaadin-button>
+                    <span>${round.title}</span>
                 `
             });
     }
 
-    private extractStations(round: WorkoutRoundTo) {
-        if (round.roundSchema && round.roundSchema.roundStations) {
-            return round.roundSchema.roundStations;
-        } else {
-            return [];
-        }
-    }
-
-    private handleGridSelection(event: CustomEvent) {
+    private handleGridSelection(event: GridActiveItemChangedEvent<WorkoutRoundTo>) {
+        this.closeDetails();
         this.form.close();
 
-        const item: WorkoutRoundTo = event.detail.value as WorkoutRoundTo;
+        const item: WorkoutRoundTo = event.detail.value;
         this.grid.selectedItems = item ? [item] : [];
 
         if (this.firstSelectionEvent) {
@@ -141,8 +120,15 @@ export class RoundView extends View {
 
         roundStore.setSelected(item);
     }
+
+    private closeDetails() {
+        roundStore.selectedDetailsItem = null;
+    }
 }
 
+// private selected: ExerciseTo = ExerciseToModel.createEmptyValue();
+// @state()
+// private dialogOpened: boolean = false;
 
 //
 // private openedChanged(e: ConfirmDialogOpenedChangedEvent) {
