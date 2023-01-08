@@ -182,6 +182,7 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
     public close(): void {
         this.hidden = true;
         this.clearChecked();
+        exerciseStore.updateFilter('');
     }
 
     public open(entity: WorkoutRoundTo | WorkoutStationSnapshot): void {
@@ -197,6 +198,7 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
         this.roundBinder.clear();
         this.stationBinder.clear();
         this.clearChecked();
+        exerciseStore.updateFilter('');
     }
 
     private clearChecked() {

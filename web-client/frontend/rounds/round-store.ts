@@ -155,6 +155,9 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
     }
 
     public setSelectedDetailsItem(detailsItem: WorkoutRoundTo | null): void {
+        if (this.hasSelectedDetailsItem()) {
+            roundStore.updateDetailsItem();
+        }
         this.selectedDetailsItem = detailsItem;
         this.selectedDetailsItemChildData = this.selectedDetailsItem !== null ? this.extractStations(this.selectedDetailsItem) : [];
         this.selectedDetailsItemChild = null;

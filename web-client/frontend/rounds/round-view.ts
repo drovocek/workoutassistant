@@ -65,9 +65,6 @@ export class RoundView extends View {
 
     private switchDetailsVisible(round: WorkoutRoundTo) {
         return () => {
-            if(roundStore.hasSelectedDetailsItem()){
-                roundStore.updateDetailsItem();
-            }
             this.form.close();
             this.deselectAll();
             const isOpened = roundStore.detailsItemIsOpened(round);
@@ -122,7 +119,7 @@ export class RoundView extends View {
     }
 
     private closeDetails() {
-        roundStore.selectedDetailsItem = null;
+        roundStore.setSelectedDetailsItem(null);
     }
 }
 
