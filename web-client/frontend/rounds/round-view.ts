@@ -26,16 +26,6 @@ export class RoundView extends View {
 
     async connectedCallback() {
         super.connectedCallback();
-        this.classList.add(
-            'box-border',
-            'flex',
-            'flex-col',
-            'p-m',
-            'gap-s',
-            'w-full',
-            'h-full'
-        );
-        // this.classList.add("editing");
         this.autorun(() => {
             if (roundStore.formOpened) {
                 this.classList.add("editing");
@@ -47,10 +37,10 @@ export class RoundView extends View {
 
     render() {
         return html`
-            <div class="content flex h-full">
-                <div class="filter-grid gap-m w-full h-full">
+            <div class="content">
+                <div class="filter-grid">
                     <round-store-action-panel targetFormId="round-form"
-                                              class="toolbar gap-s"></round-store-action-panel>
+                                              class="action-panel"></round-store-action-panel>
                     <vaadin-grid
                             id="grid"
                             theme="no-border"

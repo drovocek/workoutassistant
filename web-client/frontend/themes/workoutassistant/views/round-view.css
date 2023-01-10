@@ -1,12 +1,28 @@
 round-view {
+    height: 100%;
+    width: 100%;
     overflow: hidden;
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: column;
+    gap: var(--lumo-space-s);
 }
 
 round-view .filter-grid {
-
+    width: 100%;
+    gap: var(--lumo-space-m);
+    padding: var(--lumo-space-m);
 }
 
 round-view .content {
+    display: flex;
+    height: 100%;
+}
+
+round-view .action-panel {
+    padding: 0;
+    margin: 0;
+    gap: var(--lumo-space-s);
 }
 
 round-view vaadin-grid {
@@ -31,6 +47,7 @@ round-view round-form {
     display: flex;
     flex-direction: column;
     gap: var(--lumo-space-s);
+    padding: var(--lumo-space-m);
 }
 
 round-view round-form .editor,

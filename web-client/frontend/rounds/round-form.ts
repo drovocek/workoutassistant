@@ -84,7 +84,6 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
             <div class="exercise-selector"
                  ?hidden="${hidden}">
                 <vaadin-text-field
-                        class="w-full"
                         placeholder="Filter by name"
                         .value=${exerciseStore.filterText}
                         @input=${this.updateFilter}
