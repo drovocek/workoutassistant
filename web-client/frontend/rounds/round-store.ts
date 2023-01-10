@@ -11,6 +11,7 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
     data: WorkoutRoundTo[] = [];
     filterText = '';
     selected: WorkoutRoundTo | null = null;
+    formOpened: boolean = false;
 
     setSelected(selected: WorkoutRoundTo | null) {
         this.selected = selected;
@@ -25,6 +26,7 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
             this,
             {
                 selected: observable.ref,
+                formOpened: observable.ref,
                 initFromServer: false,
                 data: observable.shallow,
                 selectedDetailsItem: observable.ref,

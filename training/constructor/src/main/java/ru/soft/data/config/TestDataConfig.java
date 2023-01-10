@@ -46,24 +46,26 @@ public class TestDataConfig {
     @Bean
     public CommandLineRunner testDataRunner() {
         return args -> {
-            List<Exercise> exercises = exerciseTestDataStore.entities(true);
-            this.exerciseRepository.saveAll(exercises);
+            if (this.exerciseRepository.count() == 0) {
+                List<Exercise> exercises = exerciseTestDataStore.entities(true);
+                this.exerciseRepository.saveAll(exercises);
 
-            List<WorkoutRound> workoutRounds = workoutRoundTestDataStore.entities(true);
-            this.workoutRoundRepository.saveAll(workoutRounds);
+                List<WorkoutRound> workoutRounds = workoutRoundTestDataStore.entities(true);
+                this.workoutRoundRepository.saveAll(workoutRounds);
 
-            List<WorkoutPlan> workoutPlans = workoutPlanTestDataStore.entities(true);
-            this.workoutPlanRepository.saveAll(workoutPlans);
+                List<WorkoutPlan> workoutPlans = workoutPlanTestDataStore.entities(true);
+                this.workoutPlanRepository.saveAll(workoutPlans);
 
-            List<WorkoutSession> workoutSessions = workoutSessionTestDataStore.entities(true);
-            Iterable<WorkoutSession> workoutSessionsWithIds =
-                    this.workoutSessionRepository.saveAll(workoutSessions);
-            UUID[] sessionIds = StreamSupport.stream(workoutSessionsWithIds.spliterator(), false)
-                    .map(WorkoutSession::id)
-                    .toArray(UUID[]::new);
+                List<WorkoutSession> workoutSessions = workoutSessionTestDataStore.entities(true);
+                Iterable<WorkoutSession> workoutSessionsWithIds =
+                        this.workoutSessionRepository.saveAll(workoutSessions);
+                UUID[] sessionIds = StreamSupport.stream(workoutSessionsWithIds.spliterator(), false)
+                        .map(WorkoutSession::id)
+                        .toArray(UUID[]::new);
 
-            List<WorkoutResult> workoutResults = workoutResultTestDataStore.entities(true, sessionIds);
-            this.workoutResultRepository.saveAll(workoutResults);
+                List<WorkoutResult> workoutResults = workoutResultTestDataStore.entities(true, sessionIds);
+                this.workoutResultRepository.saveAll(workoutResults);
+            }
         };
     }
 }

@@ -1,7 +1,5 @@
 import '@vaadin/grid';
-import type {Grid, GridActiveItemChangedEvent} from '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-sort-column';
-import '@vaadin/horizontal-layout';
 import './round-form';
 import './details/round-details';
 import './selector/exercise-selector';
@@ -13,6 +11,7 @@ import {roundStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
 import {columnBodyRenderer, gridRowDetailsRenderer} from "@vaadin/grid/lit";
 import {AppForm} from "Frontend/common/components/app-form";
+import type {Grid, GridActiveItemChangedEvent} from '@vaadin/grid';
 
 @customElement('round-view')
 export class RoundView extends View {
@@ -36,30 +35,35 @@ export class RoundView extends View {
             'w-full',
             'h-full'
         );
-        this.classList.add("editing");
+        // this.classList.add("editing");
+        this.autorun(() => {
+            if (roundStore.formOpened) {
+                this.classList.add("editing");
+            } else {
+                this.classList.remove("editing");
+            }
+        });
     }
 
     render() {
         return html`
-            <vaadin-horizontal-layout class="h-full">
-                <div class="w-full">
+            <div class="content flex h-full">
+                <div class="filter-grid gap-m w-full h-full">
                     <round-store-action-panel targetFormId="round-form"
-                                              class="toolbar flex gap-s"></round-store-action-panel>
-                    <div class="content flex gap-m h-full">
-                        <vaadin-grid
-                                id="grid"
-                                theme="no-border"
-                                .items=${roundStore.filtered}
-                                @active-item-changed=${this.handleGridSelection}
-                                .detailsOpenedItems="${roundStore.getSelectedItemsDetailAsArr()}"
-                                ${this.renderDetails()}>
-                            <vaadin-grid-column ${this.renderDetailsButton()} header="Title"></vaadin-grid-column>
-                            <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
-                        </vaadin-grid>
-                        <round-form id="round-form" class="flex flex-col gap-s"></round-form>
-                    </div>
+                                              class="toolbar gap-s"></round-store-action-panel>
+                    <vaadin-grid
+                            id="grid"
+                            theme="no-border"
+                            .items=${roundStore.filtered}
+                            .detailsOpenedItems="${roundStore.getSelectedItemsDetailAsArr()}"
+                            @active-item-changed=${this.handleGridSelection}
+                            ${this.renderDetails()}>
+                        <vaadin-grid-column ${this.renderDetailsButton()} header="Title"></vaadin-grid-column>
+                        <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
+                    </vaadin-grid>
                 </div>
-            </vaadin-horizontal-layout>
+                <round-form id="round-form"></round-form>
+            </div>
         `;
     }
 

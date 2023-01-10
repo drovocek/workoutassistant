@@ -44,13 +44,14 @@ export class ExerciseView extends View {
             'w-full',
             'h-full'
         );
-        this.autorun(() => {
-            if (exerciseStore.selected) {
-                this.classList.add("editing");
-            } else {
-                this.classList.remove("editing");
-            }
-        });
+        this.classList.add("editing");
+        // this.autorun(() => {
+        //     if (exerciseStore.selected) {
+        //         this.classList.add("editing");
+        //     } else {
+        //         this.classList.remove("editing");
+        //     }
+        // });
     }
 
     render() {

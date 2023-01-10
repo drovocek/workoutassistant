@@ -33,10 +33,6 @@ exercise-view .button-layout {
     gap: var(--lumo-space-m);
 }
 
-exercise-view .button-layout .deleteBtn {
-
-}
-
 exercise-view exercise-form {
     width: 25em;
 }
