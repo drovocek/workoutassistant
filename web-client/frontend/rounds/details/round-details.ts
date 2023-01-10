@@ -1,15 +1,9 @@
-import '@vaadin/button';
 import '@vaadin/grid';
-import '@vaadin/grid/vaadin-grid-sort-column';
-import '@vaadin/icon';
-import '@vaadin/icons';
 import {html} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
 import {Grid, GridActiveItemChangedEvent, GridDragStartEvent, GridDropEvent} from "@vaadin/grid";
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
-import WorkoutStationSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshotModel";
-import ExerciseSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/ExerciseSnapshotModel";
 import {columnBodyRenderer} from "@vaadin/grid/lit";
 import {query} from "lit/decorators";
 import {AppForm} from "Frontend/common/components/app-form";

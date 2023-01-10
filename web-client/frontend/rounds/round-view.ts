@@ -2,8 +2,7 @@ import '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-sort-column';
 import './round-form';
 import './details/round-details';
-import './selector/exercise-selector';
-import './round-store-action-panel';
+import './round-action-panel';
 import {html} from 'lit';
 import {customElement, query} from 'lit/decorators.js';
 import {View} from '../common/views/view';
@@ -39,8 +38,8 @@ export class RoundView extends View {
         return html`
             <div class="content">
                 <div class="filter-grid">
-                    <round-store-action-panel targetFormId="round-form"
-                                              class="action-panel"></round-store-action-panel>
+                    <round-action-panel targetFormId="round-form"
+                                              class="action-panel"></round-action-panel>
                     <vaadin-grid
                             id="grid"
                             theme="no-border"
@@ -52,7 +51,7 @@ export class RoundView extends View {
                         <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
                     </vaadin-grid>
                 </div>
-                <round-form id="round-form"></round-form>
+                <round-form id="round-form" class="form"></round-form>
             </div>
         `;
     }

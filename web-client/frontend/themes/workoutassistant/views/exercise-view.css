@@ -1,38 +1,8 @@
 exercise-view {
+    height: 85%;
     display: flex;
+    box-sizing: border-box;
     flex-direction: column;
-    height: 100%;
+    gap: var(--lumo-space-s);
 }
 
-exercise-view vaadin-grid {
-    height: 100%;
-}
-
-exercise-view .editor-layout {
-    display: flex;
-    flex-direction: column;
-    width: 400px;
-}
-
-exercise-view .editor {
-    flex-grow: 1;
-    padding: var(--lumo-space-l);
-}
-
-exercise-view .editor vaadin-checkbox {
-    padding-top: var(--lumo-space-m);
-}
-
-exercise-view .button-layout {
-    width: 100%;
-    flex-wrap: wrap;
-    padding-bottom: var(--lumo-space-s);
-    padding-top: var(--lumo-space-s);
-    padding-left: var(--lumo-space-l);
-    padding-right: var(--lumo-space-l);
-    gap: var(--lumo-space-m);
-}
-
-exercise-view exercise-form {
-    width: 25em;
-}

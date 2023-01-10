@@ -1,0 +1,44 @@
+vaadin-grid {
+    height: 100%;
+}
+
+.filter-grid {
+    width: 100%;
+    gap: var(--lumo-space-m);
+    padding: var(--lumo-space-m);
+}
+
+.content {
+    height: 100%;
+    display: flex;
+}
+
+.action-panel {
+    padding: 0;
+    margin: 0;
+    gap: var(--lumo-space-s);
+}
+
+.button-layout {
+    display: flex;
+    gap: var(--lumo-space-m);
+}
+
+
+.form {
+    width: 25em;
+    display: flex;
+    flex-direction: column;
+    gap: var(--lumo-space-s);
+    padding: var(--lumo-space-m);
+    margin: 0;
+}
+
+.editor,
+.exercise-selector,
+.station-edit-form,
+.edit-round-form {
+    height: 100%;
+    width: 100%;
+}
+

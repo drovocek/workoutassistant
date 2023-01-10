@@ -8,13 +8,19 @@ import '@vaadin/text-area';
 import '@vaadin/integer-field';
 import '@vaadin/form-layout';
 import {Binder, field, Max, Min, NotBlank} from "@hilla/form";
-import {exerciseStore, roundStore, uiStore} from "Frontend/common/stores/app-store";
-import {EndpointError} from "@hilla/frontend";
+import {exerciseStore, roundStore} from "Frontend/common/stores/app-store";
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import ExerciseToModel from "Frontend/generated/ru/soft/common/to/ExerciseToModel";
+import {AppForm} from "Frontend/common/components/app-form";
+import {query} from "lit/decorators";
+import {Button} from "@vaadin/button";
+import {FormLayoutResponsiveStep} from "@vaadin/form-layout";
 
 @customElement('exercise-form')
-export class ExerciseForm extends View {
+export class ExerciseForm extends View implements AppForm<ExerciseTo> {
+
+    @query('#saveBtn')
+    private saveBtn!: Button;
 
     private binder = new Binder<ExerciseTo, ExerciseToModel>(this, ExerciseToModel);
 
@@ -56,7 +62,9 @@ export class ExerciseForm extends View {
         const {model} = this.binder;
         return html`
             <div class="editor">
-                <vaadin-form-layout>
+                <h3>${this.binder.value.id || roundStore.hasSelectedDetailsItemChild() ? 'Update' : 'Add'}</h3>
+                <vaadin-form-layout
+                        class="edit-round-form">
                     <vaadin-text-field
                             label="Title"
                             id="title"
@@ -73,53 +81,58 @@ export class ExerciseForm extends View {
                             max="10"
                             ${field(model.complexity)}></vaadin-integer-field>
                 </vaadin-form-layout>
-            </div>
-            <div class="flex gap-s button-layout">
-                <vaadin-button theme="primary"
-                               @click=${this.save}>
-                    ${this.binder.value.id ? 'Save' : 'Create'}
-                </vaadin-button>
-                <vaadin-button theme="tertiary"
-                               @click=${exerciseStore.cancelEdit}>
-                    Cancel
-                </vaadin-button>
-                <vaadin-button class="deleteBtn"
-                               theme="error"
-                               @click=${this.delete}
-                               ?disabled=${!this.binder.value.id}>
-                    Delete
-                </vaadin-button>
+                <div class="button-layout">
+                    <vaadin-button
+                            id="saveBtn"
+                            theme="primary"
+                            @click=${this.save}>
+                        ${this.binder.value.id ? 'Save' : 'Add'}
+                    </vaadin-button>
+                    <vaadin-button
+                            theme="tertiary"
+                            @click=${this.close}>
+                        Cancel
+                    </vaadin-button>
+                </div>
             </div>
         `;
     }
 
-    async save() {
-        try {
-            if (this.binder.value.id) {
-                await this.binder.submitTo(exerciseStore.update);
-            } else {
-                await this.binder.submitTo(exerciseStore.add);
-            }
-            this.binder.clear();
-        } catch (error: any) {
-            if (error instanceof EndpointError) {
-                uiStore.showError(`Server error. ${error.message}`);
-            } else {
-                throw error;
-            }
-        }
+    public open(entity: ExerciseTo): void {
+        this.binder.read(entity);
+        this.hidden = false;
+        exerciseStore.formOpened = true;
     }
 
-    async delete() {
-        try {
-            await this.binder.submitTo(exerciseStore.delete);
-            this.binder.clear();
-        } catch (error: any) {
-            if (error instanceof EndpointError) {
-                uiStore.showError(`Server error. ${error.message}`);
-            } else {
-                throw error;
-            }
+    public close(): void {
+        this.hidden = true;
+        exerciseStore.formOpened = false;
+    }
+
+    public clear(): void {
+        this.binder.clear();
+    }
+
+    public visible(): boolean {
+        return !this.hidden;
+    }
+
+    private save(): void {
+        this.saveBtn.disabled = true;
+        if (this.binder.value.id) {
+            this.binder.submitTo(exerciseStore.update)
+                .then(() => {
+                    this.binder.clear();
+                    this.close();
+                })
+                .finally(() => this.saveBtn.disabled = false);
+        } else {
+            this.binder.submitTo(exerciseStore.add)
+                .then(() => {
+                    this.binder.clear();
+                    this.close();
+                })
+                .finally(() => this.saveBtn.disabled = false);
         }
     }
 }

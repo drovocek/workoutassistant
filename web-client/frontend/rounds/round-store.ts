@@ -13,14 +13,6 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
     selected: WorkoutRoundTo | null = null;
     formOpened: boolean = false;
 
-    setSelected(selected: WorkoutRoundTo | null) {
-        this.selected = selected;
-    }
-
-    hasSelected(): boolean {
-        return this.selected !== null;
-    }
-
     constructor() {
         makeAutoObservable(
             this,
@@ -44,6 +36,14 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         runInAction(() => {
             this.data = data;
         });
+    }
+
+    setSelected(selected: WorkoutRoundTo | null) {
+        this.selected = selected;
+    }
+
+    hasSelected(): boolean {
+        return this.selected !== null;
     }
 
     get filtered() {
@@ -93,8 +93,8 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
     }
 
     private saveLocal(saved: WorkoutRoundTo) {
-        const roundExists = this.data.some((c) => c.id === saved.id);
-        if (roundExists) {
+        const exist = this.data.some((c) => c.id === saved.id);
+        if (exist) {
             this.data = this.data.map((existing) => {
                 if (existing.id === saved.id) {
                     return saved;

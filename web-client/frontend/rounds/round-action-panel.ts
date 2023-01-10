@@ -1,22 +1,3 @@
-import '@vaadin/button';
-import '@vaadin/date-picker';
-import '@vaadin/date-time-picker';
-import '@vaadin/form-layout';
-import '@vaadin/grid';
-import '@vaadin/grid/vaadin-grid-sort-column';
-import '@vaadin/horizontal-layout';
-import '@vaadin/icon';
-import '@vaadin/icons';
-import '@vaadin/notification';
-import '@vaadin/polymer-legacy-adapter';
-import '@vaadin/split-layout';
-import '@vaadin/text-field';
-import '@vaadin/text-area';
-import '@vaadin/integer-field';
-import '@vaadin/upload'
-import './round-form';
-import './details/round-details';
-import './selector/exercise-selector';
 import {customElement} from 'lit/decorators.js';
 import {AppActionPanel} from "Frontend/common/components/action-panel/app-action-panel";
 import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
@@ -24,8 +5,8 @@ import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snaps
 import {roundStore} from "Frontend/common/stores/app-store";
 import {processErr} from "Frontend/common/utils/app-utils";
 
-@customElement('round-store-action-panel')
-export class RoundStoreActionPanel extends AppActionPanel<WorkoutRoundTo | WorkoutStationSnapshot> {
+@customElement('round-action-panel')
+export class RoundActionPanel extends AppActionPanel<WorkoutRoundTo | WorkoutStationSnapshot> {
 
     public getFilterValue(): string {
         return roundStore.hasSelectedDetailsItem() ?

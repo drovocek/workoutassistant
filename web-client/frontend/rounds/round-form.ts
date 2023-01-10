@@ -176,6 +176,7 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
     private renderEditRoundForm(hidden: boolean): TemplateResult<1> {
         return html`
             <vaadin-form-layout
+                    .responsiveSteps="${this.responsiveSteps}"
                     class="edit-round-form"
                     ?hidden="${hidden}">
                 <vaadin-text-field
@@ -195,13 +196,6 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
         this.clearChecked();
     }
 
-    public close(): void {
-        this.hidden = true;
-        roundStore.formOpened = false;
-        this.clearChecked();
-        exerciseStore.updateFilter('');
-    }
-
     public open(entity: WorkoutRoundTo | WorkoutStationSnapshot): void {
         if (roundStore.hasSelectedDetailsItem()) {
             this.stationBinder.read(entity as WorkoutStationSnapshot);
@@ -210,6 +204,13 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
         }
         this.hidden = false;
         roundStore.formOpened = true;
+    }
+
+    public close(): void {
+        this.hidden = true;
+        roundStore.formOpened = false;
+        this.clearChecked();
+        exerciseStore.updateFilter('');
     }
 
     public clear(): void {
