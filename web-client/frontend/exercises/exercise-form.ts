@@ -14,7 +14,6 @@ import ExerciseToModel from "Frontend/generated/ru/soft/common/to/ExerciseToMode
 import {AppForm} from "Frontend/common/components/app-form";
 import {query} from "lit/decorators";
 import {Button} from "@vaadin/button";
-import {FormLayoutResponsiveStep} from "@vaadin/form-layout";
 
 @customElement('exercise-form')
 export class ExerciseForm extends View implements AppForm<ExerciseTo> {
