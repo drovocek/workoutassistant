@@ -75,10 +75,7 @@ export class PlanDetails extends View {
                                                 []
                                         )}
                     ></vaadin-grid-column>
-                    <vaadin-grid-column path="repetitions" auto-width></vaadin-grid-column>
-                    <vaadin-grid-column path="weight" auto-width></vaadin-grid-column>
-                    <vaadin-grid-column path="duration" auto-width></vaadin-grid-column>
-                    <vaadin-grid-column path="rest" auto-width></vaadin-grid-column>
+                    <vaadin-grid-column path="description" auto-width></vaadin-grid-column>
                 </vaadin-grid>
             </div>
         `;
@@ -86,7 +83,7 @@ export class PlanDetails extends View {
 
     private handleGridSelection(event: GridActiveItemChangedEvent<WorkoutRoundSnapshot>) {
         if (!this.form) {
-            this.form = document.querySelector('#round-form') as unknown as AppForm<WorkoutPlanTo>;
+            this.form = document.querySelector('#plan-form') as unknown as AppForm<WorkoutPlanTo>;
         }
         this.form.close();
 
@@ -102,6 +99,7 @@ export class PlanDetails extends View {
     }
 
     private renderExerciseTitle(station: WorkoutRoundSnapshot) {
+        console.log(station)
         return html`
             <span title="${station.description}">${station.title}</span>
         `

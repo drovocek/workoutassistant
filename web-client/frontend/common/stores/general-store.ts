@@ -11,5 +11,5 @@ export interface GeneralStore<T> {
 
     copy(): Promise<void>;
 
-    delete(): Promise<void>;
+    delete(): Promise<void>
 }

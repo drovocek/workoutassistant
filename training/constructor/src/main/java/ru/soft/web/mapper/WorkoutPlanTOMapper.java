@@ -20,7 +20,7 @@ public class WorkoutPlanTOMapper implements TOMapper<WorkoutPlan, WorkoutPlanTo>
         return WorkoutPlan.builder()
                 .id(to.id())
                 .isNew(to.id() == null)
-                .workoutSchemaSnapshot(to.workoutSchemaSnapshot())
+                .workoutSchemaSnapshot(to.workoutSchema())
                 .title(to.title())
                 .description(to.description())
                 .build();

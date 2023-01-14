@@ -6,7 +6,7 @@ import './components/plan-action-panel';
 import {html} from 'lit';
 import {customElement, query} from 'lit/decorators.js';
 import {View} from '../../common/views/view';
-import {planStore, roundStore} from "Frontend/common/stores/app-store";
+import {planStore} from "Frontend/common/stores/app-store";
 import {columnBodyRenderer, gridRowDetailsRenderer} from "@vaadin/grid/lit";
 import {AppForm} from "Frontend/common/components/app-form";
 import type {Grid, GridActiveItemChangedEvent} from '@vaadin/grid';
@@ -26,7 +26,7 @@ export class PlanView extends View {
     async connectedCallback() {
         super.connectedCallback();
         this.autorun(() => {
-            if (roundStore.formOpened) {
+            if (planStore.formOpened) {
                 this.classList.add("editing");
             } else {
                 this.classList.remove("editing");
@@ -43,8 +43,8 @@ export class PlanView extends View {
                     <vaadin-grid
                             id="grid"
                             theme="no-border"
-                            .items=${roundStore.filtered}
-                            .detailsOpenedItems="${roundStore.getSelectedItemsDetailAsArr()}"
+                            .items=${planStore.filtered}
+                            .detailsOpenedItems="${planStore.getSelectedItemsDetailAsArr()}"
                             @active-item-changed=${this.handleGridSelection}
                             ${this.renderDetails()}>
                         <vaadin-grid-column ${this.renderDetailsButton()} header="Title"></vaadin-grid-column>

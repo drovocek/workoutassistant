@@ -115,13 +115,11 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
                     <span>
                         <vaadin-checkbox @change="${(e: Event) => {
                             let checked = (e.target as HTMLInputElement).checked;
-                            console.log(e.currentTarget)
                             if (checked) {
                                 this.checked.set(exercise, e.currentTarget as Checkbox);
                             } else {
                                 this.checked.delete(exercise);
                             }
-                            console.log(this.checked)
                         }}"></vaadin-checkbox>
                         <span theme=${badgeThemes} title="${exercise.description}">${exercise.title}</span>
                      </span>

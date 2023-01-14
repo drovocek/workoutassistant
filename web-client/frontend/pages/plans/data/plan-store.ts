@@ -1,6 +1,5 @@
 import {makeAutoObservable, observable, runInAction} from 'mobx';
 import {uiStore} from "Frontend/common/stores/app-store";
-import WorkoutRoundToModel from "Frontend/generated/ru/soft/common/to/WorkoutRoundToModel";
 import {GeneralStore} from "Frontend/common/stores/general-store";
 import {deepEquals, processErr, randomString} from "Frontend/common/utils/app-utils";
 import WorkoutPlanTo from "Frontend/generated/ru/soft/common/to/WorkoutPlanTo";
@@ -84,7 +83,8 @@ export class PlanStore implements GeneralStore<WorkoutPlanTo> {
         let copy = WorkoutPlanToModel.createEmptyValue();
         copy.title = original.title + ' Copy ' + randomString(5);
         copy.description = original.description;
-        copy.workoutSchemaSnapshot = JSON.parse(JSON.stringify(original.workoutSchemaSnapshot));
+
+        copy.workoutSchema = JSON.parse(JSON.stringify(original.workoutSchema));
 
         await WorkoutPlanEndpoint.add(copy)
             .then(copy => {
@@ -109,7 +109,7 @@ export class PlanStore implements GeneralStore<WorkoutPlanTo> {
     }
 
     private saveLocalAfterSelected(copy: WorkoutPlanTo) {
-        const selected = this.selected;
+        const selected = this.selected
         if (!selected) return;
 
         const originalExists = this.data.some((c) => c.id === selected.id);
@@ -119,7 +119,7 @@ export class PlanStore implements GeneralStore<WorkoutPlanTo> {
         }
     }
 
-    async delete() {
+    async delete(): Promise<void> {
         const removed = this.selected;
         if (!removed) return;
         let id = removed.id;
@@ -128,7 +128,7 @@ export class PlanStore implements GeneralStore<WorkoutPlanTo> {
             .then(() => {
                 this.setSelected(null);
                 this.deleteLocal(removed);
-                uiStore.showSuccess('Round deleted.');
+                uiStore.showSuccess('Plan deleted.');
             });
 
     }
@@ -163,6 +163,7 @@ export class PlanStore implements GeneralStore<WorkoutPlanTo> {
         }
         this.selectedDetailsItem = detailsItem;
         this.selectedDetailsItemChildData = this.selectedDetailsItem !== null ? this.extractStations(this.selectedDetailsItem) : [];
+
         this.selectedDetailsItemChild = null;
     }
 
@@ -179,8 +180,10 @@ export class PlanStore implements GeneralStore<WorkoutPlanTo> {
     }
 
     private extractStations(round: WorkoutPlanTo): WorkoutRoundSnapshot[] {
-        if (round.workoutSchemaSnapshot && round.workoutSchemaSnapshot.workoutRoundSnapshots) {
-            return round.workoutSchemaSnapshot.workoutRoundSnapshots as WorkoutRoundSnapshot[];
+        console.log("!!!!!")
+        console.log(round.workoutSchema.workoutRoundSnapshots)
+        if (round.workoutSchema && round.workoutSchema.workoutRoundSnapshots) {
+            return round.workoutSchema.workoutRoundSnapshots as WorkoutRoundSnapshot[];
         } else {
             return [];
         }
@@ -207,6 +210,7 @@ export class PlanStore implements GeneralStore<WorkoutPlanTo> {
             // this.updateOrder();
         }
     }
+
     //
     // private updateOrder() {
     //     for (let i = 0; i < this.selectedDetailsItemChildData.length; i++) {
@@ -226,7 +230,7 @@ export class PlanStore implements GeneralStore<WorkoutPlanTo> {
         const selected = this.selectedDetailsItem;
         if (!selected?.id) return;
 
-        selected.workoutSchemaSnapshot.workoutRoundSnapshots = this.selectedDetailsItemChildData;
+        selected.workoutSchema.workoutRoundSnapshots = this.selectedDetailsItemChildData;
 
         await this.update(selected);
     }

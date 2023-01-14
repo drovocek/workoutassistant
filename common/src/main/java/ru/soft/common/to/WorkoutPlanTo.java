@@ -11,12 +11,12 @@ import java.util.UUID;
 
 public record WorkoutPlanTo(
         @JsonProperty("id") UUID id,
-        @JsonProperty("workoutSchema") @NotNull @Nonnull WorkoutSchemaSnapshot workoutSchemaSnapshot,
+        @JsonProperty("workoutSchema") @NotNull @Nonnull WorkoutSchemaSnapshot workoutSchema,
         @JsonProperty("title") @NotBlank String title,
         @JsonProperty("description") String description) implements HasId {
 
     @Override
     public WorkoutPlanTo withId(UUID id) {
-        return new WorkoutPlanTo(id, workoutSchemaSnapshot(), title(), description());
+        return new WorkoutPlanTo(id, workoutSchema(), title(), description());
     }
 }

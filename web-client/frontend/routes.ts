@@ -44,6 +44,16 @@ export const views: ViewRoute[] = [
       return;
     },
   },
+  {
+    path: 'plans',
+    component: 'plan-view',
+    icon: 'la la-globe',
+    title: 'Plans',
+    action: async (_context, _command) => {
+      await import('./pages/plans/plan-view');
+      return;
+    },
+  },
 ];
 export const routes: ViewRoute[] = [
   {
