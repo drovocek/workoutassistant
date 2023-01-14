@@ -7,7 +7,7 @@ import ru.soft.common.testdata.TestDataStore;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.soft.common.testdata.snapshot.TestSnapshotStore.workoutSchemaSnapshot;
+import static ru.soft.common.testdata.snapshot.TestSnapshotStore.roundsSchema;
 
 @Component
 public class WorkoutPlanTestDataStore implements TestDataStore<WorkoutPlan> {
@@ -19,7 +19,7 @@ public class WorkoutPlanTestDataStore implements TestDataStore<WorkoutPlan> {
         return new WorkoutPlan(
                 isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"),
                 isNew,
-                workoutSchemaSnapshot()
+                roundsSchema()
                 , "Push-up plan title",
                 "Push-up plan description"
         );
@@ -32,14 +32,14 @@ public class WorkoutPlanTestDataStore implements TestDataStore<WorkoutPlan> {
                 new WorkoutPlan(
                         isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"),
                         isNew,
-                        workoutSchemaSnapshot()
+                        roundsSchema()
                         , "Barbell squats plan title",
                         "Barbell squats plan description"
                 ),
                 new WorkoutPlan(
                         isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"),
                         isNew,
-                        workoutSchemaSnapshot(),
+                        roundsSchema(),
                         "Pull-up plan title",
                         "Pull-up plan description"
                 )
@@ -51,7 +51,7 @@ public class WorkoutPlanTestDataStore implements TestDataStore<WorkoutPlan> {
         return new WorkoutPlan(
                 isNew ? null : newId(),
                 isNew,
-                workoutSchemaSnapshot(),
+                roundsSchema(),
                 "request plan title",
                 "request plan description"
         );
@@ -63,14 +63,14 @@ public class WorkoutPlanTestDataStore implements TestDataStore<WorkoutPlan> {
                 new WorkoutPlan(
                         isNew ? null : newId(),
                         isNew,
-                        workoutSchemaSnapshot(),
+                        roundsSchema(),
                         "",
                         "request plan description"
                 ),
                 new WorkoutPlan(
                         isNew ? newId() : null,
                         isNew,
-                        workoutSchemaSnapshot(),
+                        roundsSchema(),
                         "request plan title",
                         "request plan description"
                 ),
@@ -90,7 +90,7 @@ public class WorkoutPlanTestDataStore implements TestDataStore<WorkoutPlan> {
                 new WorkoutPlan(
                         isNew ? null : newId(),
                         isNew,
-                        workoutSchemaSnapshot(),
+                        roundsSchema(),
                         DUPLICATE_TITLE,
                         "request plan description"
                 )

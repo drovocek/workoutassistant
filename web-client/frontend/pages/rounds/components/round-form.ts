@@ -9,13 +9,13 @@ import '@vaadin/integer-field';
 import '@vaadin/form-layout';
 import {Binder, field, NotBlank} from "@hilla/form";
 import {exerciseStore, roundStore} from "Frontend/common/stores/app-store";
-import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
-import WorkoutRoundToModel from "Frontend/generated/ru/soft/common/to/WorkoutRoundToModel";
+import Round from "Frontend/generated/ru/soft/common/to/RoundTo";
+import RoundModel from "Frontend/generated/ru/soft/common/to/RoundToModel";
 import {query} from "lit/decorators";
 import {Button} from "@vaadin/button";
 import {AppForm} from "Frontend/common/components/app-form";
-import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
-import WorkoutStationSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshotModel";
+import Station from "Frontend/generated/ru/soft/common/data/Station";
+import StationModel from "Frontend/generated/ru/soft/common/data/StationModel";
 import {FormLayoutResponsiveStep} from "@vaadin/form-layout";
 import {Grid} from "@vaadin/grid";
 import {columnBodyRenderer} from "@vaadin/grid/lit";
@@ -25,7 +25,7 @@ import {Checkbox} from "@vaadin/checkbox";
 import {TemplateResult} from "lit-html/development/lit-html";
 
 @customElement('round-form')
-export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
+export class RoundForm extends View implements AppForm<Round> {
 
     @query('#grid')
     private grid!: Grid;
@@ -35,8 +35,8 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
 
     private checked: Map<ExerciseTo, Checkbox> = new Map<ExerciseTo, Checkbox>();
 
-    private roundBinder = new Binder<WorkoutRoundTo, WorkoutRoundToModel>(this, WorkoutRoundToModel);
-    private stationBinder = new Binder<WorkoutStationSnapshot, WorkoutStationSnapshotModel>(this, WorkoutStationSnapshotModel);
+    private roundBinder = new Binder<Round, RoundModel>(this, RoundModel);
+    private stationBinder = new Binder<Station, StationModel>(this, StationModel);
 
     protected firstUpdated(_changedProperties: any) {
         super.firstUpdated(_changedProperties);
@@ -194,11 +194,11 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
         this.clearChecked();
     }
 
-    public open(entity: WorkoutRoundTo | WorkoutStationSnapshot): void {
+    public open(entity: Round | Station): void {
         if (roundStore.hasSelectedDetailsItem()) {
-            this.stationBinder.read(entity as WorkoutStationSnapshot);
+            this.stationBinder.read(entity as Station);
         } else {
-            this.roundBinder.read(entity as WorkoutRoundTo);
+            this.roundBinder.read(entity as Round);
         }
         this.hidden = false;
         roundStore.formOpened = true;
@@ -272,13 +272,13 @@ export class RoundForm extends View implements AppForm<WorkoutRoundTo> {
         this.close();
     }
 
-    private asDefaultStation(exercise: ExerciseTo): WorkoutStationSnapshot {
-        const station = WorkoutStationSnapshotModel.createEmptyValue();
+    private asDefaultStation(exercise: ExerciseTo): Station {
+        const station = StationModel.createEmptyValue();
         const exerciseSnapshot = ExerciseSnapshotModel.createEmptyValue();
         exerciseSnapshot.title = exercise.title;
         exerciseSnapshot.description = exercise.description;
         exerciseSnapshot.complexity = exercise.complexity;
-        station.exercise = exerciseSnapshot;
+        station.exerciseSnapshot = exerciseSnapshot;
         return station;
     }
 }

@@ -10,7 +10,7 @@ import {planStore} from "Frontend/common/stores/app-store";
 import {columnBodyRenderer, gridRowDetailsRenderer} from "@vaadin/grid/lit";
 import {AppForm} from "Frontend/common/components/app-form";
 import type {Grid, GridActiveItemChangedEvent} from '@vaadin/grid';
-import WorkoutPlanTo from "Frontend/generated/ru/soft/common/to/WorkoutPlanTo";
+import WorkoutPlan from "Frontend/generated/ru/soft/common/to/WorkoutPlanTo";
 
 @customElement('plan-view')
 export class PlanView extends View {
@@ -19,7 +19,7 @@ export class PlanView extends View {
     private grid!: Grid;
 
     @query('#plan-form')
-    private form!: AppForm<WorkoutPlanTo>;
+    private form!: AppForm<WorkoutPlan>;
 
     private firstSelectionEvent = true;
 
@@ -56,7 +56,7 @@ export class PlanView extends View {
         `;
     }
 
-    private switchDetailsVisible(plan: WorkoutPlanTo) {
+    private switchDetailsVisible(plan: WorkoutPlan) {
         return () => {
             this.form.close();
             this.deselectAll();
@@ -71,7 +71,7 @@ export class PlanView extends View {
     }
 
     private renderDetails() {
-        return gridRowDetailsRenderer<WorkoutPlanTo>(
+        return gridRowDetailsRenderer<WorkoutPlan>(
             () => html`
                 <plan-details></plan-details>`
             ,
@@ -80,7 +80,7 @@ export class PlanView extends View {
     }
 
     private renderDetailsButton() {
-        return columnBodyRenderer<WorkoutPlanTo>(
+        return columnBodyRenderer<WorkoutPlan>(
             (plan) => {
                 const isOpened = planStore.detailsItemIsOpened(plan);
                 return html`
@@ -96,11 +96,11 @@ export class PlanView extends View {
             });
     }
 
-    private handleGridSelection(event: GridActiveItemChangedEvent<WorkoutPlanTo>) {
+    private handleGridSelection(event: GridActiveItemChangedEvent<WorkoutPlan>) {
         this.closeDetails();
         this.form.close();
 
-        const item: WorkoutPlanTo = event.detail.value;
+        const item: WorkoutPlan = event.detail.value;
         this.grid.selectedItems = item ? [item] : [];
 
         if (this.firstSelectionEvent) {

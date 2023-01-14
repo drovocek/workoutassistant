@@ -10,7 +10,7 @@ public class WorkoutPlanTOMapper implements TOMapper<WorkoutPlan, WorkoutPlanTo>
     public WorkoutPlanTo toTo(WorkoutPlan entity) {
         return new WorkoutPlanTo(
                 entity.getId(),
-                entity.workoutSchemaSnapshot(),
+                entity.roundsSchema(),
                 entity.title(),
                 entity.description()
         );
@@ -20,7 +20,7 @@ public class WorkoutPlanTOMapper implements TOMapper<WorkoutPlan, WorkoutPlanTo>
         return WorkoutPlan.builder()
                 .id(to.id())
                 .isNew(to.id() == null)
-                .workoutSchemaSnapshot(to.workoutSchema())
+                .roundsSchema(to.roundsSchema())
                 .title(to.title())
                 .description(to.description())
                 .build();

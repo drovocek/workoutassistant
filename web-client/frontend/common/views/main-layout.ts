@@ -73,7 +73,7 @@ export class MainLayout extends Layout {
         icon: 'la la-columns',
       },
       {
-        path: 'exercise',
+        path: 'exercises',
         title: 'Exercise',
         icon: 'la la-globe',
       },

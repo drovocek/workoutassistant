@@ -25,7 +25,7 @@ export const views: ViewRoute[] = [
     },
   },
   {
-    path: 'exercise',
+    path: 'exercises',
     component: 'exercise-view',
     icon: 'la la-globe',
     title: 'Exercise',

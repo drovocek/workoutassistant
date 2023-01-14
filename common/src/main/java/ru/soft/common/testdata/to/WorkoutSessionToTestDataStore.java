@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.soft.common.testdata.snapshot.TestSnapshotStore.workoutPlanSnapshot;
+import static ru.soft.common.testdata.snapshot.TestSnapshotStore.planSnapshot;
 
 @Component
 public class WorkoutSessionToTestDataStore implements TestDataStore<WorkoutSessionTo> {
@@ -18,7 +18,7 @@ public class WorkoutSessionToTestDataStore implements TestDataStore<WorkoutSessi
     public static WorkoutSessionTo example(boolean isNew) {
         return new WorkoutSessionTo(
                 isNew ? null : UUID.fromString("a34798c2-7ac8-11ed-a1eb-0242ac120002"),
-                workoutPlanSnapshot(),
+                planSnapshot(),
                 LocalDateTime.of(2024, 3, 20, 19, 10, 25),
                 "Easy session note"
         );
@@ -35,13 +35,13 @@ public class WorkoutSessionToTestDataStore implements TestDataStore<WorkoutSessi
                 entity(isNew),
                 new WorkoutSessionTo(
                         isNew ? null : UUID.fromString("a9323cf6-7ac8-11ed-a1eb-0242ac120002"),
-                        workoutPlanSnapshot(),
+                        planSnapshot(),
                         LocalDateTime.of(2024, 3, 20, 19, 10, 25),
                         "Medium session note"
                 ),
                 new WorkoutSessionTo(
                         isNew ? null : UUID.fromString("ae9b7996-7ac8-11ed-a1eb-0242ac120002"),
-                        workoutPlanSnapshot(),
+                        planSnapshot(),
                         LocalDateTime.of(2024, 3, 20, 19, 10, 25),
                         "Hard session note"
                 )
@@ -52,7 +52,7 @@ public class WorkoutSessionToTestDataStore implements TestDataStore<WorkoutSessi
     public WorkoutSessionTo requestEntity(boolean isNew) {
         return new WorkoutSessionTo(
                 isNew ? null : newId(),
-                workoutPlanSnapshot(),
+                planSnapshot(),
                 SESSION_DATE_TIME,
                 "request session note"
         );
@@ -63,7 +63,7 @@ public class WorkoutSessionToTestDataStore implements TestDataStore<WorkoutSessi
         return List.of(
                 new WorkoutSessionTo(
                         isNew ? null : newId(),
-                        workoutPlanSnapshot(),
+                        planSnapshot(),
                         null,
                         "request session note"
                 ),

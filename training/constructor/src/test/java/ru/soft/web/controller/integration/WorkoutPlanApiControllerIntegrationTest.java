@@ -1,6 +1,5 @@
 package ru.soft.web.controller.integration;
 
-import org.springframework.boot.test.context.SpringBootTest;
 import ru.soft.common.AppApi;
 import ru.soft.common.testdata.TestDataStore;
 import ru.soft.common.testdata.to.WorkoutPlanToTestDataStore;
@@ -9,7 +8,6 @@ import ru.soft.data.model.WorkoutPlan;
 import ru.soft.data.test.WorkoutPlanTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
-@SpringBootTest
 class WorkoutPlanApiControllerIntegrationTest extends AbstractApiControllerIntegrationTest<WorkoutPlan, WorkoutPlanTo> {
 
     @Override

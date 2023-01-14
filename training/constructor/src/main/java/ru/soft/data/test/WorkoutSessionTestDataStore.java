@@ -2,45 +2,45 @@ package ru.soft.data.test;
 
 import org.springframework.stereotype.Component;
 import ru.soft.common.testdata.TestDataStore;
-import ru.soft.data.model.WorkoutSession;
+import ru.soft.data.model.TrainingSession;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.soft.common.testdata.snapshot.TestSnapshotStore.workoutPlanSnapshot;
+import static ru.soft.common.testdata.snapshot.TestSnapshotStore.planSnapshot;
 
 @Component
-public class WorkoutSessionTestDataStore implements TestDataStore<WorkoutSession> {
+public class WorkoutSessionTestDataStore implements TestDataStore<TrainingSession> {
 
     private static final LocalDateTime SESSION_DATE_TIME = LocalDateTime.of(2021, 12, 1, 1, 2);
 
     @Override
-    public WorkoutSession entity(boolean isNew) {
-        return new WorkoutSession(
+    public TrainingSession entity(boolean isNew) {
+        return new TrainingSession(
                 isNew ? null : UUID.fromString("a34798c2-7ac8-11ed-a1eb-0242ac120002"),
                 isNew,
-                workoutPlanSnapshot(),
+                planSnapshot(),
                 LocalDateTime.of(2024, 3, 20, 19, 10, 25),
                 "Easy session note"
         );
     }
 
     @Override
-    public List<WorkoutSession> entities(boolean isNew) {
+    public List<TrainingSession> entities(boolean isNew) {
         return List.of(
                 entity(isNew),
-                new WorkoutSession(
+                new TrainingSession(
                         isNew ? null : UUID.fromString("a9323cf6-7ac8-11ed-a1eb-0242ac120002"),
                         isNew,
-                        workoutPlanSnapshot(),
+                        planSnapshot(),
                         LocalDateTime.of(2024, 3, 20, 19, 10, 25),
                         "Medium session note"
                 ),
-                new WorkoutSession(
+                new TrainingSession(
                         isNew ? null : UUID.fromString("ae9b7996-7ac8-11ed-a1eb-0242ac120002"),
                         isNew,
-                        workoutPlanSnapshot(),
+                        planSnapshot(),
                         LocalDateTime.of(2024, 3, 20, 19, 10, 25),
                         "Hard session note"
                 )
@@ -48,27 +48,27 @@ public class WorkoutSessionTestDataStore implements TestDataStore<WorkoutSession
     }
 
     @Override
-    public WorkoutSession requestEntity(boolean isNew) {
-        return new WorkoutSession(
+    public TrainingSession requestEntity(boolean isNew) {
+        return new TrainingSession(
                 isNew ? null : newId(),
                 isNew,
-                workoutPlanSnapshot(),
+                planSnapshot(),
                 SESSION_DATE_TIME,
                 "request session note"
         );
     }
 
     @Override
-    public List<WorkoutSession> invalids(boolean isNew) {
+    public List<TrainingSession> invalids(boolean isNew) {
         return List.of(
-                new WorkoutSession(
+                new TrainingSession(
                         isNew ? null : newId(),
                         isNew,
-                        workoutPlanSnapshot(),
+                        planSnapshot(),
                         null,
                         "request session note"
                 ),
-                new WorkoutSession(
+                new TrainingSession(
                         isNew ? null : newId(),
                         isNew,
                         null,
@@ -79,12 +79,12 @@ public class WorkoutSessionTestDataStore implements TestDataStore<WorkoutSession
     }
 
     @Override
-    public List<WorkoutSession> duplicates(boolean isNew) {
+    public List<TrainingSession> duplicates(boolean isNew) {
         return List.of();
     }
 
     @Override
-    public List<WorkoutSession> htmlUnsafe(boolean isNew) {
+    public List<TrainingSession> htmlUnsafe(boolean isNew) {
         return List.of();
     }
 }

@@ -51,7 +51,7 @@ public class ExerciseTestDataStore implements TestDataStore<Exercise> {
                 isNew,
                 "request exercise title",
                 "request exercise description",
-                10
+                5
         );
     }
 
@@ -63,7 +63,7 @@ public class ExerciseTestDataStore implements TestDataStore<Exercise> {
                         isNew,
                         "",
                         "request exercise description",
-                        10
+                        5
                 ),
                 new Exercise(
                         isNew ? null : newId(),
@@ -77,7 +77,7 @@ public class ExerciseTestDataStore implements TestDataStore<Exercise> {
                         isNew,
                         "request exercise title",
                         "request exercise description",
-                        10
+                        5
                 ),
                 new Exercise(
                         isNew ? null : newId(),

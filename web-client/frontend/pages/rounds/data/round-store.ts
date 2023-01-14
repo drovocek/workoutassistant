@@ -1,16 +1,16 @@
 import {makeAutoObservable, observable, runInAction} from 'mobx';
-import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
-import {WorkoutRoundEndpoint} from "Frontend/generated/endpoints";
+import Round from "Frontend/generated/ru/soft/common/to/RoundTo";
+import {RoundEndpoint} from "Frontend/generated/endpoints";
 import {uiStore} from "Frontend/common/stores/app-store";
-import WorkoutRoundToModel from "Frontend/generated/ru/soft/common/to/WorkoutRoundToModel";
 import {GeneralStore} from "Frontend/common/stores/general-store";
 import {deepEquals, processErr, randomString} from "Frontend/common/utils/app-utils";
-import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
+import Station from "Frontend/generated/ru/soft/common/data/Station";
+import RoundModel from "Frontend/generated/ru/soft/common/to/RoundToModel";
 
-export class RoundStore implements GeneralStore<WorkoutRoundTo> {
-    data: WorkoutRoundTo[] = [];
+export class RoundStore implements GeneralStore<Round> {
+    data: Round[] = [];
     filterText = '';
-    selected: WorkoutRoundTo | null = null;
+    selected: Round | null = null;
     formOpened: boolean = false;
 
     constructor() {
@@ -31,14 +31,14 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
     }
 
     async initFromServer() {
-        const data = await WorkoutRoundEndpoint.getAll();
+        const data = await RoundEndpoint.getAll();
 
         runInAction(() => {
             this.data = data;
         });
     }
 
-    setSelected(selected: WorkoutRoundTo | null) {
+    setSelected(selected: Round | null) {
         this.selected = selected;
     }
 
@@ -57,9 +57,9 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         this.filterText = filterText;
     }
 
-    public async update(updatable: WorkoutRoundTo) {
+    public async update(updatable: Round) {
         if (!updatable.id) return;
-        await WorkoutRoundEndpoint.update(updatable)
+        await RoundEndpoint.update(updatable)
             .then(() => {
                 this.saveLocal(updatable);
                 uiStore.showSuccess('Exercise updated.');
@@ -67,8 +67,8 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
             .catch(processErr);
     }
 
-    public async add(stored: WorkoutRoundTo) {
-        await WorkoutRoundEndpoint.add(stored)
+    public async add(stored: Round) {
+        await RoundEndpoint.add(stored)
             .then(stored => {
                 this.saveLocal(stored);
                 uiStore.showSuccess('Round created.');
@@ -80,19 +80,19 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         const original = this.selected;
         if (!original) return;
 
-        let copy = WorkoutRoundToModel.createEmptyValue();
+        let copy = RoundModel.createEmptyValue();
         copy.title = original.title + ' Copy ' + randomString(5);
         copy.description = original.description;
-        copy.roundSchema = JSON.parse(JSON.stringify(original.roundSchema));
+        copy.stationsSchema = JSON.parse(JSON.stringify(original.stationsSchema));
 
-        await WorkoutRoundEndpoint.add(copy)
+        await RoundEndpoint.add(copy)
             .then(copy => {
                 this.saveLocalAfterSelected(copy);
                 uiStore.showSuccess('Round copy.');
             });
     }
 
-    private saveLocal(saved: WorkoutRoundTo) {
+    private saveLocal(saved: Round) {
         const exist = this.data.some((c) => c.id === saved.id);
         if (exist) {
             this.data = this.data.map((existing) => {
@@ -107,7 +107,7 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         }
     }
 
-    private saveLocalAfterSelected(copy: WorkoutRoundTo) {
+    private saveLocalAfterSelected(copy: Round) {
         const selected = this.selected;
         if (!selected) return;
 
@@ -123,7 +123,7 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         if (!removed) return;
         let id = removed.id;
         if (!id) return;
-        await WorkoutRoundEndpoint.delete(id)
+        await RoundEndpoint.delete(id)
             .then(() => {
                 this.setSelected(null);
                 this.deleteLocal(removed);
@@ -132,23 +132,23 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
 
     }
 
-    private deleteLocal(removed: WorkoutRoundTo) {
+    private deleteLocal(removed: Round) {
         this.data = this.data.filter((c) => c.id !== removed.id);
     }
 
-    createNew(): WorkoutRoundTo {
-        return WorkoutRoundToModel.createEmptyValue();
+    createNew(): Round {
+        return RoundModel.createEmptyValue();
     }
 
-    selectedDetailsItem: WorkoutRoundTo | null = null;
-    selectedDetailsItemChildData: WorkoutStationSnapshot[] = [];
-    selectedDetailsItemChild: WorkoutStationSnapshot | null = null;
+    selectedDetailsItem: Round | null = null;
+    selectedDetailsItemChildData: Station[] = [];
+    selectedDetailsItemChild: Station | null = null;
     detailsItemChildFilterText = '';
 
     public get filteredDetailsItemChild() {
         const filter = new RegExp(this.detailsItemChildFilterText, 'i');
         return this.selectedDetailsItemChildData.filter((entity) =>
-            filter.test(`${entity.exercise.title}`)
+            filter.test(`${entity.exerciseSnapshot.title}`)
         );
     }
 
@@ -156,7 +156,7 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         this.detailsItemChildFilterText = filterText;
     }
 
-    public setSelectedDetailsItem(detailsItem: WorkoutRoundTo | null): void {
+    public setSelectedDetailsItem(detailsItem: Round | null): void {
         if (this.hasSelectedDetailsItem()) {
             this.updateDetailsItem();
         }
@@ -169,7 +169,7 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         return this.selectedDetailsItem !== null;
     }
 
-    public setSelectedDetailsItemChild(detailsItemChild: WorkoutStationSnapshot | null): void {
+    public setSelectedDetailsItemChild(detailsItemChild: Station | null): void {
         this.selectedDetailsItemChild = detailsItemChild;
     }
 
@@ -177,19 +177,19 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         return this.selectedDetailsItemChild !== null;
     }
 
-    private extractStations(round: WorkoutRoundTo): WorkoutStationSnapshot[] {
-        if (round.roundSchema && round.roundSchema.roundStations) {
-            return round.roundSchema.roundStations as WorkoutStationSnapshot[];
+    private extractStations(round: Round): Station[] {
+        if (round.stationsSchema && round.stationsSchema.stations) {
+            return round.stationsSchema.stations as Station[];
         } else {
             return [];
         }
     }
 
-    public detailsItemIsOpened(detailsItem: WorkoutRoundTo): boolean {
+    public detailsItemIsOpened(detailsItem: Round): boolean {
         return deepEquals(this.selectedDetailsItem, detailsItem);
     }
 
-    public getSelectedItemsDetailAsArr(): WorkoutRoundTo[] {
+    public getSelectedItemsDetailAsArr(): Round[] {
         return this.selectedDetailsItem !== null ? [this.selectedDetailsItem] : [];
     }
 
@@ -225,11 +225,11 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         const selected = this.selectedDetailsItem;
         if (!selected?.id) return;
 
-        selected.roundSchema.roundStations = this.selectedDetailsItemChildData;
+        selected.stationsSchema.stations = this.selectedDetailsItemChildData;
         await this.update(selected);
     }
 
-    public updateLocalDetailsItemChild(updated: WorkoutStationSnapshot) {
+    public updateLocalDetailsItemChild(updated: Station) {
         const selected = this.selectedDetailsItemChild;
         if (!selected) return;
         this.selectedDetailsItemChildData = this.selectedDetailsItemChildData.map((station) => {
@@ -241,7 +241,7 @@ export class RoundStore implements GeneralStore<WorkoutRoundTo> {
         });
     }
 
-    public saveLocalDetailsItemChild(saved: WorkoutStationSnapshot[]) {
+    public saveLocalDetailsItemChild(saved: Station[]) {
         const selected = this.selectedDetailsItemChild;
         if (selected) return;
         this.selectedDetailsItemChildData = [...this.selectedDetailsItemChildData, ...saved];

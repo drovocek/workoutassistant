@@ -77,7 +77,7 @@ export class ExerciseForm extends View implements AppForm<ExerciseTo> {
                             id="complexity"
                             step-buttons-visible
                             min="1"
-                            max="10"
+                            max="5"
                             ${field(model.complexity)}></vaadin-integer-field>
                 </vaadin-form-layout>
                 <div class="button-layout">

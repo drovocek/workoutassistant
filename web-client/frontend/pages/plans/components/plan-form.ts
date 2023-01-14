@@ -19,7 +19,7 @@ import {TemplateResult} from "lit-html/development/lit-html";
 import WorkoutPlanTo from "Frontend/generated/ru/soft/common/to/WorkoutPlanTo";
 import WorkoutPlanToModel from "Frontend/generated/ru/soft/common/to/WorkoutPlanToModel";
 import {planStore, roundStore} from "Frontend/common/stores/app-store";
-import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
+import Round from "Frontend/generated/ru/soft/common/to/RoundTo";
 
 @customElement('plan-form')
 export class PlanForm extends View implements AppForm<WorkoutPlanTo> {
@@ -30,7 +30,7 @@ export class PlanForm extends View implements AppForm<WorkoutPlanTo> {
     @query('#saveBtn')
     private saveBtn!: Button;
 
-    private checked: Map<WorkoutRoundTo, Checkbox> = new Map<WorkoutRoundTo, Checkbox>();
+    private checked: Map<Round, Checkbox> = new Map<Round, Checkbox>();
 
     private planBinder = new Binder<WorkoutPlanTo, WorkoutPlanToModel>(this, WorkoutPlanToModel);
 
@@ -97,7 +97,7 @@ export class PlanForm extends View implements AppForm<WorkoutPlanTo> {
     }
 
     private renderRoundBadge() {
-        return columnBodyRenderer<WorkoutRoundTo>(
+        return columnBodyRenderer<Round>(
             (round) => {
                 let badgeThemes = "badge";
                 // const complexity = round.complexity;

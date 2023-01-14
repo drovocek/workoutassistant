@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.soft.common.AppApi;
-import ru.soft.common.to.WorkoutRoundTo;
+import ru.soft.common.to.RoundTo;
 
 @Slf4j
 @Getter
@@ -16,5 +16,5 @@ import ru.soft.common.to.WorkoutRoundTo;
 @RequestMapping(
         value = AppApi.WorkoutRounds.URL,
         produces = MediaType.APPLICATION_JSON_VALUE)
-class WorkoutRoundApiController extends AbstractApiController<WorkoutRoundTo> {
+class WorkoutRoundApiController extends AbstractApiController<RoundTo> {
 }

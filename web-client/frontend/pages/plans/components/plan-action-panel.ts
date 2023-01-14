@@ -2,23 +2,23 @@ import {customElement} from 'lit/decorators.js';
 import {AppActionPanel} from "Frontend/common/components/action-panel/app-action-panel";
 import {planStore} from "Frontend/common/stores/app-store";
 import {processErr} from "Frontend/common/utils/app-utils";
-import WorkoutPlanTo from "Frontend/generated/ru/soft/common/to/WorkoutPlanTo";
-import WorkoutRoundSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutRoundSnapshot";
+import WorkoutPlan from "Frontend/generated/ru/soft/common/to/WorkoutPlanTo";
+import RoundSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/RoundSnapshot";
 
 @customElement('plan-action-panel')
-export class PlanActionPanel extends AppActionPanel<WorkoutPlanTo | WorkoutRoundSnapshot> {
+export class PlanActionPanel extends AppActionPanel<WorkoutPlan | RoundSnapshot> {
 
     public getFilterValue(): string {
         return planStore.hasSelectedDetailsItem() ?
             planStore.detailsItemChildFilterText : planStore.filterText;
     };
 
-    public getSelected(): WorkoutPlanTo | WorkoutRoundSnapshot | null {
+    public getSelected(): WorkoutPlan | RoundSnapshot | null {
         return planStore.hasSelectedDetailsItem() ?
             planStore.selectedDetailsItemChild : planStore.selected;
     }
 
-    public getNew(): WorkoutPlanTo | WorkoutRoundSnapshot {
+    public getNew(): WorkoutPlan | RoundSnapshot {
         return planStore.createNew();
     }
 

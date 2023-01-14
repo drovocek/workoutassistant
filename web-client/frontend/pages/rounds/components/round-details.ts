@@ -1,7 +1,7 @@
 import '@vaadin/grid';
 import {html} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
-import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
+import Station from "Frontend/generated/ru/soft/common/data/Station";
 import {Grid, GridActiveItemChangedEvent, GridDragStartEvent, GridDropEvent} from "@vaadin/grid";
 import {columnBodyRenderer} from "@vaadin/grid/lit";
 import {query} from "lit/decorators";
@@ -9,7 +9,7 @@ import {AppForm} from "Frontend/common/components/app-form";
 import {View} from "Frontend/common/views/view";
 import {roundStore} from "Frontend/common/stores/app-store";
 import {PropertyValues} from "@lit/reactive-element/development/reactive-element";
-import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
+import Round from "Frontend/generated/ru/soft/common/to/RoundTo";
 
 @customElement('round-details')
 export class RoundDetails extends View {
@@ -18,7 +18,7 @@ export class RoundDetails extends View {
     private grid!: Grid;
 
     @state()
-    private draggedStation?: WorkoutStationSnapshot;
+    private draggedStation?: Station;
 
     private firstSelectionEvent = true;
 
@@ -26,11 +26,11 @@ export class RoundDetails extends View {
         delete this.draggedStation;
     };
 
-    private storeDraggingStation = (event: GridDragStartEvent<WorkoutStationSnapshot>) => {
+    private storeDraggingStation = (event: GridDragStartEvent<Station>) => {
         this.draggedStation = event.detail.draggedItems[0];
     };
 
-    private form!: AppForm<WorkoutRoundTo>;
+    private form!: AppForm<Round>;
 
     async connectedCallback() {
         super.connectedCallback();
@@ -69,7 +69,7 @@ export class RoundDetails extends View {
                         @grid-dragend="${this.clearDraggedStation}"
                         @grid-drop="${this.onGridDrop()}">
                     <vaadin-grid-column header="Title"
-                                        ${columnBodyRenderer<WorkoutStationSnapshot>(
+                                        ${columnBodyRenderer<Station>(
                                                 (station) => this.renderExerciseTitle(station),
                                                 []
                                         )}
@@ -83,13 +83,13 @@ export class RoundDetails extends View {
         `;
     }
 
-    private handleGridSelection(event: GridActiveItemChangedEvent<WorkoutStationSnapshot>) {
+    private handleGridSelection(event: GridActiveItemChangedEvent<Station>) {
         if (!this.form) {
-            this.form = document.querySelector('#round-form') as unknown as AppForm<WorkoutRoundTo>;
+            this.form = document.querySelector('#round-form') as unknown as AppForm<Round>;
         }
         this.form.close();
 
-        const item: WorkoutStationSnapshot = event.detail.value;
+        const item: Station = event.detail.value;
         this.grid.selectedItems = item ? [item] : [];
 
         if (this.firstSelectionEvent) {
@@ -100,14 +100,14 @@ export class RoundDetails extends View {
         roundStore.setSelectedDetailsItemChild(item);
     }
 
-    private renderExerciseTitle(station: WorkoutStationSnapshot) {
+    private renderExerciseTitle(station: Station) {
         return html`
-            <span title="${station.exercise.description}">${station.exercise.title}</span>
+            <span title="${station.exerciseSnapshot.description}">${station.exerciseSnapshot.title}</span>
         `
     }
 
     private onGridDrop() {
-        return (event: GridDropEvent<WorkoutStationSnapshot>) => {
+        return (event: GridDropEvent<Station>) => {
             const {dropTargetItem, dropLocation} = event.detail;
             if (this.draggedStation && dropTargetItem !== this.draggedStation) {
                 const draggedItemIndex = roundStore.selectedDetailsItemChildData.indexOf(this.draggedStation);

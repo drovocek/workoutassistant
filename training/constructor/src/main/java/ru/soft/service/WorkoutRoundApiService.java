@@ -1,9 +1,9 @@
 package ru.soft.service;
 
 import org.springframework.stereotype.Service;
-import ru.soft.common.to.WorkoutRoundTo;
-import ru.soft.data.model.WorkoutRound;
+import ru.soft.common.to.RoundTo;
+import ru.soft.data.model.Round;
 
 @Service
-public class WorkoutRoundApiService extends AbstractApiService<WorkoutRound, WorkoutRoundTo> {
+public class WorkoutRoundApiService extends AbstractApiService<Round, RoundTo> {
 }

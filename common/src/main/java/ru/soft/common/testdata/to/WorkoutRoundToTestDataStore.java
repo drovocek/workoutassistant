@@ -1,40 +1,40 @@
 package ru.soft.common.testdata.to;
 
 import org.springframework.stereotype.Component;
-import ru.soft.common.to.WorkoutRoundTo;
+import ru.soft.common.to.RoundTo;
 import ru.soft.common.testdata.TestDataStore;
 
 import java.util.List;
 import java.util.UUID;
 
-import static ru.soft.common.testdata.snapshot.TestSnapshotStore.workoutRoundSchemaSnapshot;
+import static ru.soft.common.testdata.snapshot.TestSnapshotStore.stationsSchema;
 
 @Component
-public class WorkoutRoundToTestDataStore implements TestDataStore<WorkoutRoundTo> {
+public class WorkoutRoundToTestDataStore implements TestDataStore<RoundTo> {
 
     private static final String DUPLICATE_TITLE = "Strength round title";
 
-    public static WorkoutRoundTo example(boolean isNew) {
-        return new WorkoutRoundTo(
+    public static RoundTo example(boolean isNew) {
+        return new RoundTo(
                 isNew ? null : UUID.fromString("3cd77b78-7a52-11ed-a1eb-0242ac120002"),
-                workoutRoundSchemaSnapshot()
+                stationsSchema()
                 , "Warm up round title",
                 "Warm up round description"
         );
     }
 
-    public static List<WorkoutRoundTo> examples(boolean isNew) {
+    public static List<RoundTo> examples(boolean isNew) {
         return List.of(
                 example(isNew),
-                new WorkoutRoundTo(
+                new RoundTo(
                         isNew ? null : UUID.fromString("425da3e2-7a52-11ed-a1eb-0242ac120002"),
-                        workoutRoundSchemaSnapshot()
+                        stationsSchema()
                         , "Strength round title",
                         "Strength round description"
                 ),
-                new WorkoutRoundTo(
+                new RoundTo(
                         isNew ? null : UUID.fromString("475617e4-7a52-11ed-a1eb-0242ac120002"),
-                        workoutRoundSchemaSnapshot()
+                        stationsSchema()
                         , "Endurance round title",
                         "Endurance round description"
                 )
@@ -42,41 +42,41 @@ public class WorkoutRoundToTestDataStore implements TestDataStore<WorkoutRoundTo
     }
 
     @Override
-    public WorkoutRoundTo entity(boolean isNew) {
+    public RoundTo entity(boolean isNew) {
         return example(isNew);
     }
 
     @Override
-    public List<WorkoutRoundTo> entities(boolean isNew) {
+    public List<RoundTo> entities(boolean isNew) {
         return examples(isNew);
     }
 
     @Override
-    public WorkoutRoundTo requestEntity(boolean isNew) {
-        return new WorkoutRoundTo(
+    public RoundTo requestEntity(boolean isNew) {
+        return new RoundTo(
                 isNew ? null : newId(),
-                workoutRoundSchemaSnapshot(),
+                stationsSchema(),
                 "request round title",
                 "request round description"
         );
     }
 
     @Override
-    public List<WorkoutRoundTo> invalids(boolean isNew) {
+    public List<RoundTo> invalids(boolean isNew) {
         return List.of(
-                new WorkoutRoundTo(
+                new RoundTo(
                         isNew ? null : newId(),
-                        workoutRoundSchemaSnapshot(),
+                        stationsSchema(),
                         "",
                         "request round description"
                 ),
-                new WorkoutRoundTo(
+                new RoundTo(
                         isNew ? newId() : null,
-                        workoutRoundSchemaSnapshot(),
+                        stationsSchema(),
                         "request round title",
                         "request round description"
                 ),
-                new WorkoutRoundTo(
+                new RoundTo(
                         isNew ? null : newId(),
                         null,
                         "request round title",
@@ -86,11 +86,11 @@ public class WorkoutRoundToTestDataStore implements TestDataStore<WorkoutRoundTo
     }
 
     @Override
-    public List<WorkoutRoundTo> duplicates(boolean isNew) {
+    public List<RoundTo> duplicates(boolean isNew) {
         return List.of(
-                new WorkoutRoundTo(
+                new RoundTo(
                         isNew ? null : newId(),
-                        workoutRoundSchemaSnapshot(),
+                        stationsSchema(),
                         DUPLICATE_TITLE,
                         "request round description"
                 )
@@ -98,7 +98,7 @@ public class WorkoutRoundToTestDataStore implements TestDataStore<WorkoutRoundTo
     }
 
     @Override
-    public List<WorkoutRoundTo> htmlUnsafe(boolean isNew) {
+    public List<RoundTo> htmlUnsafe(boolean isNew) {
         return List.of();
     }
 }

@@ -3,7 +3,7 @@ package ru.soft.data.config.converter.read;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.soft.common.data.snapshot.WorkoutPlanSnapshot;
 
-import static ru.soft.common.testdata.snapshot.TestSnapshotStore.workoutPlanSnapshot;
+import static ru.soft.common.testdata.snapshot.TestSnapshotStore.planSnapshot;
 
 class PGobjectToWorkoutPlanSnapshotReadingConverterTest
         extends BasePGobjectToEntityReadingConverterTest<WorkoutPlanSnapshot, PGobjectToWorkoutPlanSnapshotReadingConverter> {
@@ -15,6 +15,6 @@ class PGobjectToWorkoutPlanSnapshotReadingConverterTest
 
     @Override
     protected WorkoutPlanSnapshot expected() {
-        return workoutPlanSnapshot();
+        return planSnapshot();
     }
 }

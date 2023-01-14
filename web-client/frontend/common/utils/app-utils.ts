@@ -1,10 +1,5 @@
 import {EndpointError} from "@hilla/frontend";
 import {uiStore} from "Frontend/common/stores/app-store";
-import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
-import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
-import WorkoutStationSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshotModel";
-import ExerciseSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/ExerciseSnapshotModel";
-import {html} from "lit";
 
 export const randomString = function (length: number) {
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';

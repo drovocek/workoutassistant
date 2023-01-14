@@ -55,7 +55,7 @@ public class ExerciseToTestDataStore implements TestDataStore<ExerciseTo> {
                 isNew ? null : newId(),
                 "request exercise title",
                 "request exercise description",
-                10
+                5
         );
     }
 
@@ -66,7 +66,7 @@ public class ExerciseToTestDataStore implements TestDataStore<ExerciseTo> {
                         isNew ? null : newId(),
                         "",
                         "request exercise description",
-                        10
+                        5
                 ),
                 new ExerciseTo(
                         isNew ? null : newId(),
@@ -78,13 +78,13 @@ public class ExerciseToTestDataStore implements TestDataStore<ExerciseTo> {
                         isNew ? newId() : null,
                         "request exercise title",
                         "request exercise description",
-                        10
+                        5
                 ),
                 new ExerciseTo(
                         isNew ? null : newId(),
                         null,
                         "request exercise description",
-                        10
+                        5
                 ),
                 new ExerciseTo(
                         isNew ? null : newId(),

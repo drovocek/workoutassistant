@@ -1,7 +1,6 @@
 import '@vaadin/grid';
 import {html} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
-import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
 import {Grid, GridActiveItemChangedEvent, GridDragStartEvent, GridDropEvent} from "@vaadin/grid";
 import {columnBodyRenderer} from "@vaadin/grid/lit";
 import {query} from "lit/decorators";
@@ -10,7 +9,7 @@ import {View} from "Frontend/common/views/view";
 import {planStore} from "Frontend/common/stores/app-store";
 import {PropertyValues} from "@lit/reactive-element/development/reactive-element";
 import WorkoutPlanTo from "Frontend/generated/ru/soft/common/to/WorkoutPlanTo";
-import WorkoutRoundSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutRoundSnapshot";
+import RoundSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/RoundSnapshot";
 
 @customElement('plan-details')
 export class PlanDetails extends View {
@@ -19,7 +18,7 @@ export class PlanDetails extends View {
     private grid!: Grid;
 
     @state()
-    private draggedStation?: WorkoutRoundSnapshot;
+    private draggedStation?: RoundSnapshot;
 
     private firstSelectionEvent = true;
 
@@ -27,7 +26,7 @@ export class PlanDetails extends View {
         delete this.draggedStation;
     };
 
-    private storeDraggingStation = (event: GridDragStartEvent<WorkoutRoundSnapshot>) => {
+    private storeDraggingStation = (event: GridDragStartEvent<RoundSnapshot>) => {
         this.draggedStation = event.detail.draggedItems[0];
     };
 
@@ -70,7 +69,7 @@ export class PlanDetails extends View {
                         @grid-dragend="${this.clearDraggedStation}"
                         @grid-drop="${this.onGridDrop()}">
                     <vaadin-grid-column header="Title"
-                                        ${columnBodyRenderer<WorkoutRoundSnapshot>(
+                                        ${columnBodyRenderer<RoundSnapshot>(
                                                 (station) => this.renderExerciseTitle(station),
                                                 []
                                         )}
@@ -81,13 +80,13 @@ export class PlanDetails extends View {
         `;
     }
 
-    private handleGridSelection(event: GridActiveItemChangedEvent<WorkoutRoundSnapshot>) {
+    private handleGridSelection(event: GridActiveItemChangedEvent<RoundSnapshot>) {
         if (!this.form) {
             this.form = document.querySelector('#plan-form') as unknown as AppForm<WorkoutPlanTo>;
         }
         this.form.close();
 
-        const item: WorkoutRoundSnapshot = event.detail.value;
+        const item: RoundSnapshot = event.detail.value;
         this.grid.selectedItems = item ? [item] : [];
 
         if (this.firstSelectionEvent) {
@@ -98,7 +97,7 @@ export class PlanDetails extends View {
         planStore.setSelectedDetailsItemChild(item);
     }
 
-    private renderExerciseTitle(station: WorkoutRoundSnapshot) {
+    private renderExerciseTitle(station: RoundSnapshot) {
         console.log(station)
         return html`
             <span title="${station.description}">${station.title}</span>
@@ -106,7 +105,7 @@ export class PlanDetails extends View {
     }
 
     private onGridDrop() {
-        return (event: GridDropEvent<WorkoutRoundSnapshot>) => {
+        return (event: GridDropEvent<RoundSnapshot>) => {
             const {dropTargetItem, dropLocation} = event.detail;
             if (this.draggedStation && dropTargetItem !== this.draggedStation) {
                 const draggedItemIndex = planStore.selectedDetailsItemChildData.indexOf(this.draggedStation);

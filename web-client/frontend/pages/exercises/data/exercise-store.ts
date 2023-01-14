@@ -55,7 +55,7 @@ export class ExerciseStore implements GeneralStore<ExerciseTo> {
 
     createNew(): ExerciseTo {
         let exerciseDefault = ExerciseToModel.createEmptyValue();
-        exerciseDefault.complexity = 5;
+        exerciseDefault.complexity = 3;
         return exerciseDefault;
     }
 

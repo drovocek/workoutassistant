@@ -7,7 +7,7 @@ import {html} from 'lit';
 import {customElement, query} from 'lit/decorators.js';
 import {View} from '../../common/views/view';
 import {roundStore} from "Frontend/common/stores/app-store";
-import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
+import Round from "Frontend/generated/ru/soft/common/to/RoundTo";
 import {columnBodyRenderer, gridRowDetailsRenderer} from "@vaadin/grid/lit";
 import {AppForm} from "Frontend/common/components/app-form";
 import type {Grid, GridActiveItemChangedEvent} from '@vaadin/grid';
@@ -19,7 +19,7 @@ export class RoundView extends View {
     private grid!: Grid;
 
     @query('#round-form')
-    private form!: AppForm<WorkoutRoundTo>;
+    private form!: AppForm<Round>;
 
     private firstSelectionEvent = true;
 
@@ -56,7 +56,7 @@ export class RoundView extends View {
         `;
     }
 
-    private switchDetailsVisible(round: WorkoutRoundTo) {
+    private switchDetailsVisible(round: Round) {
         return () => {
             this.form.close();
             this.deselectAll();
@@ -71,7 +71,7 @@ export class RoundView extends View {
     }
 
     private renderDetails() {
-        return gridRowDetailsRenderer<WorkoutRoundTo>(
+        return gridRowDetailsRenderer<Round>(
             () => html`
                 <round-details></round-details>`
             ,
@@ -80,7 +80,7 @@ export class RoundView extends View {
     }
 
     private renderDetailsButton() {
-        return columnBodyRenderer<WorkoutRoundTo>(
+        return columnBodyRenderer<Round>(
             (round) => {
                 const isOpened = roundStore.detailsItemIsOpened(round);
                 return html`
@@ -96,11 +96,11 @@ export class RoundView extends View {
             });
     }
 
-    private handleGridSelection(event: GridActiveItemChangedEvent<WorkoutRoundTo>) {
+    private handleGridSelection(event: GridActiveItemChangedEvent<Round>) {
         this.closeDetails();
         this.form.close();
 
-        const item: WorkoutRoundTo = event.detail.value;
+        const item: Round = event.detail.value;
         this.grid.selectedItems = item ? [item] : [];
 
         if (this.firstSelectionEvent) {

@@ -16,10 +16,10 @@ import ru.soft.data.BaseEntity;
 import java.util.UUID;
 
 @Getter
+@Table(name = "exercise")
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @JsonIncludeProperties({"id", "title", "description", "complexity"})
-@Table(name = "exercise")
 public class Exercise extends BaseEntity {
 
     @NotBlank
@@ -30,7 +30,7 @@ public class Exercise extends BaseEntity {
     private final String description;
 
     @Min(value = 1)
-    @Max(value = 10)
+    @Max(value = 5)
     @Column("complexity")
     private final int complexity;
 

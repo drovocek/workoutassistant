@@ -1,13 +1,12 @@
 package ru.soft.data.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.relational.core.mapping.Column;
-import ru.soft.common.data.snapshot.WorkoutSchemaSnapshot;
+import ru.soft.common.data.RoundsSchema;
 import ru.soft.data.BaseEntity;
 
 import java.util.UUID;
@@ -18,9 +17,8 @@ import java.util.UUID;
 abstract class Workout extends BaseEntity {
 
     @NotNull
-    @JsonProperty("workoutSchema")
-    @Column("workout_schema")
-    protected final WorkoutSchemaSnapshot workoutSchemaSnapshot;
+    @Column("rounds_schema")
+    protected final RoundsSchema roundsSchema;
 
     @NotBlank
     @Column("title")
@@ -29,16 +27,16 @@ abstract class Workout extends BaseEntity {
     @Column("description")
     protected final String description;
 
-    protected Workout(UUID id, boolean isNew, WorkoutSchemaSnapshot workoutSchemaSnapshot, String title, String description) {
+    protected Workout(UUID id, boolean isNew, RoundsSchema roundsSchema, String title, String description) {
         super(id, isNew);
-        this.workoutSchemaSnapshot = workoutSchemaSnapshot;
+        this.roundsSchema = roundsSchema;
         this.title = title;
         this.description = description;
     }
 
-    protected Workout(UUID id, WorkoutSchemaSnapshot workoutSchemaSnapshot, String title, String description) {
+    protected Workout(UUID id, RoundsSchema roundsSchema, String title, String description) {
         super(id, false);
-        this.workoutSchemaSnapshot = workoutSchemaSnapshot;
+        this.roundsSchema = roundsSchema;
         this.title = title;
         this.description = description;
     }
