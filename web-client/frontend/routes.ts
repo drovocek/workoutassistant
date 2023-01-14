@@ -30,7 +30,7 @@ export const views: ViewRoute[] = [
     icon: 'la la-globe',
     title: 'Exercise',
     action: async (_context, _command) => {
-      await import('./exercises/exercise-view');
+      await import('./pages/exercises/exercise-view');
       return;
     },
   },
@@ -40,7 +40,7 @@ export const views: ViewRoute[] = [
     icon: 'la la-globe',
     title: 'Rounds',
     action: async (_context, _command) => {
-      await import('./rounds/round-view');
+      await import('./pages/rounds/round-view');
       return;
     },
   },

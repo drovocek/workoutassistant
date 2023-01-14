@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public record WorkoutRoundTo(
         @JsonProperty("id") UUID id,
-        @JsonProperty("roundSchema") @Nonnull @NotNull WorkoutRoundSchemaSnapshot roundSchema,
+        @JsonProperty("roundSchema") @NotNull @Nonnull WorkoutRoundSchemaSnapshot roundSchema,
         @JsonProperty("title") @NotBlank String title,
         @JsonProperty("description") String description) implements HasId {
 

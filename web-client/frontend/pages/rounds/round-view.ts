@@ -1,11 +1,11 @@
 import '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-sort-column';
-import './round-form';
-import './details/round-details';
-import './round-action-panel';
+import './components/round-form';
+import './components/round-details';
+import './components/round-action-panel';
 import {html} from 'lit';
 import {customElement, query} from 'lit/decorators.js';
-import {View} from '../common/views/view';
+import {View} from '../../common/views/view';
 import {roundStore} from "Frontend/common/stores/app-store";
 import WorkoutRoundTo from "Frontend/generated/ru/soft/common/to/WorkoutRoundTo";
 import {columnBodyRenderer, gridRowDetailsRenderer} from "@vaadin/grid/lit";

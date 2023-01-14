@@ -15,14 +15,14 @@ import '@vaadin/text-field';
 import '@vaadin/text-area';
 import '@vaadin/integer-field';
 import '@vaadin/upload'
-import './exercise-action-panel'
+import './components/exercise-action-panel'
 import {html} from 'lit';
 import {customElement, query} from 'lit/decorators.js';
-import {View} from '../common/views/view';
-import './exercise-form';
+import './components/exercise-form';
 import {exerciseStore} from "Frontend/common/stores/app-store";
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import {AppForm} from "Frontend/common/components/app-form";
+import { View } from 'Frontend/common/views/view';
 
 @customElement('exercise-view')
 export class ExerciseView extends View {

@@ -3,6 +3,7 @@ package ru.soft.common.data.snapshot;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.annotation.Nonnull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import lombok.ToString;
 @JsonIncludeProperties({"roundSchema", "title", "description"})
 public class WorkoutRoundSnapshot {
 
+    @Nonnull
     @JsonProperty("roundSchema")
     private final WorkoutRoundSchemaSnapshot workoutRoundSchemaSnapshot;
 

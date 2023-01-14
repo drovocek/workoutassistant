@@ -3,7 +3,6 @@ import {html} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import WorkoutStationSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/WorkoutStationSnapshot";
 import {Grid, GridActiveItemChangedEvent, GridDragStartEvent, GridDropEvent} from "@vaadin/grid";
-import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import {columnBodyRenderer} from "@vaadin/grid/lit";
 import {query} from "lit/decorators";
 import {AppForm} from "Frontend/common/components/app-form";
@@ -20,9 +19,6 @@ export class RoundDetails extends View {
 
     @state()
     private draggedStation?: WorkoutStationSnapshot;
-
-    @state()
-    public draggedExercise?: ExerciseTo;
 
     private firstSelectionEvent = true;
 
