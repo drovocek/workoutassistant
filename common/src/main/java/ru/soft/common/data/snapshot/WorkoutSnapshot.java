@@ -8,8 +8,8 @@ import lombok.Builder;
 import ru.soft.common.data.RoundsSchema;
 
 @Builder
-@JsonRootName("workoutPlanSnapshot")
-public record WorkoutPlanSnapshot(
+@JsonRootName("workoutSnapshot")
+public record WorkoutSnapshot(
         @JsonProperty("roundsSchema") @NotNull @Nonnull RoundsSchema roundsSchema,
         @JsonProperty("title") String title,
         @JsonProperty("description") String description) {

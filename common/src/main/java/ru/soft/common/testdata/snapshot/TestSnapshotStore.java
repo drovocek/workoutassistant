@@ -5,13 +5,13 @@ import ru.soft.common.data.Station;
 import ru.soft.common.data.StationsSchema;
 import ru.soft.common.data.snapshot.ExerciseSnapshot;
 import ru.soft.common.data.snapshot.RoundSnapshot;
-import ru.soft.common.data.snapshot.WorkoutPlanSnapshot;
+import ru.soft.common.data.snapshot.WorkoutSnapshot;
 import ru.soft.common.testdata.to.ExerciseToTestDataStore;
 import ru.soft.common.testdata.to.WorkoutPlanToTestDataStore;
 import ru.soft.common.testdata.to.WorkoutRoundToTestDataStore;
 import ru.soft.common.to.ExerciseTo;
 import ru.soft.common.to.RoundTo;
-import ru.soft.common.to.WorkoutPlanTo;
+import ru.soft.common.to.WorkoutTo;
 
 import java.util.List;
 
@@ -29,9 +29,9 @@ public final class TestSnapshotStore {
                 .build();
     }
 
-    public static WorkoutPlanSnapshot planSnapshot() {
-        WorkoutPlanTo to = WorkoutPlanToTestDataStore.example(true);
-        return WorkoutPlanSnapshot.builder()
+    public static WorkoutSnapshot planSnapshot() {
+        WorkoutTo to = WorkoutPlanToTestDataStore.example(true);
+        return WorkoutSnapshot.builder()
                 .roundsSchema(roundsSchema())
                 .title(to.title())
                 .description(to.description())

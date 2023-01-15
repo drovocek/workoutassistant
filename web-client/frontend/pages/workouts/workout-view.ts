@@ -1,32 +1,32 @@
 import '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-sort-column';
-import './components/plan-form';
-import './components/plan-details';
-import './components/plan-action-panel';
+import './components/workout-form';
+import './components/workout-details';
+import './components/workout-action-panel';
 import {html} from 'lit';
 import {customElement, query} from 'lit/decorators.js';
 import {View} from '../../common/views/view';
-import {planStore} from "Frontend/common/stores/app-store";
+import {workoutStore} from "Frontend/common/stores/app-store";
 import {columnBodyRenderer, gridRowDetailsRenderer} from "@vaadin/grid/lit";
 import {AppForm} from "Frontend/common/components/app-form";
 import type {Grid, GridActiveItemChangedEvent} from '@vaadin/grid';
-import WorkoutPlan from "Frontend/generated/ru/soft/common/to/WorkoutPlanTo";
+import Workout from "Frontend/generated/ru/soft/common/to/WorkoutTo";
 
-@customElement('plan-view')
-export class PlanView extends View {
+@customElement('workout-view')
+export class WorkoutView extends View {
 
     @query('#grid')
     private grid!: Grid;
 
     @query('#plan-form')
-    private form!: AppForm<WorkoutPlan>;
+    private form!: AppForm<Workout>;
 
     private firstSelectionEvent = true;
 
     async connectedCallback() {
         super.connectedCallback();
         this.autorun(() => {
-            if (planStore.formOpened) {
+            if (workoutStore.formOpened) {
                 this.classList.add("editing");
             } else {
                 this.classList.remove("editing");
@@ -43,8 +43,8 @@ export class PlanView extends View {
                     <vaadin-grid
                             id="grid"
                             theme="no-border"
-                            .items=${planStore.filtered}
-                            .detailsOpenedItems="${planStore.getSelectedItemsDetailAsArr()}"
+                            .items=${workoutStore.filtered}
+                            .detailsOpenedItems="${workoutStore.getSelectedItemsDetailAsArr()}"
                             @active-item-changed=${this.handleGridSelection}
                             ${this.renderDetails()}>
                         <vaadin-grid-column ${this.renderDetailsButton()} header="Title"></vaadin-grid-column>
@@ -56,22 +56,22 @@ export class PlanView extends View {
         `;
     }
 
-    private switchDetailsVisible(plan: WorkoutPlan) {
+    private switchDetailsVisible(plan: Workout) {
         return () => {
             this.form.close();
             this.deselectAll();
-            const isOpened = planStore.detailsItemIsOpened(plan);
-            planStore.setSelectedDetailsItem(isOpened ? null : plan);
+            const isOpened = workoutStore.detailsItemIsOpened(plan);
+            workoutStore.setSelectedDetailsItem(isOpened ? null : plan);
         }
     }
 
     private deselectAll() {
         this.grid.selectedItems = [];
-        planStore.setSelected(null);
+        workoutStore.setSelected(null);
     }
 
     private renderDetails() {
-        return gridRowDetailsRenderer<WorkoutPlan>(
+        return gridRowDetailsRenderer<Workout>(
             () => html`
                 <plan-details></plan-details>`
             ,
@@ -80,9 +80,9 @@ export class PlanView extends View {
     }
 
     private renderDetailsButton() {
-        return columnBodyRenderer<WorkoutPlan>(
+        return columnBodyRenderer<Workout>(
             (plan) => {
-                const isOpened = planStore.detailsItemIsOpened(plan);
+                const isOpened = workoutStore.detailsItemIsOpened(plan);
                 return html`
                     <vaadin-button
                             title="Rounds"
@@ -96,11 +96,11 @@ export class PlanView extends View {
             });
     }
 
-    private handleGridSelection(event: GridActiveItemChangedEvent<WorkoutPlan>) {
+    private handleGridSelection(event: GridActiveItemChangedEvent<Workout>) {
         this.closeDetails();
         this.form.close();
 
-        const item: WorkoutPlan = event.detail.value;
+        const item: Workout = event.detail.value;
         this.grid.selectedItems = item ? [item] : [];
 
         if (this.firstSelectionEvent) {
@@ -108,10 +108,10 @@ export class PlanView extends View {
             return;
         }
 
-        planStore.setSelected(item);
+        workoutStore.setSelected(item);
     }
 
     private closeDetails() {
-        planStore.setSelectedDetailsItem(null);
+        workoutStore.setSelectedDetailsItem(null);
     }
 }

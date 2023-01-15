@@ -1,0 +1,20 @@
+program-view .content {
+    height: 100%;
+}
+
+program-view .grid-wrapper {
+    width: 100%;
+}
+
+program-view .form {
+    /*width: 50em;*/
+    width: 100%;
+}
+
+program-view .form-button-panel, .grid-button-panel {
+    top: 10px;
+    margin-bottom: 10px;
+    margin-right: 20px;
+    margin-left: auto;
+}
+

@@ -13,3 +13,7 @@ export interface GeneralStore<T> {
 
     delete(): Promise<void>
 }
+
+export interface HasId {
+    id?: string;
+}

@@ -6,13 +6,13 @@ import {columnBodyRenderer} from "@vaadin/grid/lit";
 import {query} from "lit/decorators";
 import {AppForm} from "Frontend/common/components/app-form";
 import {View} from "Frontend/common/views/view";
-import {planStore} from "Frontend/common/stores/app-store";
+import {workoutStore} from "Frontend/common/stores/app-store";
 import {PropertyValues} from "@lit/reactive-element/development/reactive-element";
-import WorkoutPlanTo from "Frontend/generated/ru/soft/common/to/WorkoutPlanTo";
+import Workout from "Frontend/generated/ru/soft/common/to/WorkoutTo";
 import RoundSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/RoundSnapshot";
 
 @customElement('plan-details')
-export class PlanDetails extends View {
+export class WorkoutDetails extends View {
 
     @query('#grid')
     private grid!: Grid;
@@ -30,7 +30,7 @@ export class PlanDetails extends View {
         this.draggedStation = event.detail.draggedItems[0];
     };
 
-    private form!: AppForm<WorkoutPlanTo>;
+    private form!: AppForm<Workout>;
 
     async connectedCallback() {
         super.connectedCallback();
@@ -52,7 +52,7 @@ export class PlanDetails extends View {
 
     private deselectAll() {
         this.grid.selectedItems = [];
-        planStore.setSelectedDetailsItemChild(null);
+        workoutStore.setSelectedDetailsItemChild(null);
     }
 
     render() {
@@ -61,7 +61,7 @@ export class PlanDetails extends View {
                 <vaadin-grid
                         id="grid"
                         style="height: 25em"
-                        .items=${planStore.filteredDetailsItemChild}
+                        .items=${workoutStore.filteredDetailsItemChild}
                         @active-item-changed="${this.handleGridSelection}"
                         rows-draggable
                         drop-mode="between"
@@ -82,7 +82,7 @@ export class PlanDetails extends View {
 
     private handleGridSelection(event: GridActiveItemChangedEvent<RoundSnapshot>) {
         if (!this.form) {
-            this.form = document.querySelector('#plan-form') as unknown as AppForm<WorkoutPlanTo>;
+            this.form = document.querySelector('#plan-form') as unknown as AppForm<Workout>;
         }
         this.form.close();
 
@@ -94,7 +94,7 @@ export class PlanDetails extends View {
             return;
         }
 
-        planStore.setSelectedDetailsItemChild(item);
+        workoutStore.setSelectedDetailsItemChild(item);
     }
 
     private renderExerciseTitle(station: RoundSnapshot) {
@@ -108,11 +108,11 @@ export class PlanDetails extends View {
         return (event: GridDropEvent<RoundSnapshot>) => {
             const {dropTargetItem, dropLocation} = event.detail;
             if (this.draggedStation && dropTargetItem !== this.draggedStation) {
-                const draggedItemIndex = planStore.selectedDetailsItemChildData.indexOf(this.draggedStation);
-                planStore.selectedDetailsItemChildData.splice(draggedItemIndex, 1);
-                const dropIndex = planStore.selectedDetailsItemChildData.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
-                planStore.selectedDetailsItemChildData.splice(dropIndex, 0, this.draggedStation);
-                planStore.selectedDetailsItemChildData = [...planStore.selectedDetailsItemChildData];
+                const draggedItemIndex = workoutStore.selectedDetailsItemChildData.indexOf(this.draggedStation);
+                workoutStore.selectedDetailsItemChildData.splice(draggedItemIndex, 1);
+                const dropIndex = workoutStore.selectedDetailsItemChildData.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
+                workoutStore.selectedDetailsItemChildData.splice(dropIndex, 0, this.draggedStation);
+                workoutStore.selectedDetailsItemChildData = [...workoutStore.selectedDetailsItemChildData];
             }
         }
     }

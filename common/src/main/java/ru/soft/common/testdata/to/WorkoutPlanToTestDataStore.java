@@ -2,7 +2,7 @@ package ru.soft.common.testdata.to;
 
 import org.springframework.stereotype.Component;
 import ru.soft.common.testdata.TestDataStore;
-import ru.soft.common.to.WorkoutPlanTo;
+import ru.soft.common.to.WorkoutTo;
 
 import java.util.List;
 import java.util.UUID;
@@ -10,12 +10,12 @@ import java.util.UUID;
 import static ru.soft.common.testdata.snapshot.TestSnapshotStore.roundsSchema;
 
 @Component
-public class WorkoutPlanToTestDataStore implements TestDataStore<WorkoutPlanTo> {
+public class WorkoutPlanToTestDataStore implements TestDataStore<WorkoutTo> {
 
     public static final String DUPLICATE_TITLE = "Barbell squats plan title";
 
-    public static WorkoutPlanTo example(boolean isNew) {
-        return new WorkoutPlanTo(
+    public static WorkoutTo example(boolean isNew) {
+        return new WorkoutTo(
                 isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"),
                 roundsSchema()
                 , "Push-up plan title",
@@ -24,21 +24,21 @@ public class WorkoutPlanToTestDataStore implements TestDataStore<WorkoutPlanTo> 
     }
 
     @Override
-    public WorkoutPlanTo entity(boolean isNew) {
+    public WorkoutTo entity(boolean isNew) {
         return example(isNew);
     }
 
     @Override
-    public List<WorkoutPlanTo> entities(boolean isNew) {
+    public List<WorkoutTo> entities(boolean isNew) {
         return List.of(
                 entity(isNew),
-                new WorkoutPlanTo(
+                new WorkoutTo(
                         isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"),
                         roundsSchema()
                         , "Barbell squats plan title",
                         "Barbell squats plan description"
                 ),
-                new WorkoutPlanTo(
+                new WorkoutTo(
                         isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"),
                         roundsSchema(),
                         "Pull-up plan title",
@@ -48,8 +48,8 @@ public class WorkoutPlanToTestDataStore implements TestDataStore<WorkoutPlanTo> 
     }
 
     @Override
-    public WorkoutPlanTo requestEntity(boolean isNew) {
-        return new WorkoutPlanTo(
+    public WorkoutTo requestEntity(boolean isNew) {
+        return new WorkoutTo(
                 isNew ? null : newId(),
                 roundsSchema(),
                 "request plan title",
@@ -58,21 +58,21 @@ public class WorkoutPlanToTestDataStore implements TestDataStore<WorkoutPlanTo> 
     }
 
     @Override
-    public List<WorkoutPlanTo> invalids(boolean isNew) {
+    public List<WorkoutTo> invalids(boolean isNew) {
         return List.of(
-                new WorkoutPlanTo(
+                new WorkoutTo(
                         isNew ? null : newId(),
                         roundsSchema(),
                         "",
                         "request plan description"
                 ),
-                new WorkoutPlanTo(
+                new WorkoutTo(
                         isNew ? newId() : null,
                         roundsSchema(),
                         "request plan title",
                         "request plan description"
                 ),
-                new WorkoutPlanTo(
+                new WorkoutTo(
                         isNew ? null : newId(),
                         null,
                         "request plan title",
@@ -82,9 +82,9 @@ public class WorkoutPlanToTestDataStore implements TestDataStore<WorkoutPlanTo> 
     }
 
     @Override
-    public List<WorkoutPlanTo> duplicates(boolean isNew) {
+    public List<WorkoutTo> duplicates(boolean isNew) {
         return List.of(
-                new WorkoutPlanTo(
+                new WorkoutTo(
                         isNew ? null : newId(),
                         roundsSchema(),
                         DUPLICATE_TITLE,
@@ -94,7 +94,7 @@ public class WorkoutPlanToTestDataStore implements TestDataStore<WorkoutPlanTo> 
     }
 
     @Override
-    public List<WorkoutPlanTo> htmlUnsafe(boolean isNew) {
+    public List<WorkoutTo> htmlUnsafe(boolean isNew) {
         return List.of();
     }
 }

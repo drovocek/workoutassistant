@@ -8,7 +8,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-import ru.soft.common.data.snapshot.WorkoutPlanSnapshot;
+import ru.soft.common.data.snapshot.WorkoutSnapshot;
 import ru.soft.data.BaseEntity;
 
 import java.time.LocalDateTime;
@@ -22,7 +22,7 @@ public class TrainingSession extends BaseEntity {
 
     @NotNull
     @Column("workout_plan")
-    private final WorkoutPlanSnapshot plan;
+    private final WorkoutSnapshot plan;
 
     @NotNull
     @Column("date_time")
@@ -32,7 +32,7 @@ public class TrainingSession extends BaseEntity {
     private final String note;
 
     @PersistenceCreator
-    public TrainingSession(UUID id, WorkoutPlanSnapshot plan, LocalDateTime dateTime, String note) {
+    public TrainingSession(UUID id, WorkoutSnapshot plan, LocalDateTime dateTime, String note) {
         super(id, false);
         this.plan = plan;
         this.dateTime = dateTime;
@@ -40,7 +40,7 @@ public class TrainingSession extends BaseEntity {
     }
 
     @Builder
-    public TrainingSession(UUID id, boolean isNew, WorkoutPlanSnapshot plan, LocalDateTime dateTime, String note) {
+    public TrainingSession(UUID id, boolean isNew, WorkoutSnapshot plan, LocalDateTime dateTime, String note) {
         super(id, isNew);
         this.plan = plan;
         this.dateTime = dateTime;

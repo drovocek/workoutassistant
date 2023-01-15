@@ -3,6 +3,7 @@
 @import url('./views/exercise-view.css');
 @import url('./views/round-view.css');
 @import url('./views/form-view.css');
+@import url('./views/program-view.css');
 @import url('line-awesome/dist/line-awesome/css/line-awesome.min.css');
 
 [hidden] {
@@ -21,4 +22,8 @@
     .editing round-form {
         width: 100%;
     }
+}
+
+.editing .grid-wrapper {
+    display: none;
 }

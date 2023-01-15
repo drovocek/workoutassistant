@@ -3,14 +3,16 @@ import {makeAutoObservable} from 'mobx';
 import {UiStore} from "Frontend/common/stores/ui-store";
 import {ExerciseStore} from 'Frontend/pages/exercises/data/exercise-store';
 import {RoundStore} from "Frontend/pages/rounds/data/round-store";
-import {PlanStore} from "Frontend/pages/plans/data/plan-store";
+import {WorkoutStore} from "Frontend/pages/workouts/data/workout-store";
+import {ProgramStore} from "Frontend/pages/programs/data/program-store";
 
 export class AppStore {
     uiStore = new UiStore();
 
     exerciseStore = new ExerciseStore();
     roundStore = new RoundStore();
-    planStore = new PlanStore();
+    workoutStore = new WorkoutStore();
+    programStore = new ProgramStore();
 
     applicationName = 'Workout assistant';
 
@@ -44,7 +46,8 @@ export const appStore = new AppStore();
 export const uiStore = appStore.uiStore;
 export const exerciseStore = appStore.exerciseStore;
 export const roundStore = appStore.roundStore;
-export const planStore = appStore.planStore;
+export const workoutStore = appStore.workoutStore;
+export const programStore = appStore.programStore;
 
 
 

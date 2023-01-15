@@ -20,7 +20,7 @@ public class WorkoutSessionTOMapper implements TOMapper<TrainingSession, Workout
         return TrainingSession.builder()
                 .id(to.id())
                 .isNew(to.id() == null)
-                .plan(to.workoutPlanSnapshot())
+                .plan(to.workoutSnapshot())
                 .dateTime(to.dateTime())
                 .note(to.note())
                 .build();

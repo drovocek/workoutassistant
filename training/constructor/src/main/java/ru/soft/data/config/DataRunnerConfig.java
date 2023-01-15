@@ -9,7 +9,7 @@ import ru.soft.common.testdata.TestDataStore;
 import ru.soft.data.model.Exercise;
 import ru.soft.data.model.Round;
 import ru.soft.data.model.TrainingSession;
-import ru.soft.data.model.WorkoutPlan;
+import ru.soft.data.model.Workout;
 import ru.soft.data.repository.ExerciseRepository;
 import ru.soft.data.repository.RoundRepository;
 import ru.soft.data.repository.TrainingSessionRepository;
@@ -34,7 +34,7 @@ public class DataRunnerConfig {
     @Autowired
     WorkoutPlanRepository workoutPlanRepository;
     @Autowired
-    TestDataStore<WorkoutPlan> workoutPlanTestDataStore;
+    TestDataStore<Workout> workoutPlanTestDataStore;
 
     @Autowired
     TrainingSessionRepository workoutSessionRepository;
@@ -51,8 +51,8 @@ public class DataRunnerConfig {
                 List<Round> rounds = workoutRoundTestDataStore.entities(true);
                 this.workoutRoundRepository.saveAll(rounds);
 
-                List<WorkoutPlan> workoutPlans = workoutPlanTestDataStore.entities(true);
-                this.workoutPlanRepository.saveAll(workoutPlans);
+                List<Workout> workouts = workoutPlanTestDataStore.entities(true);
+                this.workoutPlanRepository.saveAll(workouts);
 
                 List<TrainingSession> trainingSessions = workoutSessionTestDataStore.entities(true);
                 this.workoutSessionRepository.saveAll(trainingSessions);

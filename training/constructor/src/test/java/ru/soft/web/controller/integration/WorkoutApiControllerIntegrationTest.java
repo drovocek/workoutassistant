@@ -3,12 +3,12 @@ package ru.soft.web.controller.integration;
 import ru.soft.common.AppApi;
 import ru.soft.common.testdata.TestDataStore;
 import ru.soft.common.testdata.to.WorkoutPlanToTestDataStore;
-import ru.soft.common.to.WorkoutPlanTo;
-import ru.soft.data.model.WorkoutPlan;
+import ru.soft.common.to.WorkoutTo;
+import ru.soft.data.model.Workout;
 import ru.soft.data.test.WorkoutPlanTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
-class WorkoutPlanApiControllerIntegrationTest extends AbstractApiControllerIntegrationTest<WorkoutPlan, WorkoutPlanTo> {
+class WorkoutApiControllerIntegrationTest extends AbstractApiControllerIntegrationTest<Workout, WorkoutTo> {
 
     @Override
     protected String getApiUrl() {
@@ -16,17 +16,17 @@ class WorkoutPlanApiControllerIntegrationTest extends AbstractApiControllerInteg
     }
 
     @Override
-    protected MatcherFactory.Matcher<WorkoutPlanTo> matcher() {
-        return MatcherFactory.usingIgnoringFieldsComparator(WorkoutPlanTo.class,"id");
+    protected MatcherFactory.Matcher<WorkoutTo> matcher() {
+        return MatcherFactory.usingIgnoringFieldsComparator(WorkoutTo.class,"id");
     }
 
     @Override
-    protected TestDataStore<WorkoutPlan> entityStore() {
+    protected TestDataStore<Workout> entityStore() {
         return new WorkoutPlanTestDataStore();
     }
 
     @Override
-    protected TestDataStore<WorkoutPlanTo> toStore() {
+    protected TestDataStore<WorkoutTo> toStore() {
         return new WorkoutPlanToTestDataStore();
     }
 }

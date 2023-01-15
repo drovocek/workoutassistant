@@ -2,15 +2,15 @@ import {makeAutoObservable, observable, runInAction} from 'mobx';
 import {uiStore} from "Frontend/common/stores/app-store";
 import {GeneralStore} from "Frontend/common/stores/general-store";
 import {deepEquals, processErr, randomString} from "Frontend/common/utils/app-utils";
-import WorkoutPlan from "Frontend/generated/ru/soft/common/to/WorkoutPlanTo";
+import Workout from "Frontend/generated/ru/soft/common/to/WorkoutTo";
 import {WorkoutPlanEndpoint} from "Frontend/generated/endpoints";
-import WorkoutPlanToModel from "Frontend/generated/ru/soft/common/to/WorkoutPlanToModel";
+import WorkoutModel from "Frontend/generated/ru/soft/common/to/WorkoutToModel";
 import RoundSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/RoundSnapshot";
 
-export class PlanStore implements GeneralStore<WorkoutPlan> {
-    data: WorkoutPlan[] = [];
+export class WorkoutStore implements GeneralStore<Workout> {
+    data: Workout[] = [];
     filterText = '';
-    selected: WorkoutPlan | null = null;
+    selected: Workout | null = null;
     formOpened: boolean = false;
 
     constructor() {
@@ -38,7 +38,7 @@ export class PlanStore implements GeneralStore<WorkoutPlan> {
         });
     }
 
-    setSelected(selected: WorkoutPlan | null) {
+    setSelected(selected: Workout | null) {
         this.selected = selected;
     }
 
@@ -57,7 +57,7 @@ export class PlanStore implements GeneralStore<WorkoutPlan> {
         this.filterText = filterText;
     }
 
-    public async update(updatable: WorkoutPlan) {
+    public async update(updatable: Workout) {
         if (!updatable.id) return;
         await WorkoutPlanEndpoint.update(updatable)
             .then(() => {
@@ -67,7 +67,7 @@ export class PlanStore implements GeneralStore<WorkoutPlan> {
             .catch(processErr);
     }
 
-    public async add(stored: WorkoutPlan) {
+    public async add(stored: Workout) {
         await WorkoutPlanEndpoint.add(stored)
             .then(stored => {
                 this.saveLocal(stored);
@@ -80,7 +80,7 @@ export class PlanStore implements GeneralStore<WorkoutPlan> {
         const original = this.selected;
         if (!original) return;
 
-        let copy = WorkoutPlanToModel.createEmptyValue();
+        let copy = WorkoutModel.createEmptyValue();
         copy.title = original.title + ' Copy ' + randomString(5);
         copy.description = original.description;
 
@@ -93,7 +93,7 @@ export class PlanStore implements GeneralStore<WorkoutPlan> {
             });
     }
 
-    private saveLocal(saved: WorkoutPlan) {
+    private saveLocal(saved: Workout) {
         const exist = this.data.some((c) => c.id === saved.id);
         if (exist) {
             this.data = this.data.map((existing) => {
@@ -108,7 +108,7 @@ export class PlanStore implements GeneralStore<WorkoutPlan> {
         }
     }
 
-    private saveLocalAfterSelected(copy: WorkoutPlan) {
+    private saveLocalAfterSelected(copy: Workout) {
         const selected = this.selected
         if (!selected) return;
 
@@ -133,15 +133,15 @@ export class PlanStore implements GeneralStore<WorkoutPlan> {
 
     }
 
-    private deleteLocal(removed: WorkoutPlan) {
+    private deleteLocal(removed: Workout) {
         this.data = this.data.filter((c) => c.id !== removed.id);
     }
 
-    createNew(): WorkoutPlan {
-        return WorkoutPlanToModel.createEmptyValue();
+    createNew(): Workout {
+        return WorkoutModel.createEmptyValue();
     }
 
-    selectedDetailsItem: WorkoutPlan | null = null;
+    selectedDetailsItem: Workout | null = null;
     selectedDetailsItemChildData: RoundSnapshot[] = [];
     selectedDetailsItemChild: RoundSnapshot | null = null;
     detailsItemChildFilterText = '';
@@ -157,7 +157,7 @@ export class PlanStore implements GeneralStore<WorkoutPlan> {
         this.detailsItemChildFilterText = filterText;
     }
 
-    public setSelectedDetailsItem(detailsItem: WorkoutPlan | null): void {
+    public setSelectedDetailsItem(detailsItem: Workout | null): void {
         if (this.hasSelectedDetailsItem()) {
             this.updateDetailsItem();
         }
@@ -179,7 +179,7 @@ export class PlanStore implements GeneralStore<WorkoutPlan> {
         return this.selectedDetailsItemChild !== null;
     }
 
-    private extractStations(round: WorkoutPlan): RoundSnapshot[] {
+    private extractStations(round: Workout): RoundSnapshot[] {
         if (round.roundsSchema && round.roundsSchema.roundSnapshots) {
             return round.roundsSchema.roundSnapshots as RoundSnapshot[];
         } else {
@@ -187,11 +187,11 @@ export class PlanStore implements GeneralStore<WorkoutPlan> {
         }
     }
 
-    public detailsItemIsOpened(detailsItem: WorkoutPlan): boolean {
+    public detailsItemIsOpened(detailsItem: Workout): boolean {
         return deepEquals(this.selectedDetailsItem, detailsItem);
     }
 
-    public getSelectedItemsDetailAsArr(): WorkoutPlan[] {
+    public getSelectedItemsDetailAsArr(): Workout[] {
         return this.selectedDetailsItem !== null ? [this.selectedDetailsItem] : [];
     }
 

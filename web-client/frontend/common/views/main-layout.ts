@@ -83,8 +83,13 @@ export class MainLayout extends Layout {
         icon: 'la la-globe',
       },
       {
-        path: 'plans',
-        title: 'Plans',
+        path: 'workouts',
+        title: 'Workouts',
+        icon: 'la la-globe',
+      },
+      {
+        path: 'programs',
+        title: 'Programs',
         icon: 'la la-globe',
       },
     ];

@@ -1,12 +1,12 @@
 package ru.soft.data.config.converter.write;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.soft.common.data.snapshot.WorkoutPlanSnapshot;
+import ru.soft.common.data.snapshot.WorkoutSnapshot;
 
 import static ru.soft.common.testdata.snapshot.TestSnapshotStore.planSnapshot;
 
-class WorkoutPlanSnapshotToPGobjectWritingConverterTest
-        extends BaseEntityToPGobjectWritingConverterTest<WorkoutPlanSnapshot, WorkoutPlanSnapshotToPGobjectWritingConverter> {
+class WorkoutSnapshotToPGobjectWritingConverterTest
+        extends BaseEntityToPGobjectWritingConverterTest<WorkoutSnapshot, WorkoutPlanSnapshotToPGobjectWritingConverter> {
 
     @Override
     protected WorkoutPlanSnapshotToPGobjectWritingConverter writingConverter(ObjectMapper mapper) {
@@ -14,7 +14,7 @@ class WorkoutPlanSnapshotToPGobjectWritingConverterTest
     }
 
     @Override
-    protected WorkoutPlanSnapshot forWriting() {
+    protected WorkoutSnapshot forWriting() {
         return planSnapshot();
     }
 }

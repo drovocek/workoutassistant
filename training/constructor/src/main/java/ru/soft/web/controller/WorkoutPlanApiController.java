@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.soft.common.AppApi;
-import ru.soft.common.to.WorkoutPlanTo;
+import ru.soft.common.to.WorkoutTo;
 
 @Slf4j
 @Getter
@@ -16,5 +16,5 @@ import ru.soft.common.to.WorkoutPlanTo;
 @RequestMapping(
         value = AppApi.WorkoutPlans.URL,
         produces = MediaType.APPLICATION_JSON_VALUE)
-class WorkoutPlanApiController extends AbstractApiController<WorkoutPlanTo> {
+class WorkoutPlanApiController extends AbstractApiController<WorkoutTo> {
 }

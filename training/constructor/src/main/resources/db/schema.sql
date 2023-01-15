@@ -17,7 +17,7 @@ CREATE TABLE round (
     description VARCHAR(250) NOT NULL
 );
 
-CREATE TABLE workout_plan(
+CREATE TABLE workout(
     id UUID PRIMARY KEY,
     rounds_schema JSONB NOT NULL,
     title VARCHAR(50) NOT NULL CHECK (title <> '') UNIQUE,

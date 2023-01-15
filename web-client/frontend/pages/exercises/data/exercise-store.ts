@@ -5,12 +5,28 @@ import ExerciseToModel from "Frontend/generated/ru/soft/common/to/ExerciseToMode
 import {ExerciseEndpoint} from "Frontend/generated/endpoints";
 import {GeneralStore} from "Frontend/common/stores/general-store";
 import {processErr, randomString} from "Frontend/common/utils/app-utils";
+import {ApiStore} from "Frontend/common/stores/api-store";
 
 export class ExerciseStore implements GeneralStore<ExerciseTo> {
-    data: ExerciseTo[] = [];
-    filterText = '';
-    selected: ExerciseTo | null = null;
-    formOpened: boolean = false;
+
+    private apiStore = new ApiStore<ExerciseTo>(
+        ExerciseToModel.createEmptyValue,
+        ExerciseEndpoint.add,
+        this.createCopy,
+        ExerciseEndpoint.update,
+        ExerciseEndpoint.delete
+    );
+    data: ExerciseTo[] = this.apiStore.data;
+    filterText = this.apiStore.filterText;
+    selected: ExerciseTo | null = this.apiStore.selected;
+    formOpened: boolean = this.apiStore.formOpened;
+
+    private createCopy(original: ExerciseTo): ExerciseTo {
+        let copy = JSON.parse(JSON.stringify(original));
+        copy.title = original.title + ' Copy ' + randomString(5);
+        copy.id = null;
+        return copy;
+    }
 
     constructor() {
         makeAutoObservable(

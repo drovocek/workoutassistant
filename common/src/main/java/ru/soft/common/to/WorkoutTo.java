@@ -11,14 +11,14 @@ import ru.soft.common.data.RoundsSchema;
 import java.util.UUID;
 
 @Builder
-public record WorkoutPlanTo(
+public record WorkoutTo(
         @JsonProperty("id") UUID id,
         @JsonProperty("roundsSchema") @NotNull @Nonnull RoundsSchema roundsSchema,
         @JsonProperty("title") @NotBlank String title,
         @JsonProperty("description") String description) implements HasId {
 
     @Override
-    public WorkoutPlanTo withId(UUID id) {
-        return new WorkoutPlanTo(id, roundsSchema(), title(), description());
+    public WorkoutTo withId(UUID id) {
+        return new WorkoutTo(id, roundsSchema(), title(), description());
     }
 }

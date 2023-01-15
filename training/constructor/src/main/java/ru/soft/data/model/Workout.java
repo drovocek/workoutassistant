@@ -1,11 +1,15 @@
 package ru.soft.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 import ru.soft.common.data.RoundsSchema;
 import ru.soft.data.BaseEntity;
 
@@ -13,8 +17,10 @@ import java.util.UUID;
 
 @Getter
 @ToString(callSuper = true)
+@Table(name = "workout")
 @EqualsAndHashCode(callSuper = true)
-abstract class Workout extends BaseEntity {
+@JsonIncludeProperties({"id", "title", "description", "roundsSchema"})
+public class Workout extends BaseEntity {
 
     @NotNull
     @Column("rounds_schema")
@@ -27,17 +33,30 @@ abstract class Workout extends BaseEntity {
     @Column("description")
     protected final String description;
 
-    protected Workout(UUID id, boolean isNew, RoundsSchema roundsSchema, String title, String description) {
+    @Builder
+    public Workout(UUID id, boolean isNew, RoundsSchema roundsSchema, String title, String description) {
         super(id, isNew);
         this.roundsSchema = roundsSchema;
         this.title = title;
         this.description = description;
     }
 
-    protected Workout(UUID id, RoundsSchema roundsSchema, String title, String description) {
+    @PersistenceCreator
+    public Workout(UUID id, RoundsSchema roundsSchema, String title, String description) {
         super(id, false);
         this.roundsSchema = roundsSchema;
         this.title = title;
         this.description = description;
+    }
+
+    @Override
+    protected Workout withId(UUID id, boolean isNew) {
+        return Workout.builder()
+                .id(id)
+                .isNew(isNew)
+                .roundsSchema(this.roundsSchema())
+                .title(this.title())
+                .description(this.description())
+                .build();
     }
 }

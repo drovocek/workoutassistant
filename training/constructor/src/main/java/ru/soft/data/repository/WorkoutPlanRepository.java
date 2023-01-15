@@ -4,11 +4,11 @@ import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-import ru.soft.data.model.WorkoutPlan;
+import ru.soft.data.model.Workout;
 
 import java.util.UUID;
 
-public interface WorkoutPlanRepository extends BaseRepository<WorkoutPlan> {
+public interface WorkoutPlanRepository extends BaseRepository<Workout> {
 
     @Modifying
     @Transactional

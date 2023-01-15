@@ -16,13 +16,15 @@ import {Grid} from "@vaadin/grid";
 import {columnBodyRenderer} from "@vaadin/grid/lit";
 import {Checkbox} from "@vaadin/checkbox";
 import {TemplateResult} from "lit-html/development/lit-html";
-import WorkoutPlanTo from "Frontend/generated/ru/soft/common/to/WorkoutPlanTo";
-import WorkoutPlanToModel from "Frontend/generated/ru/soft/common/to/WorkoutPlanToModel";
-import {planStore, roundStore} from "Frontend/common/stores/app-store";
+import Workout from "Frontend/generated/ru/soft/common/to/WorkoutTo";
+import WorkoutModel from "Frontend/generated/ru/soft/common/to/WorkoutToModel";
+import {workoutStore, roundStore} from "Frontend/common/stores/app-store";
 import Round from "Frontend/generated/ru/soft/common/to/RoundTo";
+import RoundSnapshot from "Frontend/generated/ru/soft/common/data/snapshot/RoundSnapshot";
+import RoundSnapshotModel from "Frontend/generated/ru/soft/common/data/snapshot/RoundSnapshotModel";
 
 @customElement('plan-form')
-export class PlanForm extends View implements AppForm<WorkoutPlanTo> {
+export class WorkoutForm extends View implements AppForm<Workout> {
 
     @query('#grid')
     private grid!: Grid;
@@ -32,7 +34,7 @@ export class PlanForm extends View implements AppForm<WorkoutPlanTo> {
 
     private checked: Map<Round, Checkbox> = new Map<Round, Checkbox>();
 
-    private planBinder = new Binder<WorkoutPlanTo, WorkoutPlanToModel>(this, WorkoutPlanToModel);
+    private planBinder = new Binder<Workout, WorkoutModel>(this, WorkoutModel);
 
     protected firstUpdated(_changedProperties: any) {
         super.firstUpdated(_changedProperties);
@@ -54,15 +56,15 @@ export class PlanForm extends View implements AppForm<WorkoutPlanTo> {
     render() {
         return html`
             <div class="editor">
-                <h3>${this.planBinder.value.id || planStore.hasSelectedDetailsItemChild() ? 'Update' : 'Add'}</h3>
-                ${this.renderRoundSelector(!planStore.hasSelectedDetailsItem() || planStore.hasSelectedDetailsItemChild())}
-                ${this.renderEditPlanForm(planStore.hasSelectedDetailsItem())}
+                <h3>${this.planBinder.value.id || workoutStore.hasSelectedDetailsItemChild() ? 'Update' : 'Add'}</h3>
+                ${this.renderRoundSelector(!workoutStore.hasSelectedDetailsItem() || workoutStore.hasSelectedDetailsItemChild())}
+                ${this.renderEditPlanForm(workoutStore.hasSelectedDetailsItem())}
                 <div class="button-layout">
                     <vaadin-button
                             id="saveBtn"
                             theme="primary"
                             @click=${this.save}>
-                        ${this.planBinder.value.id || planStore.hasSelectedDetailsItemChild() ? 'Save' : 'Add'}
+                        ${this.planBinder.value.id || workoutStore.hasSelectedDetailsItemChild() ? 'Save' : 'Add'}
                     </vaadin-button>
                     <vaadin-button
                             theme="tertiary"
@@ -146,15 +148,15 @@ export class PlanForm extends View implements AppForm<WorkoutPlanTo> {
         this.clearChecked();
     }
 
-    public open(entity: WorkoutPlanTo): void {
+    public open(entity: Workout): void {
         this.planBinder.read(entity);
         this.hidden = false;
-        planStore.formOpened = true;
+        workoutStore.formOpened = true;
     }
 
     public close(): void {
         this.hidden = true;
-        planStore.formOpened = false;
+        workoutStore.formOpened = false;
         this.clearChecked();
         roundStore.updateFilter('');
     }
@@ -177,7 +179,7 @@ export class PlanForm extends View implements AppForm<WorkoutPlanTo> {
     }
 
     save(): void {
-        if (planStore.hasSelectedDetailsItem()) {
+        if (workoutStore.hasSelectedDetailsItem()) {
             this.saveStationLocal();
         } else {
             this.saveRound();
@@ -187,14 +189,14 @@ export class PlanForm extends View implements AppForm<WorkoutPlanTo> {
     private saveRound(): void {
         this.saveBtn.disabled = true;
         if (this.planBinder.value.id) {
-            this.planBinder.submitTo(planStore.update)
+            this.planBinder.submitTo(workoutStore.update)
                 .then(() => {
                     this.planBinder.clear();
                     this.close();
                 })
                 .finally(() => this.saveBtn.disabled = false);
         } else {
-            this.planBinder.submitTo(planStore.add)
+            this.planBinder.submitTo(workoutStore.add)
                 .then(() => {
                     this.planBinder.clear();
                     this.close();
@@ -205,27 +207,25 @@ export class PlanForm extends View implements AppForm<WorkoutPlanTo> {
 
     private saveStationLocal(): void {
         // if (planStore.hasSelectedDetailsItemChild()) {
-        //     if (!this.roundBinder.invalid) {
+        //     if (!this.planBinder.invalid) {
         //         planStore.updateLocalDetailsItemChild(this.roundBinder.value);
         //     }
         // } else {
-        //     if (this.checked.size > 0) {
-        //         let exercises = Array.from(this.checked, ([name]) => name);
-        //         let stations = exercises.map(exercise => this.asDefaultStation(exercise));
-        //         planStore.saveLocalDetailsItemChild(stations);
-        //         this.clearChecked();
-        //     }
+            if (this.checked.size > 0) {
+                let exercises = Array.from(this.checked, ([name]) => name);
+                let stations = exercises.map(exercise => this.asDefaultStation(exercise));
+                workoutStore.saveLocalDetailsItemChild(stations);
+                this.clearChecked();
+            }
         // }
-        // this.close();
+        this.close();
     }
 
-    // private asDefaultStation(exercise: WorkoutRoundTo): WorkoutStationSnapshot {
-    //     const station = WorkoutStationSnapshotModel.createEmptyValue();
-    //     const exerciseSnapshot = ExerciseSnapshotModel.createEmptyValue();
-    //     exerciseSnapshot.title = exercise.title;
-    //     exerciseSnapshot.description = exercise.description;
-    //     exerciseSnapshot.complexity = exercise.complexity;
-    //     station.exercise = exerciseSnapshot;
-    //     return station;
-    // }
+    private asDefaultStation(round: Round): RoundSnapshot {
+        const roundSnapshot = RoundSnapshotModel.createEmptyValue();
+        roundSnapshot.title = round.title;
+        roundSnapshot.description = round.description;
+        roundSnapshot.stationsSchema = round.stationsSchema;
+        return roundSnapshot;
+    }
 }
