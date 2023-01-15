@@ -7,10 +7,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import ru.soft.common.data.RoundsSchema;
 
+import java.time.LocalDateTime;
+
 @Builder
 @JsonRootName("workoutSnapshot")
 public record WorkoutSnapshot(
         @JsonProperty("roundsSchema") @NotNull @Nonnull RoundsSchema roundsSchema,
         @JsonProperty("title") String title,
-        @JsonProperty("description") String description) {
+        @JsonProperty("description") String description,
+        @JsonProperty("dateTime") LocalDateTime dateTime) {
 }

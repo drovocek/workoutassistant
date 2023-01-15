@@ -2,12 +2,12 @@ package ru.soft.web.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.soft.common.to.WorkoutSessionTo;
-import ru.soft.data.model.TrainingSession;
+import ru.soft.data.model.Program;
 
 @Component
-public class WorkoutSessionTOMapper implements TOMapper<TrainingSession, WorkoutSessionTo> {
+public class WorkoutSessionTOMapper implements TOMapper<Program, WorkoutSessionTo> {
 
-    public WorkoutSessionTo toTo(TrainingSession entity) {
+    public WorkoutSessionTo toTo(Program entity) {
         return new WorkoutSessionTo(
                 entity.id(),
                 entity.plan(),
@@ -16,8 +16,8 @@ public class WorkoutSessionTOMapper implements TOMapper<TrainingSession, Workout
         );
     }
 
-    public TrainingSession fromTo(WorkoutSessionTo to) {
-        return TrainingSession.builder()
+    public Program fromTo(WorkoutSessionTo to) {
+        return Program.builder()
                 .id(to.id())
                 .isNew(to.id() == null)
                 .plan(to.workoutSnapshot())

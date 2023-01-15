@@ -43,15 +43,18 @@ export class ProgramView extends View {
                             theme="no-border">
                         <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
                     </vaadin-grid>
-                    <div class="grid-button-panel">
+                    <vaadin-horizontal-layout
+                            class="grid-button-panel"
+                            theme="spacing padding">
                         <vaadin-button
-                                class="create-button"
+                                id="plus-button"
+                                class="plus-button"
                                 theme="primary error"
                                 @click=${this.openAddForm}>
                             <vaadin-icon icon="vaadin:plus" slot="prefix"></vaadin-icon>
                             Create program
                         </vaadin-button>
-                    </div>
+                    </vaadin-horizontal-layout>
                 </vaadin-vertical-layout>
                 <program-form id="program-form" class="form" ?hidden="${!programStore.formVisible}"></program-form>
             </vaadin-horizontal-layout>

@@ -1,14 +1,12 @@
-package ru.soft.web.controller.integration;
+package ru.soft.web.controller.unit;
 
 import ru.soft.common.AppApi;
 import ru.soft.common.testdata.TestDataStore;
 import ru.soft.common.testdata.to.WorkoutSessionToTestDataStore;
 import ru.soft.common.to.WorkoutSessionTo;
-import ru.soft.data.model.TrainingSession;
-import ru.soft.data.test.WorkoutSessionTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
-class TrainingSessionApiControllerIntegrationTest extends AbstractApiControllerIntegrationTest<TrainingSession, WorkoutSessionTo> {
+class ProgramApiControllerUnitTest extends AbstractApiControllerUnitTest<WorkoutSessionTo> {
 
     @Override
     protected String getApiUrl() {
@@ -17,12 +15,7 @@ class TrainingSessionApiControllerIntegrationTest extends AbstractApiControllerI
 
     @Override
     protected MatcherFactory.Matcher<WorkoutSessionTo> matcher() {
-        return MatcherFactory.usingIgnoringFieldsComparator(WorkoutSessionTo.class,"id");
-    }
-
-    @Override
-    protected TestDataStore<TrainingSession> entityStore() {
-        return new WorkoutSessionTestDataStore();
+        return MatcherFactory.usingIgnoringFieldsComparator(WorkoutSessionTo.class);
     }
 
     @Override

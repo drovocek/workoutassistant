@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile;
 import ru.soft.common.testdata.TestDataStore;
 import ru.soft.data.model.Exercise;
 import ru.soft.data.model.Round;
-import ru.soft.data.model.TrainingSession;
+import ru.soft.data.model.Program;
 import ru.soft.data.model.Workout;
 import ru.soft.data.repository.ExerciseRepository;
 import ru.soft.data.repository.RoundRepository;
@@ -39,7 +39,7 @@ public class DataRunnerConfig {
     @Autowired
     TrainingSessionRepository workoutSessionRepository;
     @Autowired
-    TestDataStore<TrainingSession> workoutSessionTestDataStore;
+    TestDataStore<Program> workoutSessionTestDataStore;
 
     @Bean
     public CommandLineRunner dataRunner() {
@@ -54,8 +54,8 @@ public class DataRunnerConfig {
                 List<Workout> workouts = workoutPlanTestDataStore.entities(true);
                 this.workoutPlanRepository.saveAll(workouts);
 
-                List<TrainingSession> trainingSessions = workoutSessionTestDataStore.entities(true);
-                this.workoutSessionRepository.saveAll(trainingSessions);
+                List<Program> programs = workoutSessionTestDataStore.entities(true);
+                this.workoutSessionRepository.saveAll(programs);
             }
         };
     }
