@@ -5,6 +5,7 @@ import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.soft.data.model.Exercise;
+import ru.soft.data.repository.common.BaseRepository;
 
 import java.util.UUID;
 

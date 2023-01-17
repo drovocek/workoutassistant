@@ -10,7 +10,8 @@ import org.springframework.data.relational.core.conversion.DbActionExecutionExce
 import ru.soft.TestContainerHolder;
 import ru.soft.TestSettings;
 import ru.soft.common.testdata.TestDataStore;
-import ru.soft.data.BaseEntity;
+import ru.soft.data.model.BaseEntity;
+import ru.soft.data.repository.common.BaseRepository;
 import ru.soft.utils.MatcherFactory;
 import ru.soft.web.exception.IllegalRequestDataException;
 

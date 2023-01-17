@@ -1,18 +1,18 @@
 package ru.soft.web.controller.integration;
 
 import ru.soft.common.AppApi;
-import ru.soft.common.testdata.TestDataStore;
-import ru.soft.common.testdata.to.WorkoutPlanToTestDataStore;
 import ru.soft.common.to.WorkoutTo;
+import ru.soft.common.testdata.TestDataStore;
+import ru.soft.common.testdata.to.WorkoutToTestDataStore;
 import ru.soft.data.model.Workout;
-import ru.soft.data.test.WorkoutPlanTestDataStore;
+import ru.soft.data.test.WorkoutTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
 class WorkoutApiControllerIntegrationTest extends AbstractApiControllerIntegrationTest<Workout, WorkoutTo> {
 
     @Override
     protected String getApiUrl() {
-        return AppApi.WorkoutPlans.URL;
+        return AppApi.Workouts.URL;
     }
 
     @Override
@@ -22,11 +22,11 @@ class WorkoutApiControllerIntegrationTest extends AbstractApiControllerIntegrati
 
     @Override
     protected TestDataStore<Workout> entityStore() {
-        return new WorkoutPlanTestDataStore();
+        return new WorkoutTestDataStore();
     }
 
     @Override
     protected TestDataStore<WorkoutTo> toStore() {
-        return new WorkoutPlanToTestDataStore();
+        return new WorkoutToTestDataStore();
     }
 }

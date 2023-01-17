@@ -1,6 +1,7 @@
 package ru.soft.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -10,43 +11,31 @@ import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-import ru.soft.common.data.RoundsSchema;
-import ru.soft.data.BaseEntity;
+import ru.soft.common.data.elements.WorkoutSchema;
 
 import java.util.UUID;
 
 @Getter
-@ToString(callSuper = true)
 @Table(name = "workout")
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@JsonIncludeProperties({"id", "title", "description", "roundsSchema"})
+@JsonIncludeProperties({"id", "workoutSchema", "title", "note"})
 public class Workout extends BaseEntity {
 
-    @NotNull
-    @Column("rounds_schema")
-    protected final RoundsSchema roundsSchema;
-
-    @NotBlank
-    @Column("title")
-    protected final String title;
-
-    @Column("description")
-    protected final String description;
+    @Column("workout_schema")
+    @JsonProperty("workoutSchema")
+    private final WorkoutSchema workoutSchema;
 
     @Builder
-    public Workout(UUID id, boolean isNew, RoundsSchema roundsSchema, String title, String description) {
-        super(id, isNew);
-        this.roundsSchema = roundsSchema;
-        this.title = title;
-        this.description = description;
+    public Workout(UUID id, boolean isNew, @NotNull WorkoutSchema workoutSchema, @NotBlank String title, String note) {
+        super(id, isNew, title, note);
+        this.workoutSchema = workoutSchema;
     }
 
     @PersistenceCreator
-    public Workout(UUID id, RoundsSchema roundsSchema, String title, String description) {
-        super(id, false);
-        this.roundsSchema = roundsSchema;
-        this.title = title;
-        this.description = description;
+    public Workout(UUID id, WorkoutSchema workoutSchema, @NotBlank String title, String note) {
+        super(id, false, title, note);
+        this.workoutSchema = workoutSchema;
     }
 
     @Override
@@ -54,9 +43,9 @@ public class Workout extends BaseEntity {
         return Workout.builder()
                 .id(id)
                 .isNew(isNew)
-                .roundsSchema(this.roundsSchema())
+                .workoutSchema(this.workoutSchema())
                 .title(this.title())
-                .description(this.description())
+                .note(this.note())
                 .build();
     }
 }

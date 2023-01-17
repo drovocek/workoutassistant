@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.soft.common.data.HasId;
 import ru.soft.common.testdata.TestDataStore;
-import ru.soft.data.BaseEntity;
+import ru.soft.data.model.BaseEntity;
 
 import java.util.List;
 

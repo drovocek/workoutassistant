@@ -13,29 +13,26 @@ public class ExerciseToTestDataStore implements TestDataStore<ExerciseTo> {
     public static final String DUPLICATE_TITLE = "Barbell squat exercise title";
 
     public static ExerciseTo example(boolean isNew) {
-        return new ExerciseTo(
-                isNew ? null : UUID.fromString("f386d086-6e5d-11ed-a1eb-0242ac120002"),
-                "Push-up exercise title",
-                "Push-up exercise description",
-                1
-        );
+        return ExerciseTo.builder()
+                .id(isNew ? null : UUID.fromString("f386d086-6e5d-11ed-a1eb-0242ac120002"))
+                .title("Push-up exercise title")
+                .note("Push-up exercise note")
+                .build();
     }
 
     public static List<ExerciseTo> examples(boolean isNew) {
         return List.of(
                 example(isNew),
-                new ExerciseTo(
-                        isNew ? null : UUID.fromString("ff252f6e-6e5d-11ed-a1eb-0242ac120002"),
-                        "Barbell squat exercise title",
-                        "Barbell squat exercise description",
-                        2
-                ),
-                new ExerciseTo(
-                        isNew ? null : UUID.fromString("05bf5a98-6e5e-11ed-a1eb-0242ac120002"),
-                        "Pull-up exercise title",
-                        "Pull-up exercise description",
-                        3
-                )
+                ExerciseTo.builder()
+                        .id(isNew ? null : UUID.fromString("ff252f6e-6e5d-11ed-a1eb-0242ac120002"))
+                        .title("Barbell squat exercise title")
+                        .note("Barbell squat exercise note")
+                        .build(),
+                ExerciseTo.builder()
+                        .id(isNew ? null : UUID.fromString("05bf5a98-6e5e-11ed-a1eb-0242ac120002"))
+                        .title("Pull-up exercise title")
+                        .note("Pull-up exercise note")
+                        .build()
         );
     }
 
@@ -51,59 +48,42 @@ public class ExerciseToTestDataStore implements TestDataStore<ExerciseTo> {
 
     @Override
     public ExerciseTo requestEntity(boolean isNew) {
-        return new ExerciseTo(
-                isNew ? null : newId(),
-                "request exercise title",
-                "request exercise description",
-                5
-        );
+        return ExerciseTo.builder()
+                .id(isNew ? null : newId())
+                .title("request exercise title")
+                .note("request exercise note")
+                .build();
     }
 
     @Override
     public List<ExerciseTo> invalids(boolean isNew) {
         return List.of(
-                new ExerciseTo(
-                        isNew ? null : newId(),
-                        "",
-                        "request exercise description",
-                        5
-                ),
-                new ExerciseTo(
-                        isNew ? null : newId(),
-                        "request exercise title",
-                        "request exercise description",
-                        100
-                ),
-                new ExerciseTo(
-                        isNew ? newId() : null,
-                        "request exercise title",
-                        "request exercise description",
-                        5
-                ),
-                new ExerciseTo(
-                        isNew ? null : newId(),
-                        null,
-                        "request exercise description",
-                        5
-                ),
-                new ExerciseTo(
-                        isNew ? null : newId(),
-                        "request exercise title",
-                        "request exercise description",
-                        -1
-                )
+                ExerciseTo.builder()
+                        .id(isNew ? null : newId())
+                        .title(null)
+                        .note("request exercise note")
+                        .build(),
+                ExerciseTo.builder()
+                        .id(isNew ? null : newId())
+                        .title("")
+                        .note("request exercise note")
+                        .build(),
+                ExerciseTo.builder()
+                        .id(isNew ? newId() : null)
+                        .title("request exercise title")
+                        .note("request exercise note")
+                        .build()
         );
     }
 
     @Override
     public List<ExerciseTo> duplicates(boolean isNew) {
         return List.of(
-                new ExerciseTo(
-                        isNew ? null : newId(),
-                        DUPLICATE_TITLE,
-                        "request exercise description",
-                        10
-                )
+                ExerciseTo.builder()
+                        .id(isNew ? null : newId())
+                        .title(DUPLICATE_TITLE)
+                        .note("request exercise note")
+                        .build()
         );
     }
 

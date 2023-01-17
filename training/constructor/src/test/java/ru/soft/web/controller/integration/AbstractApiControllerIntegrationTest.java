@@ -18,8 +18,8 @@ import ru.soft.TestSettings;
 import ru.soft.common.data.HasId;
 import ru.soft.common.testdata.TestDataStore;
 import ru.soft.common.utils.JsonUtil;
-import ru.soft.data.BaseEntity;
-import ru.soft.data.repository.BaseRepository;
+import ru.soft.data.model.BaseEntity;
+import ru.soft.data.repository.common.BaseRepository;
 import ru.soft.utils.MatcherFactory;
 
 import java.io.UnsupportedEncodingException;

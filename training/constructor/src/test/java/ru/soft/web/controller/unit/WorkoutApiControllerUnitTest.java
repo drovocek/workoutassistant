@@ -4,7 +4,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import ru.soft.common.AppApi;
 import ru.soft.common.to.WorkoutTo;
 import ru.soft.common.testdata.TestDataStore;
-import ru.soft.common.testdata.to.WorkoutPlanToTestDataStore;
+import ru.soft.common.testdata.to.WorkoutToTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
 @WebMvcTest
@@ -12,7 +12,7 @@ class WorkoutApiControllerUnitTest extends AbstractApiControllerUnitTest<Workout
 
     @Override
     protected String getApiUrl() {
-        return AppApi.WorkoutPlans.URL;
+        return AppApi.Workouts.URL;
     }
 
     @Override
@@ -22,6 +22,6 @@ class WorkoutApiControllerUnitTest extends AbstractApiControllerUnitTest<Workout
 
     @Override
     protected TestDataStore<WorkoutTo> toStore() {
-        return new WorkoutPlanToTestDataStore();
+        return new WorkoutToTestDataStore();
     }
 }

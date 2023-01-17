@@ -4,11 +4,12 @@ import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-import ru.soft.data.model.Program;
+import ru.soft.data.model.TrainingSession;
+import ru.soft.data.repository.common.BaseRepository;
 
 import java.util.UUID;
 
-public interface TrainingSessionRepository extends BaseRepository<Program> {
+public interface TrainingSessionRepository extends BaseRepository<TrainingSession> {
 
     @Modifying
     @Transactional

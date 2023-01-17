@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import ru.soft.common.data.HasId;
-import ru.soft.data.BaseEntity;
-import ru.soft.data.repository.BaseRepository;
+import ru.soft.data.model.BaseEntity;
+import ru.soft.data.repository.common.BaseRepository;
 import ru.soft.web.mapper.TOMapper;
 
 import java.util.List;
