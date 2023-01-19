@@ -1,6 +1,5 @@
 package ru.soft.common.data.elements;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -20,20 +19,19 @@ import java.util.Optional;
 @JsonIncludeProperties({"duration", "unit", "title", "note", "order"})
 public class Rest extends WorkoutElement {
 
+    @JsonProperty("duration")
     private final int duration;
 
+    @Nonnull
+    @NotNull
+    @JsonProperty("unit")
     private final DurationUnit unit;
 
+    @JsonProperty("order")
     private final int order;
 
     @Builder
-    @JsonCreator
-    public Rest(
-            @JsonProperty("title") String title,
-            @JsonProperty("note") String note,
-            @JsonProperty("duration") int duration,
-            @JsonProperty("unit") @Nonnull @NotNull DurationUnit unit,
-            @JsonProperty("order") int order) {
+    public Rest(String title, String note, int duration, DurationUnit unit, int order) {
         super(Optional.ofNullable(title).orElse("rest"), Optional.ofNullable(note).orElse("rest between sets"));
         this.duration = duration;
         this.unit = unit;

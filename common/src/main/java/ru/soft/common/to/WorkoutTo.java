@@ -1,8 +1,10 @@
 package ru.soft.common.to;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.annotation.Nonnull;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -13,20 +15,21 @@ import ru.soft.common.data.elements.WorkoutSchema;
 import java.util.UUID;
 
 @Getter
-@Setter
 @Builder
 @ToString
 @EqualsAndHashCode
 @JsonRootName("workout")
 @RequiredArgsConstructor
+@JsonIncludeProperties({"id", "workoutSchema", "title", "note"})
 public class WorkoutTo implements HasId, HasDescription {
 
     @JsonProperty("id")
     private final UUID id;
 
+    @Valid
     @NotNull
     @Nonnull
-    @JsonProperty("schema")
+    @JsonProperty("workoutSchema")
     private final WorkoutSchema workoutSchema;
 
     @NotBlank
@@ -36,11 +39,6 @@ public class WorkoutTo implements HasId, HasDescription {
     @JsonProperty("note")
     private final String note;
 
-    @NotNull
-    @Nonnull
-    @JsonProperty("order")
-    private final int order;
-
     @Override
     public WorkoutTo withId(UUID id) {
         return WorkoutTo.builder()
@@ -48,7 +46,6 @@ public class WorkoutTo implements HasId, HasDescription {
                 .workoutSchema(this.workoutSchema())
                 .title(this.title())
                 .note(this.note())
-                .order(this.order())
                 .build();
     }
 }

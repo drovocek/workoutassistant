@@ -53,7 +53,7 @@ abstract class AbstractApiController<TO extends HasId> implements ApiController<
     }
 
     @Override
-    public TO add(TO to) {
+    public TO add(@Valid TO to) {
         log.info("add {}", to);
         checkNew(to);
         return this.service.add(to);
@@ -62,7 +62,7 @@ abstract class AbstractApiController<TO extends HasId> implements ApiController<
     @Valid
     @Override
     @Transactional
-    public void update(TO to) {
+    public void update(@Valid TO to) {
         log.info("update by {}", to);
         checkNotNew(to);
         this.service.update(to);

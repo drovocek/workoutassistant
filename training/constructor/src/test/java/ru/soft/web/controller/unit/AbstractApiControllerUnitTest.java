@@ -1,5 +1,6 @@
 package ru.soft.web.controller.unit;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +23,7 @@ import ru.soft.TestSettings;
 import ru.soft.common.data.HasId;
 import ru.soft.common.testdata.TestDataStore;
 import ru.soft.common.utils.JsonUtil;
+import ru.soft.data.config.converter.CustomJsonObjectMapper;
 import ru.soft.service.BaseApiService;
 import ru.soft.utils.MatcherFactory;
 import ru.soft.web.exception.IllegalRequestDataException;
@@ -55,7 +57,7 @@ abstract class AbstractApiControllerUnitTest<TO extends HasId> {
 
     @BeforeEach
     void initData() {
-        JsonUtil.setMapper(mapper);
+        JsonUtil.setMapper(CustomJsonObjectMapper.instance());
     }
 
     protected int rowsCount() {
@@ -234,14 +236,11 @@ abstract class AbstractApiControllerUnitTest<TO extends HasId> {
 
     @Test
     @DisplayName("должен добавлять новый экземпляр сущности")
-    void add() throws UnsupportedEncodingException {
+    void add() throws UnsupportedEncodingException, JsonProcessingException {
         TO newEntity = toStore().requestEntity(true);
         TO expected = toStore().requestEntity(false);
-
-
         given(service().add(newEntity))
                 .willReturn(expected);
-
 
         ResultActions resultAction = add(newEntity, status().isCreated());
         TO actual = matcher().readFromJson(resultAction);

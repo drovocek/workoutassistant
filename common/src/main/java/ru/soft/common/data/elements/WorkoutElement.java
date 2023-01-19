@@ -1,9 +1,10 @@
 package ru.soft.common.data.elements;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +23,11 @@ import ru.soft.common.data.HasOrder;
 @RequiredArgsConstructor
 public abstract class WorkoutElement implements HasOrder, HasDescription {
 
+    @Nonnull
+    @NotBlank
     @JsonProperty("title")
     protected final String title;
 
     @JsonProperty("note")
     protected final String note;
-
-    @JsonIgnore
-    public String toString() {
-        return "WorkoutElement(title=" + this.title() + ", note=" + this.note() + ")";
-    }
 }

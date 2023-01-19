@@ -11,6 +11,7 @@ public final class CustomJsonObjectMapper extends ObjectMapper {
     private CustomJsonObjectMapper() {
         this.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         this.setAccessorNaming(new DefaultAccessorNamingStrategy.Provider().withGetterPrefix("").withSetterPrefix(""));
+        this.findAndRegisterModules();
     }
 
     public static CustomJsonObjectMapper instance() {

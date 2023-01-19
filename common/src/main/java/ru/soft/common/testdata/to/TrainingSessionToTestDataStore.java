@@ -74,7 +74,7 @@ public class TrainingSessionToTestDataStore implements TestDataStore<TrainingSes
                         .build(),
                 TrainingSessionTo.builder()
                         .id(isNew ? null : newId())
-                        .workoutSchema(workoutSchema())
+                        .workoutSchema(null)
                         .dateTime(SESSION_DATE_TIME)
                         .title("request session title")
                         .note("request session note")

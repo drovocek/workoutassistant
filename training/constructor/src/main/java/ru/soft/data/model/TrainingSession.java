@@ -2,6 +2,7 @@ package ru.soft.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -25,6 +26,8 @@ public class TrainingSession extends BaseEntity {
     @JsonProperty("workoutSchema")
     private final WorkoutSchema workoutSchema;
 
+    @Nonnull
+    @NotNull
     @JsonProperty("dateTime")
     private final LocalDateTime dateTime;
 

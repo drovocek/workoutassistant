@@ -35,7 +35,7 @@ public class WorkoutToTestDataStore implements TestDataStore<WorkoutTo> {
                 WorkoutTo.builder()
                         .id(isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"))
                         .workoutSchema(workoutSchema())
-                        .title("Barbell squats plan title")
+                        .title(DUPLICATE_TITLE)
                         .note("Barbell squats plan note")
                         .build(),
                 WorkoutTo.builder()
@@ -62,7 +62,7 @@ public class WorkoutToTestDataStore implements TestDataStore<WorkoutTo> {
         return List.of(
                 WorkoutTo.builder()
                         .id(isNew ? null : newId())
-                        .workoutSchema(workoutSchema())
+                        .workoutSchema(null)
                         .title("request plan title")
                         .note("request plan note")
                         .build(),

@@ -1,13 +1,11 @@
 package ru.soft.common.data.elements;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -25,29 +23,34 @@ import java.util.UUID;
         {"exerciseId", "repetitions", "weight", "duration", "unit", "title", "note", "order"})
 public class Station extends WorkoutElement {
 
+    @Nonnull
+    @NotNull
+    @JsonProperty("exerciseId")
     private final UUID exerciseId;
 
+    @JsonProperty("repetitions")
     private final int repetitions;
 
+    @Min(value = 0)
+    @Max(value = 500)
+    @JsonProperty("weight")
     private final int weight;
 
+    @Min(value = 0)
+    @Max(value = 500)
+    @JsonProperty("duration")
     private final int duration;
 
+    @Nonnull
+    @NotNull
+    @JsonProperty("unit")
     private final DurationUnit unit;
 
+    @JsonProperty("order")
     private final int order;
 
     @Builder
-    @JsonCreator
-    public Station(
-            @JsonProperty("title") @Nonnull @NotBlank String title,
-            @JsonProperty("note") String note,
-            @JsonProperty("exerciseId") UUID exerciseId,
-            @JsonProperty("repetitions") @Min(value = 0) @Max(value = 1_000) int repetitions,
-            @JsonProperty("weight") @Min(value = 0) @Max(value = 500) int weight,
-            @JsonProperty("duration") @Min(value = 0) @Max(value = 60) int duration,
-            @JsonProperty("unit") @Nonnull @NotNull DurationUnit unit,
-            @JsonProperty("order") int order) {
+    public Station(String title, String note, UUID exerciseId, int repetitions, int weight, int duration, DurationUnit unit, int order) {
         super(title, note);
         this.exerciseId = exerciseId;
         this.repetitions = repetitions;

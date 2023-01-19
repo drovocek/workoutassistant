@@ -20,6 +20,6 @@ class ExerciseApiControllerUnitTest extends AbstractApiControllerUnitTest<Exerci
 
     @Override
     protected MatcherFactory.Matcher<ExerciseTo> matcher() {
-        return MatcherFactory.usingIgnoringFieldsComparator(ExerciseTo.class);
+        return MatcherFactory.usingEqualsComparator(ExerciseTo.class);
     }
 }

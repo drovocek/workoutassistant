@@ -17,7 +17,7 @@ class WorkoutApiControllerUnitTest extends AbstractApiControllerUnitTest<Workout
 
     @Override
     protected MatcherFactory.Matcher<WorkoutTo> matcher() {
-        return MatcherFactory.usingIgnoringFieldsComparator(WorkoutTo.class);
+        return MatcherFactory.usingEqualsComparator(WorkoutTo.class);
     }
 
     @Override

@@ -15,7 +15,7 @@ class TrainingSessionApiControllerUnitTest extends AbstractApiControllerUnitTest
 
     @Override
     protected MatcherFactory.Matcher<TrainingSessionTo> matcher() {
-        return MatcherFactory.usingIgnoringFieldsComparator(TrainingSessionTo.class);
+        return MatcherFactory.usingEqualsComparator(TrainingSessionTo.class);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ru.soft.common.to;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @EqualsAndHashCode
 @JsonRootName("exercise")
 @RequiredArgsConstructor
+@JsonIncludeProperties({"id", "title", "note"})
 public class ExerciseTo implements HasId, HasDescription {
 
     @JsonProperty("id")
