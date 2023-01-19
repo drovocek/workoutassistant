@@ -9,9 +9,9 @@ export interface GeneralStore<T> {
 
     createNew(): T;
 
-    copy(): Promise<void>;
+    copy(original: T): Promise<void>;
 
-    delete(): Promise<void>
+    delete(id: string): Promise<void>
 }
 
 export interface HasId {

@@ -6,7 +6,7 @@ export class ApiStore<T extends HasId> implements GeneralStore<T> {
     data: T[] = [];
     filterText = '';
     selected: T | null = null;
-    formOpened: boolean = false;
+    formVisible: boolean = false;
 
     createEmptyValue: () => T;
     addEntity: (stored: T) => Promise<T>;

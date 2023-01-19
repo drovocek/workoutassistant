@@ -1,7 +1,3 @@
-import '@vaadin/button';
-import '@vaadin/date-picker';
-import '@vaadin/date-time-picker';
-import '@vaadin/form-layout';
 import '@vaadin/grid';
 import type {Grid} from '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-sort-column';
@@ -9,20 +5,16 @@ import '@vaadin/horizontal-layout';
 import '@vaadin/icon';
 import '@vaadin/icons';
 import '@vaadin/notification';
-import '@vaadin/polymer-legacy-adapter';
-import '@vaadin/split-layout';
-import '@vaadin/text-field';
-import '@vaadin/text-area';
-import '@vaadin/integer-field';
-import '@vaadin/upload'
-import './components/exercise-action-panel'
+import '@vaadin/overlay'
 import {html} from 'lit';
 import {customElement, query} from 'lit/decorators.js';
 import './components/exercise-form';
-import {exerciseStore} from "Frontend/common/stores/app-store";
-import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
+import {exerciseStore, uiStore} from "Frontend/common/stores/app-store";
+import Exercise from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import {AppForm} from "Frontend/common/components/app-form";
-import { View } from 'Frontend/common/views/view';
+import {View} from 'Frontend/common/views/view';
+import {MenuBarItemSelectedEvent} from "@vaadin/menu-bar";
+import {renderTitleWithActionBar} from "Frontend/pages/exercises/utils/exercise-component-factory";
 
 @customElement('exercise-view')
 export class ExerciseView extends View {
@@ -31,14 +23,14 @@ export class ExerciseView extends View {
     private grid!: Grid;
 
     @query('#exercise-form')
-    private form!: AppForm<ExerciseTo>;
+    private form!: AppForm<Exercise>;
 
     private firstSelectionEvent = true;
 
     async connectedCallback() {
         super.connectedCallback();
         this.autorun(() => {
-            if (exerciseStore.formOpened) {
+            if (exerciseStore.formVisible) {
                 this.classList.add("editing");
             } else {
                 this.classList.remove("editing");
@@ -48,29 +40,55 @@ export class ExerciseView extends View {
 
     render() {
         return html`
-            <div class="content">
-                <div class="filter-grid">
-                    <exercise-action-panel targetFormId="exercise-form"
-                                           class="action-panel"></exercise-action-panel>
+            <vaadin-button
+                    id="plus-button"
+                    class="plus-button"
+                    theme="primary error"
+                    @click=${this.openAddForm}
+                    ?hidden="${exerciseStore.formVisible}">
+                <vaadin-icon icon="vaadin:plus" slot="prefix"></vaadin-icon>
+                Create program
+            </vaadin-button>
+            <vaadin-horizontal-layout class="content">
+                <vaadin-vertical-layout class="grid-wrapper">
+                    <vaadin-text-field
+                            class="filter"
+                            .value=${exerciseStore.filterText}
+                            @input=${exerciseStore.updateFilterByEvent}
+                            clear-button-visible>
+                        <vaadin-icon slot="prefix" icon="vaadin:search"></vaadin-icon>
+                        <vaadin-tooltip slot="tooltip" text="Search field"></vaadin-tooltip>
+                    </vaadin-text-field>
                     <vaadin-grid
                             id="grid"
                             theme="no-border"
                             .items=${exerciseStore.filtered}
                             @active-item-changed=${this.handleGridSelection}>
-                        <vaadin-grid-sort-column path="title" auto-width></vaadin-grid-sort-column>
-                        <vaadin-grid-sort-column path="description" auto-width></vaadin-grid-sort-column>
-                        <vaadin-grid-sort-column path="complexity" auto-width></vaadin-grid-sort-column>
+                        <vaadin-grid-sort-column path="title" header="Title" auto-width
+                                                 ${renderTitleWithActionBar(this.processExerciseClick())}></vaadin-grid-sort-column>
+                        <vaadin-grid-sort-column path="note" auto-width></vaadin-grid-sort-column>
                     </vaadin-grid>
-                </div>
-                <exercise-form id="exercise-form" class="form"></exercise-form>
-            </div>
+                    
+                </vaadin-vertical-layout>
+                <exercise-form id="exercise-form" class="form" ?hidden="${!exerciseStore.formVisible}"></exercise-form>
+            </vaadin-horizontal-layout>
+            <vaadin-notification
+                    theme=${uiStore.message.error ? 'error' : 'success'}
+                    position="bottom-start"
+                    .opened=${uiStore.message.open}
+                    .renderer=${(root: HTMLElement) =>
+                            (root.textContent = uiStore.message.text)}>
         `;
+    }
+
+    private openAddForm() {
+        exerciseStore.formVisible = true;
     }
 
     private handleGridSelection(event: CustomEvent) {
         this.form.close();
 
-        const item: ExerciseTo = event.detail.value as ExerciseTo;
+        const item: Exercise = event.detail.value as Exercise;
         this.grid.selectedItems = item ? [item] : [];
 
         if (this.firstSelectionEvent) {
@@ -79,5 +97,17 @@ export class ExerciseView extends View {
         }
 
         exerciseStore.setSelected(item);
+    }
+
+    private processExerciseClick() {
+        return (e: MenuBarItemSelectedEvent, exercise: Exercise) => {
+            let command = e.detail.value.text;
+            let id = exercise.id;
+            if (command === 'Delete' && id) {
+                exerciseStore.delete(id);
+            } else if (command === 'Copy') {
+                exerciseStore.copy(exercise);
+            }
+        }
     }
 }

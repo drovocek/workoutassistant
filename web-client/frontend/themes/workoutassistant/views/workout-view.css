@@ -1,17 +1,17 @@
-program-view .content {
+workout-view .content {
     height: 100%;
 }
 
-program-view .grid-wrapper {
+workout-view .grid-wrapper {
     width: 100%;
 }
 
-program-view .form {
+workout-view .form {
     /*width: 50em;*/
     width: 100%;
 }
 
-program-view .form-button-panel, .grid-button-panel {
+workout-view .form-button-panel, .grid-button-panel {
     width: 100%;
     justify-content: flex-end;
 }

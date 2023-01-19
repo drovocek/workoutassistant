@@ -32,14 +32,14 @@ export abstract class AppStoreActionPanel<T> extends AppActionPanel<T> {
 
     public onDelete(): void {
         this.deleteBtn.disabled = true;
-        this.generalStore().delete()
-            .finally(() => this.copyBtn.disabled = false);
+        // this.generalStore().delete()
+        //     .finally(() => this.copyBtn.disabled = false);
     };
 
     public onCopy(): void {
         this.copyBtn.disabled = true;
-        this.generalStore().copy()
-            .finally(() => this.copyBtn.disabled = false);
+        // this.generalStore().copy()
+        //     .finally(() => this.copyBtn.disabled = false);
     };
 
     protected abstract generalStore(): GeneralStore<T>;

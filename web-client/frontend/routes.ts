@@ -35,32 +35,12 @@ export const views: ViewRoute[] = [
     },
   },
   {
-    path: 'rounds',
-    component: 'round-view',
-    icon: 'la la-globe',
-    title: 'Rounds',
-    action: async (_context, _command) => {
-      await import('./pages/rounds/round-view');
-      return;
-    },
-  },
-  {
     path: 'workouts',
     component: 'workout-view',
     icon: 'la la-globe',
     title: 'Workouts',
     action: async (_context, _command) => {
       await import('./pages/workouts/workout-view');
-      return;
-    },
-  },
-  {
-    path: 'programs',
-    component: 'program-view',
-    icon: 'la la-globe',
-    title: 'Programs',
-    action: async (_context, _command) => {
-      await import('./pages/programs/program-view');
       return;
     },
   },

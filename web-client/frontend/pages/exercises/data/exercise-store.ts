@@ -1,25 +1,18 @@
-import {exerciseStore, uiStore} from 'Frontend/common/stores/app-store';
+import {uiStore} from 'Frontend/common/stores/app-store';
 import {makeAutoObservable, observable, runInAction} from 'mobx';
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import ExerciseToModel from "Frontend/generated/ru/soft/common/to/ExerciseToModel";
 import {ExerciseEndpoint} from "Frontend/generated/endpoints";
 import {GeneralStore} from "Frontend/common/stores/general-store";
 import {processErr, randomString} from "Frontend/common/utils/app-utils";
-import {ApiStore} from "Frontend/common/stores/api-store";
+import '@vaadin/notification';
 
 export class ExerciseStore implements GeneralStore<ExerciseTo> {
 
-    private apiStore = new ApiStore<ExerciseTo>(
-        ExerciseToModel.createEmptyValue,
-        ExerciseEndpoint.add,
-        this.createCopy,
-        ExerciseEndpoint.update,
-        ExerciseEndpoint.delete
-    );
-    data: ExerciseTo[] = this.apiStore.data;
-    filterText = this.apiStore.filterText;
-    selected: ExerciseTo | null = this.apiStore.selected;
-    formOpened: boolean = this.apiStore.formOpened;
+    data: ExerciseTo[] = [];
+    filterText = '';
+    selected: ExerciseTo | null = null;
+    formVisible: boolean = false;
 
     private createCopy(original: ExerciseTo): ExerciseTo {
         let copy = JSON.parse(JSON.stringify(original));
@@ -33,7 +26,8 @@ export class ExerciseStore implements GeneralStore<ExerciseTo> {
             this,
             {
                 selected: observable.ref,
-                formOpened: observable.ref,
+                formVisible: observable.ref,
+                filterText: observable.ref,
                 initFromServer: false,
                 data: observable.shallow,
             },
@@ -61,18 +55,20 @@ export class ExerciseStore implements GeneralStore<ExerciseTo> {
     get filtered() {
         const filter = new RegExp(this.filterText, 'i');
         return this.data.filter((entity) =>
-            filter.test(`${entity.title} ${entity.description}`)
+            filter.test(`${entity.title} ${entity.note}`)
         );
     }
 
-    updateFilter(filterText: string) {
+    updateFilter(filterText: string): void {
         this.filterText = filterText;
     }
 
+    updateFilterByEvent(e: { target: HTMLInputElement }) {
+        this.filterText = e.target.value;
+    }
+
     createNew(): ExerciseTo {
-        let exerciseDefault = ExerciseToModel.createEmptyValue();
-        exerciseDefault.complexity = 3;
-        return exerciseDefault;
+        return ExerciseToModel.createEmptyValue();
     }
 
     public async update(updatable: ExerciseTo) {
@@ -89,13 +85,12 @@ export class ExerciseStore implements GeneralStore<ExerciseTo> {
         await ExerciseEndpoint.add(stored)
             .then(stored => {
                 this.saveLocal(stored);
-                uiStore.showSuccess('Round created.');
+                uiStore.showSuccess('Exercise created.');
             })
             .catch(processErr);
     }
 
-    public async copy() {
-        const original = exerciseStore.selected;
+    public async copy(original: ExerciseTo) {
         if (!original) return;
 
         let copy = JSON.parse(JSON.stringify(original));
@@ -104,8 +99,8 @@ export class ExerciseStore implements GeneralStore<ExerciseTo> {
 
         await ExerciseEndpoint.add(copy)
             .then(copy => {
-                this.saveLocalAfterSelected(copy);
-                uiStore.showSuccess('Round copy.');
+                this.saveLocalAfterSelected(original, copy);
+                uiStore.showSuccess('Exercise copy.');
             });
     }
 
@@ -124,32 +119,27 @@ export class ExerciseStore implements GeneralStore<ExerciseTo> {
         }
     }
 
-    private saveLocalAfterSelected(copy: ExerciseTo) {
-        const selected = exerciseStore.selected;
-        if (!selected) return;
-
-        const originalExists = this.data.some((c) => c.id === selected.id);
+    private saveLocalAfterSelected(original: ExerciseTo, copy: ExerciseTo) {
+        const originalExists = this.data.some((c) => c.id === original.id);
         if (originalExists) {
-            const dropIndex = this.data.indexOf(selected) + 1;
+            const dropIndex = this.data.indexOf(original) + 1;
             this.data.splice(dropIndex, 0, copy);
         }
     }
 
-    async delete() {
-        const removed = exerciseStore.selected;
-        if (!removed) return;
-        let id = removed.id;
+    async delete(id: string) {
         if (!id) return;
+
         await ExerciseEndpoint.delete(id)
             .then(() => {
                 this.setSelected(null);
-                this.deleteLocal(removed);
-                uiStore.showSuccess('Round deleted.');
+                this.deleteLocal(id);
+                uiStore.showSuccess('Exercise deleted.');
             });
 
     }
 
-    private deleteLocal(removed: ExerciseTo) {
-        this.data = this.data.filter((c) => c.id !== removed.id);
+    private deleteLocal(id: string) {
+        this.data = this.data.filter((c) => c.id !== id);
     }
 }

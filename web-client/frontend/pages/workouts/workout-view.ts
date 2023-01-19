@@ -44,7 +44,6 @@ export class WorkoutView extends View {
                             id="grid"
                             theme="no-border"
                             .items=${workoutStore.filtered}
-                            .detailsOpenedItems="${workoutStore.getSelectedItemsDetailAsArr()}"
                             @active-item-changed=${this.handleGridSelection}
                             ${this.renderDetails()}>
                         <vaadin-grid-column ${this.renderDetailsButton()} header="Title"></vaadin-grid-column>
@@ -60,8 +59,8 @@ export class WorkoutView extends View {
         return () => {
             this.form.close();
             this.deselectAll();
-            const isOpened = workoutStore.detailsItemIsOpened(plan);
-            workoutStore.setSelectedDetailsItem(isOpened ? null : plan);
+            // const isOpened = workoutStore.detailsItemIsOpened(plan);
+            // workoutStore.setSelectedDetailsItem(isOpened ? null : plan);
         }
     }
 
@@ -82,14 +81,12 @@ export class WorkoutView extends View {
     private renderDetailsButton() {
         return columnBodyRenderer<Workout>(
             (plan) => {
-                const isOpened = workoutStore.detailsItemIsOpened(plan);
+                // const isOpened = workoutStore.detailsItemIsOpened(plan);
                 return html`
                     <vaadin-button
                             title="Rounds"
                             theme="tertiary contrast icon"
                             @click="${this.switchDetailsVisible(plan)}">
-                        <vaadin-icon ?hidden=${isOpened} icon="vaadin:chevron-right-small"></vaadin-icon>
-                        <vaadin-icon ?hidden=${!isOpened} icon="vaadin:chevron-down-small"></vaadin-icon>
                     </vaadin-button>
                     <span>${plan.title}</span>
                 `
@@ -112,6 +109,6 @@ export class WorkoutView extends View {
     }
 
     private closeDetails() {
-        workoutStore.setSelectedDetailsItem(null);
+        // workoutStore.setSelectedDetailsItem(null);
     }
 }

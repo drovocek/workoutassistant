@@ -3,6 +3,8 @@ package ru.soft.data.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import ru.soft.common.testdata.TestDataStore;
 import ru.soft.data.model.Exercise;
 import ru.soft.data.model.TrainingSession;
@@ -13,8 +15,8 @@ import ru.soft.data.repository.WorkoutRepository;
 
 import java.util.List;
 
-//@Profile("!production")
-//@Configuration
+@Profile("!production")
+@Configuration
 public class DataRunnerConfig {
 
     @Autowired

@@ -7,8 +7,8 @@ import '@vaadin/text-field';
 import '@vaadin/text-area';
 import '@vaadin/integer-field';
 import '@vaadin/form-layout';
-import {Binder, field, Max, Min, NotBlank} from "@hilla/form";
-import {exerciseStore, roundStore} from "Frontend/common/stores/app-store";
+import {Binder, field, NotBlank} from "@hilla/form";
+import {exerciseStore} from "Frontend/common/stores/app-store";
 import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import ExerciseToModel from "Frontend/generated/ru/soft/common/to/ExerciseToModel";
 import {AppForm} from "Frontend/common/components/app-form";
@@ -43,25 +43,13 @@ export class ExerciseForm extends View implements AppForm<ExerciseTo> {
             new NotBlank({
                 message: 'Please enter a title'
             }));
-
-        this.binder.for(model.complexity).addValidator(
-            new Min({
-                message: 'Not less then 1',
-                value: 1
-            }));
-
-        this.binder.for(model.complexity).addValidator(
-            new Max({
-                message: 'Not more then 10',
-                value: 10
-            }));
     }
 
     render() {
         const {model} = this.binder;
         return html`
             <div class="editor">
-                <h3>${this.binder.value.id || roundStore.hasSelectedDetailsItemChild() ? 'Update' : 'Add'}</h3>
+                <h3>${this.binder.value.id || exerciseStore.hasSelected() ? 'Update' : 'Add'}</h3>
                 <vaadin-form-layout
                         class="edit-round-form">
                     <vaadin-text-field
@@ -71,14 +59,7 @@ export class ExerciseForm extends View implements AppForm<ExerciseTo> {
                     <vaadin-text-area
                             label="Description"
                             id="description"
-                            ${field(model.description)}></vaadin-text-area>
-                    <vaadin-integer-field
-                            label="Complexity"
-                            id="complexity"
-                            step-buttons-visible
-                            min="1"
-                            max="5"
-                            ${field(model.complexity)}></vaadin-integer-field>
+                            ${field(model.note)}></vaadin-text-area>
                 </vaadin-form-layout>
                 <div class="button-layout">
                     <vaadin-button
@@ -100,12 +81,12 @@ export class ExerciseForm extends View implements AppForm<ExerciseTo> {
     public open(entity: ExerciseTo): void {
         this.binder.read(entity);
         this.hidden = false;
-        exerciseStore.formOpened = true;
+        exerciseStore.formVisible = true;
     }
 
     public close(): void {
         this.hidden = true;
-        exerciseStore.formOpened = false;
+        exerciseStore.formVisible = false;
     }
 
     public clear(): void {

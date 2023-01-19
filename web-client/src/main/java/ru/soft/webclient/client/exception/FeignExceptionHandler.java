@@ -21,14 +21,10 @@ public class FeignExceptionHandler implements ErrorDecoder {
 
     @Override
     public Exception decode(String methodKey, Response response) {
-    //    log.info("Resource server response status - {}", response.status());
         if (HttpStatus.UNPROCESSABLE_ENTITY.equals(HttpStatus.resolve(response.status()))) {
             return readServerResponse(response)
                     .map(s -> s.message)
-                    .map(message -> {
-                      //  log.info("Throw to client EndpointException with message- {}", message);
-                        return new EndpointException(message);
-                    })
+                    .map(EndpointException::new)
                     .orElse(null);
         }
 
