@@ -5,7 +5,6 @@ import '@vaadin/button';
 import '@vaadin/combo-box';
 import '@vaadin/text-field';
 import '@vaadin/text-area';
-import '@vaadin/integer-field';
 import '@vaadin/form-layout';
 import {Binder, field, NotBlank} from "@hilla/form";
 import {exerciseStore} from "Frontend/common/stores/app-store";

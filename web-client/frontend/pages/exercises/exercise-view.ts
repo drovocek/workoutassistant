@@ -47,7 +47,7 @@ export class ExerciseView extends View {
                     @click=${this.openAddForm}
                     ?hidden="${exerciseStore.formVisible}">
                 <vaadin-icon icon="vaadin:plus" slot="prefix"></vaadin-icon>
-                Create program
+                Create exercise
             </vaadin-button>
             <vaadin-horizontal-layout class="content">
                 <vaadin-vertical-layout class="grid-wrapper">
@@ -68,7 +68,6 @@ export class ExerciseView extends View {
                                                  ${renderTitleWithActionBar(this.processExerciseClick())}></vaadin-grid-sort-column>
                         <vaadin-grid-sort-column path="note" auto-width></vaadin-grid-sort-column>
                     </vaadin-grid>
-                    
                 </vaadin-vertical-layout>
                 <exercise-form id="exercise-form" class="form" ?hidden="${!exerciseStore.formVisible}"></exercise-form>
             </vaadin-horizontal-layout>

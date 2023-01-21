@@ -14,13 +14,6 @@ export class ExerciseStore implements GeneralStore<ExerciseTo> {
     selected: ExerciseTo | null = null;
     formVisible: boolean = false;
 
-    private createCopy(original: ExerciseTo): ExerciseTo {
-        let copy = JSON.parse(JSON.stringify(original));
-        copy.title = original.title + ' Copy ' + randomString(5);
-        copy.id = null;
-        return copy;
-    }
-
     constructor() {
         makeAutoObservable(
             this,
@@ -90,20 +83,6 @@ export class ExerciseStore implements GeneralStore<ExerciseTo> {
             .catch(processErr);
     }
 
-    public async copy(original: ExerciseTo) {
-        if (!original) return;
-
-        let copy = JSON.parse(JSON.stringify(original));
-        copy.title = original.title + ' Copy ' + randomString(5);
-        copy.id = null;
-
-        await ExerciseEndpoint.add(copy)
-            .then(copy => {
-                this.saveLocalAfterSelected(original, copy);
-                uiStore.showSuccess('Exercise copy.');
-            });
-    }
-
     private saveLocal(saved: ExerciseTo) {
         const exist = this.data.some((c) => c.id === saved.id);
         if (exist) {
@@ -117,6 +96,20 @@ export class ExerciseStore implements GeneralStore<ExerciseTo> {
         } else {
             this.data.push(saved);
         }
+    }
+
+    public async copy(original: ExerciseTo) {
+        if (!original) return;
+
+        let copy = JSON.parse(JSON.stringify(original));
+        copy.title = original.title + ' Copy ' + randomString(5);
+        copy.id = null;
+
+        await ExerciseEndpoint.add(copy)
+            .then(copy => {
+                this.saveLocalAfterSelected(original, copy);
+                uiStore.showSuccess('Exercise copy.');
+            });
     }
 
     private saveLocalAfterSelected(original: ExerciseTo, copy: ExerciseTo) {
