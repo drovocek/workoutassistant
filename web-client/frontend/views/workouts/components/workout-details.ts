@@ -1,8 +1,8 @@
 import '@vaadin/grid';
 import {html} from 'lit';
 import {customElement} from 'lit/decorators.js';
-import {Grid} from "@vaadin/grid";
-import {query} from "lit/decorators";
+import {Grid, GridDragStartEvent, GridDropEvent} from "@vaadin/grid";
+import {property, query, state} from "lit/decorators";
 import {View} from "Frontend/view";
 import {PropertyValues} from "@lit/reactive-element/development/reactive-element";
 import WorkoutElement from "Frontend/generated/ru/soft/common/data/elements/WorkoutElement";
@@ -13,7 +13,19 @@ export class WorkoutDetails extends View {
     @query('#grid')
     private grid!: Grid;
 
+    @property()
     items: WorkoutElement[] = []
+
+    @state()
+    private draggedElement?: WorkoutElement;
+
+    private clearDraggedElement = () => {
+        delete this.draggedElement;
+    };
+
+    private storeDraggingElement = (event: GridDragStartEvent<WorkoutElement>) => {
+        this.draggedElement = event.detail.draggedItems[0];
+    };
 
     async connectedCallback() {
         super.connectedCallback();
@@ -43,11 +55,27 @@ export class WorkoutDetails extends View {
                     id="grid"
                     .items=${this.items}
                     rows-draggable
-                    drop-mode="between">
+                    drop-mode="between"
+                    @grid-dragstart="${this.storeDraggingElement}"
+                    @grid-dragend="${this.clearDraggedElement}"
+                    @grid-drop="${this.onGridDrop()}">
                 <vaadin-grid-column path="title" auto-width></vaadin-grid-column>
                 <vaadin-grid-column path="note" auto-width></vaadin-grid-column>
             </vaadin-grid>
         `;
+    }
+
+    private onGridDrop() {
+        return (event: GridDropEvent<WorkoutElement>) => {
+            const {dropTargetItem, dropLocation} = event.detail;
+            if (this.draggedElement && dropTargetItem !== this.draggedElement) {
+                const draggedItemIndex = this.items.indexOf(this.draggedElement);
+                this.items.splice(draggedItemIndex, 1);
+                const dropIndex = this.items.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
+                this.items.splice(dropIndex, 0, this.draggedElement);
+                this.items = [...this.items];
+            }
+        }
     }
 }
 
