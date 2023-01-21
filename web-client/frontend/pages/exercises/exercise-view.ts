@@ -81,7 +81,9 @@ export class ExerciseView extends View {
     }
 
     private openAddForm() {
+        exerciseStore.setSelected(null);
         exerciseStore.formVisible = true;
+        this.grid.selectedItems = [];
     }
 
     private handleGridSelection(event: CustomEvent) {
@@ -95,7 +97,8 @@ export class ExerciseView extends View {
             return;
         }
 
-        exerciseStore.setSelected(item);
+        exerciseStore.setSelected(item)
+        exerciseStore.formVisible = item !== null;
     }
 
     private processExerciseClick() {

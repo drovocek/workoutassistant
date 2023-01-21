@@ -13,6 +13,7 @@ export class ExerciseStore implements GeneralStore<ExerciseTo> {
     filterText = '';
     selected: ExerciseTo | null = null;
     formVisible: boolean = false;
+    entityName: string = 'Exercise';
 
     constructor() {
         makeAutoObservable(
@@ -78,7 +79,7 @@ export class ExerciseStore implements GeneralStore<ExerciseTo> {
         await ExerciseEndpoint.add(stored)
             .then(stored => {
                 this.saveLocal(stored);
-                uiStore.showSuccess('Exercise created.');
+                uiStore.showSuccess(`${this.entityName} created.`);
             })
             .catch(processErr);
     }
@@ -108,7 +109,7 @@ export class ExerciseStore implements GeneralStore<ExerciseTo> {
         await ExerciseEndpoint.add(copy)
             .then(copy => {
                 this.saveLocalAfterSelected(original, copy);
-                uiStore.showSuccess('Exercise copy.');
+                uiStore.showSuccess(`${this.entityName} copy.`);
             });
     }
 
@@ -127,7 +128,7 @@ export class ExerciseStore implements GeneralStore<ExerciseTo> {
             .then(() => {
                 this.setSelected(null);
                 this.deleteLocal(id);
-                uiStore.showSuccess('Exercise deleted.');
+                uiStore.showSuccess(`${this.entityName} delete.`);
             });
 
     }
