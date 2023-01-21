@@ -6,12 +6,16 @@ import {property, query, state} from "lit/decorators";
 import {View} from "Frontend/view";
 import {PropertyValues} from "@lit/reactive-element/development/reactive-element";
 import WorkoutElement from "Frontend/generated/ru/soft/common/data/elements/WorkoutElement";
+import Workout from "Frontend/generated/ru/soft/common/to/WorkoutTo";
+import {workoutStore} from "Frontend/common/stores/app-store";
 
 @customElement('workout-details')
 export class WorkoutDetails extends View {
 
     @query('#grid')
     private grid!: Grid;
+
+    private firstSelectionEvent = true;
 
     @property()
     items: WorkoutElement[] = []
@@ -54,6 +58,7 @@ export class WorkoutDetails extends View {
             <vaadin-grid
                     id="grid"
                     .items=${this.items}
+                    @active-item-changed=${this.handleGridSelection}
                     rows-draggable
                     drop-mode="between"
                     @grid-dragstart="${this.storeDraggingElement}"
@@ -75,6 +80,16 @@ export class WorkoutDetails extends View {
                 this.items.splice(dropIndex, 0, this.draggedElement);
                 this.items = [...this.items];
             }
+        }
+    }
+
+    private handleGridSelection(event: CustomEvent) {
+        const item: WorkoutElement = event.detail.value as WorkoutElement;
+        this.grid.selectedItems = item ? [item] : [];
+
+        if (this.firstSelectionEvent) {
+            this.firstSelectionEvent = false;
+            return;
         }
     }
 }
