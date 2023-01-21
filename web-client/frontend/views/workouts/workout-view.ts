@@ -4,9 +4,12 @@ import '@vaadin/horizontal-layout';
 import '@vaadin/icon';
 import '@vaadin/icons';
 import '@vaadin/notification';
+import '@vaadin/form-layout';
+import '@vaadin/text-field';
 import './components/workout-form';
+import './components/workout-details';
 import {html} from 'lit';
-import {customElement, query} from 'lit/decorators.js';
+import {customElement, query, state} from 'lit/decorators.js';
 import {View} from '../../view';
 import {uiStore, workoutStore} from "Frontend/common/stores/app-store";
 import {AppForm} from "Frontend/common/components/app-form";
@@ -14,6 +17,8 @@ import type {Grid} from '@vaadin/grid';
 import Workout from "Frontend/generated/ru/soft/common/to/WorkoutTo";
 import {renderTitleWithActionBar} from "Frontend/common/utils/component-factory";
 import {MenuBarItemSelectedEvent} from "@vaadin/menu-bar";
+import {gridRowDetailsRenderer} from "@vaadin/grid/lit";
+import WorkoutElement from "Frontend/generated/ru/soft/common/data/elements/WorkoutElement";
 
 @customElement('workout-view')
 export class WorkoutView extends View {
@@ -25,6 +30,9 @@ export class WorkoutView extends View {
     private form!: AppForm<Workout>;
 
     private firstSelectionEvent = true;
+
+    @state()
+    private detailsOpenedItem: Workout[] = [];
 
     async connectedCallback() {
         super.connectedCallback();
@@ -44,7 +52,7 @@ export class WorkoutView extends View {
                     class="plus-button"
                     theme="primary error"
                     @click=${this.openAddForm}
-                    ?hidden="${workoutStore.formVisible}">
+                    ?hidden=${workoutStore.formVisible}>
                 <vaadin-icon icon="vaadin:plus" slot="prefix"></vaadin-icon>
                 Create exercise
             </vaadin-button>
@@ -62,20 +70,21 @@ export class WorkoutView extends View {
                             id="grid"
                             theme="no-border"
                             .items=${workoutStore.filtered}
-                            @active-item-changed=${this.handleGridSelection}>
+                            @active-item-changed=${this.handleGridSelection}
+                            .detailsOpenedItems=${this.detailsOpenedItem}
+                            ${this.renderDetails()}>
                         <vaadin-grid-sort-column path="title" header="Title" auto-width
                                                  ${renderTitleWithActionBar(this.processClick())}></vaadin-grid-sort-column>
                         <vaadin-grid-sort-column path="note" auto-width></vaadin-grid-sort-column>
                     </vaadin-grid>
                 </vaadin-vertical-layout>
-                <workout-form id="workout-form" class="form" ?hidden="${!workoutStore.formVisible}"></workout-form>
+                <workout-form id="workout-form" class="form" ?hidden=${!workoutStore.formVisible}></workout-form>
             </vaadin-horizontal-layout>
             <vaadin-notification
                     theme=${uiStore.message.error ? 'error' : 'success'}
                     position="bottom-start"
                     .opened=${uiStore.message.open}
-                    .renderer=${(root: HTMLElement) =>
-                            (root.textContent = uiStore.message.text)}>
+                    .renderer=${(root: HTMLElement) => (root.textContent = uiStore.message.text)}>
         `;
     }
 
@@ -98,6 +107,7 @@ export class WorkoutView extends View {
 
         workoutStore.setSelected(item)
         workoutStore.formVisible = item !== null;
+        this.detailsOpenedItem = workoutStore.selected ? [workoutStore.selected] : [];
     }
 
     private processClick() {
@@ -110,5 +120,16 @@ export class WorkoutView extends View {
                 workoutStore.copy(workout);
             }
         }
+    }
+
+    private renderDetails() {
+        return gridRowDetailsRenderer<Workout>(
+            (workout) => {
+                let workoutElements = workout.workoutSchema.workoutElements as WorkoutElement[];
+                return html`
+                    <workout-details .items=${workoutElements}></workout-details>`
+            },
+            []
+        );
     }
 }

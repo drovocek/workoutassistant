@@ -40,3 +40,11 @@ workout-view .plus-button {
     cursor: pointer; /* Add a pointer on hover */
 }
 
+workout-view workout-details {
+    height: 100%;
+}
+
+workout-view workout-details vaadin-grid{
+    height: 30em;
+}
+
