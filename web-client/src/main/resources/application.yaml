@@ -6,11 +6,6 @@ logging:
 spring:
   mustache:
     check-template-location: false
-  jpa:
-    defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always
 #https://arnoldgalovics.com/feign-fallback/
   cloud:
     openfeign:

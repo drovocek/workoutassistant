@@ -1,36 +1,35 @@
 import '@vaadin/grid';
-import type {Grid} from '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-sort-column';
 import '@vaadin/horizontal-layout';
 import '@vaadin/icon';
 import '@vaadin/icons';
 import '@vaadin/notification';
-import '@vaadin/overlay'
+import './components/workout-form';
 import {html} from 'lit';
 import {customElement, query} from 'lit/decorators.js';
-import './components/exercise-form';
-import {exerciseStore, uiStore} from "Frontend/common/stores/app-store";
-import Exercise from "Frontend/generated/ru/soft/common/to/ExerciseTo";
+import {View} from '../../view';
+import {uiStore, workoutStore} from "Frontend/common/stores/app-store";
 import {AppForm} from "Frontend/common/components/app-form";
-import {View} from 'Frontend/common/views/view';
+import type {Grid} from '@vaadin/grid';
+import Workout from "Frontend/generated/ru/soft/common/to/WorkoutTo";
+import {renderTitleWithActionBar} from "Frontend/common/utils/component-factory";
 import {MenuBarItemSelectedEvent} from "@vaadin/menu-bar";
-import {renderTitleWithActionBar} from "Frontend/pages/exercises/utils/exercise-component-factory";
 
-@customElement('exercise-view')
-export class ExerciseView extends View {
+@customElement('workout-view')
+export class WorkoutView extends View {
 
     @query('#grid')
     private grid!: Grid;
 
-    @query('#exercise-form')
-    private form!: AppForm<Exercise>;
+    @query('#workout-form')
+    private form!: AppForm<Workout>;
 
     private firstSelectionEvent = true;
 
     async connectedCallback() {
         super.connectedCallback();
         this.autorun(() => {
-            if (exerciseStore.formVisible) {
+            if (workoutStore.formVisible) {
                 this.classList.add("editing");
             } else {
                 this.classList.remove("editing");
@@ -45,7 +44,7 @@ export class ExerciseView extends View {
                     class="plus-button"
                     theme="primary error"
                     @click=${this.openAddForm}
-                    ?hidden="${exerciseStore.formVisible}">
+                    ?hidden="${workoutStore.formVisible}">
                 <vaadin-icon icon="vaadin:plus" slot="prefix"></vaadin-icon>
                 Create exercise
             </vaadin-button>
@@ -53,8 +52,8 @@ export class ExerciseView extends View {
                 <vaadin-vertical-layout class="grid-wrapper">
                     <vaadin-text-field
                             class="filter"
-                            .value=${exerciseStore.filterText}
-                            @input=${exerciseStore.updateFilterByEvent}
+                            .value=${workoutStore.filterText}
+                            @input=${workoutStore.updateFilterByEvent}
                             clear-button-visible>
                         <vaadin-icon slot="prefix" icon="vaadin:search"></vaadin-icon>
                         <vaadin-tooltip slot="tooltip" text="Search field"></vaadin-tooltip>
@@ -62,14 +61,14 @@ export class ExerciseView extends View {
                     <vaadin-grid
                             id="grid"
                             theme="no-border"
-                            .items=${exerciseStore.filtered}
+                            .items=${workoutStore.filtered}
                             @active-item-changed=${this.handleGridSelection}>
                         <vaadin-grid-sort-column path="title" header="Title" auto-width
-                                                 ${renderTitleWithActionBar(this.processExerciseClick())}></vaadin-grid-sort-column>
+                                                 ${renderTitleWithActionBar(this.processClick())}></vaadin-grid-sort-column>
                         <vaadin-grid-sort-column path="note" auto-width></vaadin-grid-sort-column>
                     </vaadin-grid>
                 </vaadin-vertical-layout>
-                <exercise-form id="exercise-form" class="form" ?hidden="${!exerciseStore.formVisible}"></exercise-form>
+                <workout-form id="workout-form" class="form" ?hidden="${!workoutStore.formVisible}"></workout-form>
             </vaadin-horizontal-layout>
             <vaadin-notification
                     theme=${uiStore.message.error ? 'error' : 'success'}
@@ -81,15 +80,15 @@ export class ExerciseView extends View {
     }
 
     private openAddForm() {
-        exerciseStore.setSelected(null);
-        exerciseStore.formVisible = true;
+        workoutStore.setSelected(null);
+        workoutStore.formVisible = true;
         this.grid.selectedItems = [];
     }
 
     private handleGridSelection(event: CustomEvent) {
         this.form.close();
 
-        const item: Exercise = event.detail.value as Exercise;
+        const item: Workout = event.detail.value as Workout;
         this.grid.selectedItems = item ? [item] : [];
 
         if (this.firstSelectionEvent) {
@@ -97,18 +96,18 @@ export class ExerciseView extends View {
             return;
         }
 
-        exerciseStore.setSelected(item)
-        exerciseStore.formVisible = item !== null;
+        workoutStore.setSelected(item)
+        workoutStore.formVisible = item !== null;
     }
 
-    private processExerciseClick() {
-        return (e: MenuBarItemSelectedEvent, exercise: Exercise) => {
+    private processClick() {
+        return (e: MenuBarItemSelectedEvent, workout: Workout) => {
             let command = e.detail.value.text;
-            let id = exercise.id;
+            let id = workout.id;
             if (command === 'Delete' && id) {
-                exerciseStore.delete(id);
+                workoutStore.delete(id);
             } else if (command === 'Copy') {
-                exerciseStore.copy(exercise);
+                workoutStore.copy(workout);
             }
         }
     }

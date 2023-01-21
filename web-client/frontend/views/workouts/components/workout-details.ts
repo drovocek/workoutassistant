@@ -4,7 +4,7 @@ import {customElement} from 'lit/decorators.js';
 import {Grid} from "@vaadin/grid";
 import {query} from "lit/decorators";
 import {AppForm} from "Frontend/common/components/app-form";
-import {View} from "Frontend/common/views/view";
+import {View} from "Frontend/view";
 import {PropertyValues} from "@lit/reactive-element/development/reactive-element";
 import Workout from "Frontend/generated/ru/soft/common/to/WorkoutTo";
 

@@ -1,9 +1,9 @@
 import {columnBodyRenderer} from "@vaadin/grid/lit";
-import Exercise from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import {MenuBarItemSelectedEvent} from "@vaadin/menu-bar";
 import {html} from 'lit';
+import WorkoutSchema from "Frontend/generated/ru/soft/common/data/elements/WorkoutSchema";
 
-export const createIconItem = function createIconItem(iconName: string) {
+export function createIconItem(iconName: string) {
     const item = document.createElement('vaadin-context-menu-item');
     const icon = document.createElement('vaadin-icon');
     icon.setAttribute('icon', `vaadin:${iconName}`);
@@ -11,7 +11,7 @@ export const createIconItem = function createIconItem(iconName: string) {
     return item;
 }
 
-export const createItem = function createItem(iconName: string, text: string) {
+export function createItem(iconName: string, text: string) {
     const item = document.createElement('vaadin-context-menu-item');
     const icon = document.createElement('vaadin-icon');
 
@@ -27,9 +27,9 @@ export const createItem = function createItem(iconName: string, text: string) {
     return item;
 }
 
-export const renderTitleWithActionBar = function renderTitleWithActionBar(onClick: (e: MenuBarItemSelectedEvent, exercise: Exercise) => void) {
-    return columnBodyRenderer<Exercise>(
-        (exercise) => {
+export function renderTitleWithActionBar(onClick: (e: MenuBarItemSelectedEvent, entity: ActionBarEntity) => void) {
+    return columnBodyRenderer<ActionBarEntity>(
+        (entity) => {
             const items = [
                 {
                     component: createIconItem('ellipsis-dots-v'),
@@ -42,11 +42,16 @@ export const renderTitleWithActionBar = function renderTitleWithActionBar(onClic
                     <vaadin-menu-bar
                             theme="icon"
                             .items="${items}"
-                            @item-selected="${(e: MenuBarItemSelectedEvent) => onClick(e, exercise)}">
+                            @item-selected="${(e: MenuBarItemSelectedEvent) => onClick(e, entity)}">
                         <vaadin-tooltip slot="tooltip"></vaadin-tooltip>
                     </vaadin-menu-bar>
-                    <span>${exercise.title}</span>
+                    <span>${entity.title}</span>
                 </vaadin-horizontal-layout>
             `
         });
+}
+
+export type ActionBarEntity = {
+    title?: string;
+    workoutSchema: WorkoutSchema;
 }

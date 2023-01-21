@@ -1,6 +1,6 @@
 import {html} from 'lit';
 import {customElement} from 'lit/decorators.js';
-import {View} from 'Frontend/common/views/view';
+import {View} from 'Frontend/view';
 import '@vaadin/button';
 import '@vaadin/combo-box';
 import '@vaadin/text-field';
@@ -8,19 +8,19 @@ import '@vaadin/text-area';
 import '@vaadin/form-layout';
 import {Binder, field, NotBlank} from "@hilla/form";
 import {exerciseStore} from "Frontend/common/stores/app-store";
-import ExerciseTo from "Frontend/generated/ru/soft/common/to/ExerciseTo";
+import Exercise from "Frontend/generated/ru/soft/common/to/ExerciseTo";
 import ExerciseToModel from "Frontend/generated/ru/soft/common/to/ExerciseToModel";
 import {AppForm} from "Frontend/common/components/app-form";
 import {query} from "lit/decorators";
 import {Button} from "@vaadin/button";
 
 @customElement('exercise-form')
-export class ExerciseForm extends View implements AppForm<ExerciseTo> {
+export class ExerciseForm extends View implements AppForm<Exercise> {
 
     @query('#saveBtn')
     private saveBtn!: Button;
 
-    private binder = new Binder<ExerciseTo, ExerciseToModel>(this, ExerciseToModel);
+    private binder = new Binder<Exercise, ExerciseToModel>(this, ExerciseToModel);
 
     constructor() {
         super();
@@ -77,7 +77,7 @@ export class ExerciseForm extends View implements AppForm<ExerciseTo> {
         `;
     }
 
-    public open(entity: ExerciseTo): void {
+    public open(entity: Exercise): void {
         this.binder.read(entity);
         this.hidden = false;
         exerciseStore.formVisible = true;

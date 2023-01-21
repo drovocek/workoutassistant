@@ -7,17 +7,20 @@ import WorkoutModel from "Frontend/generated/ru/soft/common/to/WorkoutToModel";
 import {WorkoutEndpoint} from 'Frontend/generated/endpoints';
 
 export class WorkoutStore implements GeneralStore<Workout> {
+
     data: Workout[] = [];
     filterText = '';
     selected: Workout | null = null;
-    formOpened: boolean = false;
+    formVisible: boolean = false;
+    entityName: string = 'Workout';
 
     constructor() {
         makeAutoObservable(
             this,
             {
                 selected: observable.ref,
-                formOpened: observable.ref,
+                formVisible: observable.ref,
+                filterText: observable.ref,
                 initFromServer: false,
                 data: observable.shallow,
             },
@@ -53,12 +56,20 @@ export class WorkoutStore implements GeneralStore<Workout> {
         this.filterText = filterText;
     }
 
+    updateFilterByEvent(e: { target: HTMLInputElement }) {
+        this.filterText = e.target.value;
+    }
+
+    createNew(): Workout {
+        return WorkoutModel.createEmptyValue();
+    }
+
     public async update(updatable: Workout) {
         if (!updatable.id) return;
         await WorkoutEndpoint.update(updatable)
             .then(() => {
                 this.saveLocal(updatable);
-                uiStore.showSuccess('Exercise updated.');
+                uiStore.showSuccess(`${this.entityName} update.`);
             })
             .catch(processErr);
     }
@@ -67,25 +78,22 @@ export class WorkoutStore implements GeneralStore<Workout> {
         await WorkoutEndpoint.add(stored)
             .then(stored => {
                 this.saveLocal(stored);
-                uiStore.showSuccess('Exercise created.');
+                uiStore.showSuccess(`${this.entityName} create.`);
             })
             .catch(processErr);
     }
 
-    public async copy() {
-        const original = this.selected;
+    public async copy(original: Workout) {
         if (!original) return;
 
-        let copy = WorkoutModel.createEmptyValue();
+        let copy = JSON.parse(JSON.stringify(original));
         copy.title = original.title + ' Copy ' + randomString(5);
-        copy.note = original.note;
-
-        copy.workoutSchema = JSON.parse(JSON.stringify(original.workoutSchema));
+        copy.id = null;
 
         await WorkoutEndpoint.add(copy)
             .then(copy => {
-                this.saveLocalAfterSelected(copy);
-                uiStore.showSuccess('Round copy.');
+                this.saveLocalAfterSelected(original, copy);
+                uiStore.showSuccess(`${this.entityName} copy.`);
             });
     }
 
@@ -104,36 +112,27 @@ export class WorkoutStore implements GeneralStore<Workout> {
         }
     }
 
-    private saveLocalAfterSelected(copy: Workout) {
-        const selected = this.selected
-        if (!selected) return;
-
-        const originalExists = this.data.some((c) => c.id === selected.id);
+    private saveLocalAfterSelected(original: Workout, copy: Workout) {
+        const originalExists = this.data.some((c) => c.id === original.id);
         if (originalExists) {
-            const dropIndex = this.data.indexOf(selected) + 1;
+            const dropIndex = this.data.indexOf(original) + 1;
             this.data.splice(dropIndex, 0, copy);
         }
     }
 
-    async delete(): Promise<void> {
-        const removed = this.selected;
-        if (!removed) return;
-        let id = removed.id;
+    async delete(id: string) {
         if (!id) return;
+
         await WorkoutEndpoint.delete(id)
             .then(() => {
                 this.setSelected(null);
-                this.deleteLocal(removed);
-                uiStore.showSuccess('Plan deleted.');
+                this.deleteLocal(id);
+                uiStore.showSuccess(`${this.entityName} delete.`);
             });
 
     }
 
-    private deleteLocal(removed: Workout) {
-        this.data = this.data.filter((c) => c.id !== removed.id);
-    }
-
-    createNew(): Workout {
-        return WorkoutModel.createEmptyValue();
+    private deleteLocal(id: string) {
+        this.data = this.data.filter((c) => c.id !== id);
     }
 }

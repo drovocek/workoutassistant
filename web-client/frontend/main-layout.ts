@@ -11,8 +11,8 @@ import '@vaadin/tabs/vaadin-tab';
 import '@vaadin/vaadin-lumo-styles/vaadin-iconset';
 import { html } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { router } from '../../index';
-import { appStore } from '../stores/app-store';
+import { router } from './index';
+import { appStore } from './common/stores/app-store';
 import { Layout } from './view';
 
 interface RouteInfo {
@@ -68,19 +68,19 @@ export class MainLayout extends Layout {
   private getMenuRoutes(): RouteInfo[] {
     return [
       {
-        path: 'master-detail',
-        title: 'Master-Detail',
-        icon: 'la la-columns',
-      },
-      {
-        path: 'exercises',
-        title: 'Exercise',
-        icon: 'la la-globe',
+        path: '',
+        title: 'Training session',
+        icon: 'la la-calendar',
       },
       {
         path: 'workouts',
         title: 'Workouts',
         icon: 'la la-globe',
+      },
+      {
+        path: 'exercises',
+        title: 'Exercise',
+        icon: 'la la-dumbbell',
       },
     ];
   }

@@ -1,8 +1,8 @@
 import {RouterLocation} from '@vaadin/router';
 import {makeAutoObservable} from 'mobx';
 import {UiStore} from "Frontend/common/stores/ui-store";
-import {ExerciseStore} from 'Frontend/pages/exercises/data/exercise-store';
-import {WorkoutStore} from "Frontend/pages/workouts/data/workout-store";
+import { ExerciseStore } from 'Frontend/views/exercises/data/exercise-store';
+import {WorkoutStore} from "Frontend/views/workouts/data/workout-store";
 
 export class AppStore {
     uiStore = new UiStore();

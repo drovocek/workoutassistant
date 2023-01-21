@@ -1,3 +1,13 @@
+workout-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+workout-view .filter {
+    margin-left: 10px;
+}
+
 workout-view .content {
     height: 100%;
 }
@@ -7,12 +17,26 @@ workout-view .grid-wrapper {
 }
 
 workout-view .form {
-    /*width: 50em;*/
-    width: 100%;
+    width: 25em;
+}
+
+workout-view vaadin-grid {
+    height: 100%;
 }
 
 workout-view .form-button-panel, .grid-button-panel {
     width: 100%;
     justify-content: flex-end;
+}
+
+/*https://www.w3schools.com/howto/howto_css_overlay.asp*/
+workout-view .plus-button {
+    float: right;
+    position: fixed ; /* Sit on top of the page content */
+    top: 95%;
+    margin-right: 10px;
+    margin-left: auto;
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
 }
 

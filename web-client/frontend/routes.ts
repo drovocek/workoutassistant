@@ -1,6 +1,6 @@
 import { Flow } from '@vaadin/flow-frontend';
 import type { Route } from '@vaadin/router';
-import './common/views/main-layout';
+import './main-layout';
 
 const { serverSideRoutes } = new Flow({
   imports: () => import('../build/frontend/generated-flow-imports'),
@@ -15,22 +15,12 @@ export type ViewRoute = Route & {
 export const views: ViewRoute[] = [
   // place routes below (more info https://hilla.dev/docs/routing)
   {
-    path: 'master-detail',
-    component: 'master-detail-view',
-    icon: 'la la-columns',
-    title: 'Master-Detail',
+    path: '',
+    component: 'workout-view',
+    icon: 'la la-calendar',
+    title: 'Training session',
     action: async (_context, _command) => {
-      await import('./views/masterdetail/master-detail-view');
-      return;
-    },
-  },
-  {
-    path: 'exercises',
-    component: 'exercise-view',
-    icon: 'la la-globe',
-    title: 'Exercise',
-    action: async (_context, _command) => {
-      await import('./pages/exercises/exercise-view');
+      await import('./views/workouts/workout-view');
       return;
     },
   },
@@ -40,7 +30,17 @@ export const views: ViewRoute[] = [
     icon: 'la la-globe',
     title: 'Workouts',
     action: async (_context, _command) => {
-      await import('./pages/workouts/workout-view');
+      await import('./views/workouts/workout-view');
+      return;
+    },
+  },
+  {
+    path: 'exercises',
+    component: 'exercise-view',
+    icon: 'la la-dumbbell',
+    title: 'Exercise',
+    action: async (_context, _command) => {
+      await import('./views/exercises/exercise-view');
       return;
     },
   },
