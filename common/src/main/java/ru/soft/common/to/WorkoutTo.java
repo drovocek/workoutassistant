@@ -12,25 +12,31 @@ import ru.soft.common.data.HasDescription;
 import ru.soft.common.data.HasId;
 import ru.soft.common.data.elements.WorkoutSchema;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Builder
 @ToString
 @EqualsAndHashCode
-@JsonRootName("workout")
 @RequiredArgsConstructor
-@JsonIncludeProperties({"id", "workoutSchema", "title", "note"})
+@JsonRootName("workout")
+@JsonIncludeProperties({"id", "workoutSchema", "dateTime", "title", "note"})
 public class WorkoutTo implements HasId, HasDescription {
 
     @JsonProperty("id")
     private final UUID id;
 
     @Valid
-    @NotNull
     @Nonnull
+    @NotNull
     @JsonProperty("workoutSchema")
     private final WorkoutSchema workoutSchema;
+
+    @Nonnull
+    @NotNull
+    @JsonProperty("dateTime")
+    private final LocalDateTime dateTime;
 
     @NotBlank
     @JsonProperty("title")
@@ -44,6 +50,7 @@ public class WorkoutTo implements HasId, HasDescription {
         return WorkoutTo.builder()
                 .id(id)
                 .workoutSchema(this.workoutSchema())
+                .dateTime(this.dateTime())
                 .title(this.title())
                 .note(this.note())
                 .build();

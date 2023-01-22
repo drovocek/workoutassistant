@@ -6,13 +6,13 @@ import lombok.experimental.UtilityClass;
 public class AppApi {
 
     @UtilityClass
-    public static class TrainingSessions {
-        public static final String URL = "/api/sessions";
+    public static class Workouts {
+        public static final String URL = "/api/workouts";
     }
 
     @UtilityClass
-    public static class Workouts {
-        public static final String URL = "/api/workouts";
+    public static class Rounds {
+        public static final String URL = "/api/rounds";
     }
 
     @UtilityClass

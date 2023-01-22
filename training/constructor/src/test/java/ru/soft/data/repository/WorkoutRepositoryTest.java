@@ -14,6 +14,6 @@ class WorkoutRepositoryTest extends BaseRepositoryTest<Workout> {
 
     @Override
     protected MatcherFactory.Matcher<Workout> matcher() {
-        return MatcherFactory.usingIgnoringFieldsComparator(Workout.class,"id");
+        return MatcherFactory.usingIgnoringFieldsComparator(Workout.class, "id");
     }
 }

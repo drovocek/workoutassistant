@@ -12,19 +12,20 @@ import WorkoutElement from "Frontend/generated/ru/soft/common/data/elements/Work
 import {renderWorkoutElement} from "Frontend/common/utils/component-factory";
 import {dialogFooterRenderer, dialogRenderer} from "@vaadin/dialog/lit";
 import {DialogOpenedChangedEvent} from "@vaadin/dialog";
-import {renderRestDialog, renderStationDialog} from "Frontend/views/workouts/components/workout-component-factory";
 import {Binder} from "@hilla/form";
 import Rest from "Frontend/generated/ru/soft/common/data/elements/Rest";
 import RestModel from "Frontend/generated/ru/soft/common/data/elements/RestModel";
 import Station from "Frontend/generated/ru/soft/common/data/elements/Station";
 import StationModel from "Frontend/generated/ru/soft/common/data/elements/StationModel";
 import DurationUnit from "Frontend/generated/ru/soft/common/data/elements/DurationUnit";
-import {exerciseStore} from "Frontend/common/stores/app-store";
 import {Button} from "@vaadin/button";
 import {deepEquals, randomString} from "Frontend/common/utils/app-utils";
+import './round-component-factory';
+import {renderRestDialog, renderStationDialog} from "Frontend/views/rounds/components/round-component-factory";
+import {exerciseStore} from "Frontend/common/stores/app-store";
 
-@customElement('workout-details')
-export class WorkoutDetails extends View {
+@customElement('round-details')
+export class RoundDetails extends View {
 
     @query('#grid')
     private grid!: Grid;
@@ -206,7 +207,7 @@ export class WorkoutDetails extends View {
 
     private renderRestFooter = () => html`
         <vaadin-button @click="${this.closeRestDialog}">Cancel</vaadin-button>
-        <vaadin-button theme="primary" @click="${this.addRest}">Add</vaadin-button>
+        <vaadin-button theme="primary" @click="${this.addRest}">Save</vaadin-button>
     `;
 
     private openRestDialog() {
@@ -237,7 +238,7 @@ export class WorkoutDetails extends View {
 
     private renderStationFooter = () => html`
         <vaadin-button @click="${this.closeStationDialog}">Cancel</vaadin-button>
-        <vaadin-button theme="primary" @click="${this.saveStation}">Add</vaadin-button>
+        <vaadin-button theme="primary" @click="${this.saveStation}">Save</vaadin-button>
     `;
 
     private openStationDialog() {
@@ -246,9 +247,10 @@ export class WorkoutDetails extends View {
     }
 
     private defaultFormStation(): Station {
-        let rest = StationModel.createEmptyValue();
-        rest.unit = DurationUnit.MIN;
-        return rest;
+        let station = StationModel.createEmptyValue();
+        station.unit = DurationUnit.MIN;
+        station.exercise = exerciseStore.data[0];
+        return station;
     }
 
     private closeStationDialog() {
@@ -258,9 +260,6 @@ export class WorkoutDetails extends View {
     private saveStation() {
         let station = this.stationBinder.value as any;
         station.type = 'station';
-        let exercise = exerciseStore.data.filter((c) => c.id === station.exerciseId)[0];
-        station.note = exercise.note;
-        station.title = exercise.title;
         this.pushOrUpdate(station);
         this.closeStationDialog();
     }

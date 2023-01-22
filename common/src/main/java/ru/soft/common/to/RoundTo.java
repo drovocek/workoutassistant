@@ -7,50 +7,44 @@ import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-import ru.soft.common.data.HasDescription;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import ru.soft.common.data.HasId;
+import ru.soft.common.data.elements.WorkoutElement;
 import ru.soft.common.data.elements.WorkoutSchema;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
-@Builder
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor
-@JsonRootName("trainingSession")
-@JsonIncludeProperties({"id", "workoutSchema", "dateTime", "title", "note"})
-public class TrainingSessionTo implements HasId, HasDescription {
+@JsonRootName("round")
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+@JsonIncludeProperties({"id", "workoutSchema", "title", "note", "order"})
+public class RoundTo extends WorkoutElement implements HasId {
 
     @JsonProperty("id")
     private final UUID id;
 
     @Valid
-    @Nonnull
     @NotNull
+    @Nonnull
     @JsonProperty("workoutSchema")
     private final WorkoutSchema workoutSchema;
 
-    @Nonnull
-    @NotNull
-    @JsonProperty("dateTime")
-    private final LocalDateTime dateTime;
-
-    @NotBlank
-    @JsonProperty("title")
-    private final String title;
-
-    @JsonProperty("note")
-    private final String note;
+    @Builder
+    public RoundTo(@NotBlank String title, String note, int order, UUID id, WorkoutSchema workoutSchema) {
+        super(title, note, order);
+        this.id = id;
+        this.workoutSchema = workoutSchema;
+    }
 
     @Override
-    public TrainingSessionTo withId(UUID id) {
-        return TrainingSessionTo.builder()
+    public RoundTo withId(UUID id) {
+        return RoundTo.builder()
                 .id(id)
                 .workoutSchema(this.workoutSchema())
-                .dateTime(this.dateTime())
                 .title(this.title())
                 .note(this.note())
                 .build();

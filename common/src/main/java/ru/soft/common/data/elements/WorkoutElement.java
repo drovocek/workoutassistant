@@ -10,13 +10,15 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.soft.common.data.HasDescription;
 import ru.soft.common.data.HasOrder;
+import ru.soft.common.to.RoundTo;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Rest.class, name = "rest"),
-        @JsonSubTypes.Type(value = Station.class, name = "station")
+        @JsonSubTypes.Type(value = Station.class, name = "station"),
+        @JsonSubTypes.Type(value = RoundTo.class, name = "round"),
 })
 @Getter
 @EqualsAndHashCode
@@ -30,4 +32,7 @@ public abstract class WorkoutElement implements HasOrder, HasDescription {
 
     @JsonProperty("note")
     protected final String note;
+
+    @JsonProperty("order")
+    protected final int order;
 }

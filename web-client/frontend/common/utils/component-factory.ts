@@ -74,7 +74,7 @@ export function renderWorkoutElement() {
                          <span theme="badge success pill">
                              <span title="Repetitions">
                                  <vaadin-icon icon="my-icons-svg:dumbbell-solid"></vaadin-icon> 
-                                 <span title=${station.note}>${station.title}</span>
+                                 <span title=${station.exercise.note}>${station.exercise.title}</span>
                              </span>
                               <span title="Weight">
                                  <vaadin-icon icon="my-icons-svg:weight-hanging-solid"
@@ -100,7 +100,7 @@ export function renderWorkoutElement() {
 
 export type ActionBarEntity = {
     title?: string;
-    workoutSchema: WorkoutSchema;
+    workoutSchema?: WorkoutSchema;
 }
 
 

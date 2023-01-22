@@ -2,40 +2,47 @@ package ru.soft.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
-import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import ru.soft.common.data.elements.WorkoutSchema;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Table(name = "workout")
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@JsonIncludeProperties({"id", "workoutSchema", "title", "note"})
+@JsonIncludeProperties({"id", "workoutSchema", "dateTime", "title", "note"})
 public class Workout extends BaseEntity {
 
-    @Column("workout_schema")
+    @NotNull
     @JsonProperty("workoutSchema")
     private final WorkoutSchema workoutSchema;
 
-    @Builder
-    public Workout(UUID id, boolean isNew, @NotNull WorkoutSchema workoutSchema, @NotBlank String title, String note) {
-        super(id, isNew, title, note);
-        this.workoutSchema = workoutSchema;
-    }
+    @Nonnull
+    @NotNull
+    @JsonProperty("dateTime")
+    private final LocalDateTime dateTime;
 
     @PersistenceCreator
-    public Workout(UUID id, WorkoutSchema workoutSchema, @NotBlank String title, String note) {
+    public Workout(UUID id, WorkoutSchema workoutSchema, LocalDateTime dateTime, String title, String note) {
         super(id, false, title, note);
         this.workoutSchema = workoutSchema;
+        this.dateTime = dateTime;
+    }
+
+    @Builder
+    public Workout(UUID id, boolean isNew, WorkoutSchema workoutSchema, LocalDateTime dateTime, String title, String note) {
+        super(id, isNew, title, note);
+        this.workoutSchema = workoutSchema;
+        this.dateTime = dateTime;
     }
 
     @Override
@@ -44,6 +51,7 @@ public class Workout extends BaseEntity {
                 .id(id)
                 .isNew(isNew)
                 .workoutSchema(this.workoutSchema())
+                .dateTime(this.dateTime())
                 .title(this.title())
                 .note(this.note())
                 .build();

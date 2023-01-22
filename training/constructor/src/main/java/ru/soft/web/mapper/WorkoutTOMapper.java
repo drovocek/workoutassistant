@@ -1,14 +1,14 @@
 package ru.soft.web.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.soft.common.to.WorkoutTo;
-import ru.soft.data.model.Workout;
+import ru.soft.common.to.RoundTo;
+import ru.soft.data.model.Round;
 
 @Component
-public class WorkoutTOMapper implements TOMapper<Workout, WorkoutTo> {
+public class WorkoutTOMapper implements TOMapper<Round, RoundTo> {
 
-    public WorkoutTo toTo(Workout entity) {
-        return WorkoutTo.builder()
+    public RoundTo toTo(Round entity) {
+        return RoundTo.builder()
                 .id(entity.id())
                 .workoutSchema(entity.workoutSchema())
                 .title(entity.title())
@@ -16,8 +16,8 @@ public class WorkoutTOMapper implements TOMapper<Workout, WorkoutTo> {
                 .build();
     }
 
-    public Workout fromTo(WorkoutTo to) {
-        return Workout.builder()
+    public Round fromTo(RoundTo to) {
+        return Round.builder()
                 .id(to.id())
                 .isNew(to.id() == null)
                 .workoutSchema(to.workoutSchema())

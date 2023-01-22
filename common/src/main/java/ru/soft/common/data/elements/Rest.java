@@ -27,14 +27,12 @@ public class Rest extends WorkoutElement {
     @JsonProperty("unit")
     private final DurationUnit unit;
 
-    @JsonProperty("order")
-    private final int order;
-
     @Builder
     public Rest(String title, String note, int duration, DurationUnit unit, int order) {
-        super(Optional.ofNullable(title).orElse("rest"), Optional.ofNullable(note).orElse("rest between sets"));
+        super(Optional.ofNullable(title).orElse("rest"),
+                Optional.ofNullable(note).orElse("rest between sets"),
+                order);
         this.duration = duration;
         this.unit = unit;
-        this.order = order;
     }
 }

@@ -11,23 +11,23 @@ import {Binder, field, NotBlank} from "@hilla/form";
 import {query} from "lit/decorators";
 import {Button} from "@vaadin/button";
 import {AppForm} from "Frontend/common/components/app-form";
-import Workout from "Frontend/generated/ru/soft/common/to/WorkoutTo";
-import WorkoutModel from "Frontend/generated/ru/soft/common/to/WorkoutToModel";
-import {workoutStore} from "Frontend/common/stores/app-store";
+import Round from "Frontend/generated/ru/soft/common/to/RoundTo";
+import RoundModel from "Frontend/generated/ru/soft/common/to/RoundToModel";
+import {roundStore} from "Frontend/common/stores/app-store";
 
-@customElement('workout-form')
-export class WorkoutForm extends View implements AppForm<Workout> {
+@customElement('round-form')
+export class RoundForm extends View implements AppForm<Round> {
 
     @query('#saveBtn')
     private saveBtn!: Button;
 
-    private binder = new Binder<Workout, WorkoutModel>(this, WorkoutModel);
+    private binder = new Binder<Round, RoundModel>(this, RoundModel);
 
     constructor() {
         super();
         this.autorun(() => {
-            if (workoutStore.selected) {
-                this.binder.read(workoutStore.selected);
+            if (roundStore.selected) {
+                this.binder.read(roundStore.selected);
             } else {
                 this.binder.clear();
             }
@@ -49,7 +49,7 @@ export class WorkoutForm extends View implements AppForm<Workout> {
         const {model} = this.binder;
         return html`
             <div class="editor">
-                <h3>${this.binder.value.id || workoutStore.hasSelected() ? 'Update' : 'Add'}</h3>
+                <h3>${this.binder.value.id || roundStore.hasSelected() ? 'Update' : 'Add'}</h3>
                 <vaadin-form-layout
                         class="edit-round-form">
                     <vaadin-text-field
@@ -78,15 +78,15 @@ export class WorkoutForm extends View implements AppForm<Workout> {
         `;
     }
 
-    public open(entity: Workout): void {
+    public open(entity: Round): void {
         this.binder.read(entity);
         this.hidden = false;
-        workoutStore.formVisible = true;
+        roundStore.formVisible = true;
     }
 
     public close(): void {
         this.hidden = true;
-        workoutStore.formVisible = false;
+        roundStore.formVisible = false;
     }
 
     public clear(): void {
@@ -100,14 +100,14 @@ export class WorkoutForm extends View implements AppForm<Workout> {
     private save(): void {
         this.saveBtn.disabled = true;
         if (this.binder.value.id) {
-            this.binder.submitTo(workoutStore.update)
+            this.binder.submitTo(roundStore.update)
                 .then(() => {
                     this.binder.clear();
                     this.close();
                 })
                 .finally(() => this.saveBtn.disabled = false);
         } else {
-            this.binder.submitTo(workoutStore.add)
+            this.binder.submitTo(roundStore.add)
                 .then(() => {
                     this.binder.clear();
                     this.close();

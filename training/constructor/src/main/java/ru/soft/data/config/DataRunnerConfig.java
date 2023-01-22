@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import ru.soft.common.testdata.TestDataStore;
 import ru.soft.data.model.Exercise;
-import ru.soft.data.model.TrainingSession;
+import ru.soft.data.model.Round;
 import ru.soft.data.model.Workout;
 import ru.soft.data.repository.ExerciseRepository;
-import ru.soft.data.repository.TrainingSessionRepository;
+import ru.soft.data.repository.RoundRepository;
 import ru.soft.data.repository.WorkoutRepository;
 
 import java.util.List;
@@ -25,14 +25,14 @@ public class DataRunnerConfig {
     TestDataStore<Exercise> exerciseTestDataStore;
 
     @Autowired
-    WorkoutRepository workoutRepository;
+    RoundRepository roundRepository;
     @Autowired
-    TestDataStore<Workout> workoutPlanTestDataStore;
+    TestDataStore<Round> workoutPlanTestDataStore;
 
     @Autowired
-    TrainingSessionRepository trainingSessionRepository;
+    WorkoutRepository workoutRepository;
     @Autowired
-    TestDataStore<TrainingSession> workoutSessionTestDataStore;
+    TestDataStore<Workout> workoutSessionTestDataStore;
 
     @Bean
     public CommandLineRunner dataRunner() {
@@ -41,11 +41,11 @@ public class DataRunnerConfig {
                 List<Exercise> exercises = exerciseTestDataStore.entities(true);
                 this.exerciseRepository.saveAll(exercises);
 
-                List<Workout> workouts = workoutPlanTestDataStore.entities(true);
-                this.workoutRepository.saveAll(workouts);
+                List<Round> rounds = workoutPlanTestDataStore.entities(true);
+                this.roundRepository.saveAll(rounds);
 
-                List<TrainingSession> trainingSessions = workoutSessionTestDataStore.entities(true);
-                this.trainingSessionRepository.saveAll(trainingSessions);
+                List<Workout> workouts = workoutSessionTestDataStore.entities(true);
+                this.workoutRepository.saveAll(workouts);
             }
         };
     }

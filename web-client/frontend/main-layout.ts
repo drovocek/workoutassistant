@@ -69,13 +69,13 @@ export class MainLayout extends Layout {
     return [
       {
         path: '',
-        title: 'Training session',
+        title: 'Workouts',
         icon: 'la la-calendar',
       },
       {
-        path: 'workouts',
-        title: 'Workouts',
-        icon: 'la la-globe',
+        path: 'rounds',
+        title: 'Rounds',
+        icon: 'la la-draw-polygon',
       },
       {
         path: 'exercises',

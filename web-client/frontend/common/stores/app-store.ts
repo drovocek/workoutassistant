@@ -1,14 +1,14 @@
 import {RouterLocation} from '@vaadin/router';
 import {makeAutoObservable} from 'mobx';
 import {UiStore} from "Frontend/common/stores/ui-store";
-import { ExerciseStore } from 'Frontend/views/exercises/data/exercise-store';
-import {WorkoutStore} from "Frontend/views/workouts/data/workout-store";
+import {ExerciseStore} from 'Frontend/views/exercises/data/exercise-store';
+import {RoundStore} from "Frontend/views/rounds/data/round-store";
 
 export class AppStore {
     uiStore = new UiStore();
 
     exerciseStore = new ExerciseStore();
-    workoutStore = new WorkoutStore();
+    workoutStore = new RoundStore();
 
     applicationName = 'Workout assistant';
 
@@ -41,7 +41,7 @@ export class AppStore {
 export const appStore = new AppStore();
 export const uiStore = appStore.uiStore;
 export const exerciseStore = appStore.exerciseStore;
-export const workoutStore = appStore.workoutStore;
+export const roundStore = appStore.workoutStore;
 
 
 

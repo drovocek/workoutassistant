@@ -7,26 +7,23 @@ import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
+import ru.soft.common.to.ExerciseTo;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Getter
 @JsonRootName("station")
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @JsonIncludeProperties(
-        {"exerciseId", "repetitions", "weight", "duration", "unit", "title", "note", "order"})
+        {"exercise", "repetitions", "weight", "duration", "unit", "title", "note", "order"})
 public class Station extends WorkoutElement {
 
     @Nonnull
     @NotNull
-    @JsonProperty("exerciseId")
-    private final UUID exerciseId;
+    @JsonProperty("exercise")
+    private final ExerciseTo exercise;
 
     @JsonProperty("repetitions")
     private final int repetitions;
@@ -46,17 +43,13 @@ public class Station extends WorkoutElement {
     @JsonProperty("unit")
     private final DurationUnit unit;
 
-    @JsonProperty("order")
-    private final int order;
-
     @Builder
-    public Station(String title, String note, UUID exerciseId, int repetitions, int weight, int duration, DurationUnit unit, int order) {
-        super(title, note);
-        this.exerciseId = exerciseId;
+    public Station(@NotNull @NonNull ExerciseTo exercise, int repetitions, int weight, int duration, DurationUnit unit, int order) {
+        super(exercise.title(), exercise.note(), order);
+        this.exercise = exercise;
         this.repetitions = repetitions;
         this.weight = weight;
         this.duration = duration;
         this.unit = Optional.ofNullable(unit).orElse(DurationUnit.SEC);
-        this.order = order;
     }
 }

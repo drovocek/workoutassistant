@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.soft.common.testdata.TestDataStore;
 import ru.soft.data.model.Workout;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,15 +13,16 @@ import static ru.soft.common.testdata.TestSchemaStore.workoutSchema;
 @Component
 public class WorkoutTestDataStore implements TestDataStore<Workout> {
 
-    public static final String DUPLICATE_TITLE = "Barbell squats plan title";
+    private static final LocalDateTime SESSION_DATE_TIME = LocalDateTime.of(2021, 12, 1, 1, 2);
 
     public static Workout example(boolean isNew) {
         return Workout.builder()
-                .id(isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"))
+                .id(isNew ? null : UUID.fromString("a34798c2-7ac8-11ed-a1eb-0242ac120002"))
                 .isNew(isNew)
                 .workoutSchema(workoutSchema())
-                .title("Push-up plan title")
-                .note("Push-up plan note")
+                .title("Easy session title")
+                .note("Easy session note")
+                .dateTime(LocalDateTime.of(2024, 3, 20, 19, 10, 25))
                 .build();
     }
 
@@ -34,18 +36,20 @@ public class WorkoutTestDataStore implements TestDataStore<Workout> {
         return List.of(
                 entity(isNew),
                 Workout.builder()
-                        .id(isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"))
+                        .id(isNew ? null : UUID.fromString("a9323cf6-7ac8-11ed-a1eb-0242ac120002"))
                         .isNew(isNew)
                         .workoutSchema(workoutSchema())
-                        .title("Barbell squats plan title")
-                        .note("Barbell squats plan note")
+                        .dateTime(LocalDateTime.of(2024, 3, 20, 19, 10, 25))
+                        .title("Medium session title")
+                        .note("Medium session note")
                         .build(),
                 Workout.builder()
-                        .id(isNew ? null : UUID.fromString("5c83571c-7a52-11ed-a1eb-0242ac120002"))
+                        .id(isNew ? null : UUID.fromString("ae9b7996-7ac8-11ed-a1eb-0242ac120002"))
                         .isNew(isNew)
                         .workoutSchema(workoutSchema())
-                        .title("Pull-up plan title")
-                        .note("Pull-up plan note")
+                        .dateTime(LocalDateTime.of(2024, 3, 20, 19, 10, 25))
+                        .title("Hard session title")
+                        .note("Hard session note")
                         .build()
         );
     }
@@ -56,8 +60,9 @@ public class WorkoutTestDataStore implements TestDataStore<Workout> {
                 .id(isNew ? null : newId())
                 .isNew(isNew)
                 .workoutSchema(workoutSchema())
-                .title("request plan title")
-                .note("request plan note")
+                .dateTime(SESSION_DATE_TIME)
+                .title("request session title")
+                .note("request session note")
                 .build();
     }
 
@@ -68,37 +73,24 @@ public class WorkoutTestDataStore implements TestDataStore<Workout> {
                         .id(isNew ? null : newId())
                         .isNew(isNew)
                         .workoutSchema(workoutSchema())
-                        .title(null)
-                        .note("request plan note")
+                        .dateTime(null)
+                        .title("request session title")
+                        .note("request session note")
                         .build(),
                 Workout.builder()
                         .id(isNew ? null : newId())
                         .isNew(isNew)
                         .workoutSchema(workoutSchema())
-                        .title("")
-                        .note("request plan note")
-                        .build(),
-                Workout.builder()
-                        .id(isNew ? newId() : null)
-                        .isNew(isNew)
-                        .workoutSchema(workoutSchema())
-                        .title("request plan title")
-                        .note("request plan note")
+                        .dateTime(SESSION_DATE_TIME)
+                        .title("request session title")
+                        .note("request session note")
                         .build()
         );
     }
 
     @Override
     public List<Workout> duplicates(boolean isNew) {
-        return List.of(
-                Workout.builder()
-                        .id(isNew ? null : newId())
-                        .isNew(isNew)
-                        .workoutSchema(workoutSchema())
-                        .title(DUPLICATE_TITLE)
-                        .note("request plan note")
-                        .build()
-        );
+        return List.of();
     }
 
     @Override

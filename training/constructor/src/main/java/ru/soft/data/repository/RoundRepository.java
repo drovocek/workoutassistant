@@ -4,15 +4,15 @@ import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-import ru.soft.data.model.TrainingSession;
+import ru.soft.data.model.Round;
 import ru.soft.data.repository.common.BaseRepository;
 
 import java.util.UUID;
 
-public interface TrainingSessionRepository extends BaseRepository<TrainingSession> {
+public interface RoundRepository extends BaseRepository<Round> {
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM training_session ts WHERE ts.id = :id")
+    @Query("DELETE FROM round r WHERE r.id = :id")
     int delete(@Param(value = "id") UUID id);
 }

@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS training_session;
 DROP TABLE IF EXISTS workout;
+DROP TABLE IF EXISTS round;
 DROP TABLE IF EXISTS exercise;
 
 CREATE TABLE exercise (
@@ -8,14 +8,14 @@ CREATE TABLE exercise (
     note VARCHAR(250)
 );
 
-CREATE TABLE workout(
+CREATE TABLE round(
     id UUID PRIMARY KEY,
     workout_schema JSONB NOT NULL,
     title VARCHAR(50) NOT NULL CHECK (title <> '') UNIQUE,
     note VARCHAR(250)
 );
 
-CREATE TABLE training_session(
+CREATE TABLE workout(
     id UUID PRIMARY KEY,
     workout_schema JSONB NOT NULL,
     date_time TIMESTAMP NOT NULL,

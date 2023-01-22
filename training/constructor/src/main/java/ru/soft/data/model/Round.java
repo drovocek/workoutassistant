@@ -2,56 +2,48 @@ package ru.soft.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import ru.soft.common.data.elements.WorkoutSchema;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
-@Table(name = "training_session")
+@Table(name = "round")
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@JsonIncludeProperties({"id", "workoutSchema", "dateTime", "title", "note"})
-public class TrainingSession extends BaseEntity {
+@JsonIncludeProperties({"id", "workoutSchema", "title", "note"})
+public class Round extends BaseEntity {
 
-    @NotNull
+    @Column("workout_schema")
     @JsonProperty("workoutSchema")
     private final WorkoutSchema workoutSchema;
 
-    @Nonnull
-    @NotNull
-    @JsonProperty("dateTime")
-    private final LocalDateTime dateTime;
-
-    @PersistenceCreator
-    public TrainingSession(UUID id, WorkoutSchema workoutSchema, LocalDateTime dateTime, String title, String note) {
-        super(id, false, title, note);
-        this.workoutSchema = workoutSchema;
-        this.dateTime = dateTime;
-    }
-
     @Builder
-    public TrainingSession(UUID id, boolean isNew, WorkoutSchema workoutSchema, LocalDateTime dateTime, String title, String note) {
+    public Round(UUID id, boolean isNew, @NotNull WorkoutSchema workoutSchema, @NotBlank String title, String note) {
         super(id, isNew, title, note);
         this.workoutSchema = workoutSchema;
-        this.dateTime = dateTime;
+    }
+
+    @PersistenceCreator
+    public Round(UUID id, WorkoutSchema workoutSchema, @NotBlank String title, String note) {
+        super(id, false, title, note);
+        this.workoutSchema = workoutSchema;
     }
 
     @Override
-    protected TrainingSession withId(UUID id, boolean isNew) {
-        return TrainingSession.builder()
+    protected Round withId(UUID id, boolean isNew) {
+        return Round.builder()
                 .id(id)
                 .isNew(isNew)
                 .workoutSchema(this.workoutSchema())
-                .dateTime(this.dateTime())
                 .title(this.title())
                 .note(this.note())
                 .build();

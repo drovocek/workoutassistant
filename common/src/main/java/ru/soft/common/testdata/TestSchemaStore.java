@@ -5,9 +5,9 @@ import ru.soft.common.data.elements.DurationUnit;
 import ru.soft.common.data.elements.Rest;
 import ru.soft.common.data.elements.Station;
 import ru.soft.common.data.elements.WorkoutSchema;
+import ru.soft.common.testdata.to.ExerciseToTestDataStore;
 
 import java.util.List;
-import java.util.UUID;
 
 @UtilityClass
 public class TestSchemaStore {
@@ -16,9 +16,7 @@ public class TestSchemaStore {
         return new WorkoutSchema(
                 List.of(
                         Station.builder()
-                                .title("Exercise one title")
-                                .note("Exercise one note")
-                                .exerciseId(UUID.fromString("f386d086-6e5d-11ed-a1eb-0242ac120002"))
+                                .exercise(ExerciseToTestDataStore.example(false))
                                 .weight(50)
                                 .repetitions(12)
                                 .duration(0)
@@ -31,9 +29,7 @@ public class TestSchemaStore {
                                 .order(2)
                                 .build(),
                         Station.builder()
-                                .title("Exercise two title")
-                                .note("Exercise two note")
-                                .exerciseId(UUID.fromString("ff252f6e-6e5d-11ed-a1eb-0242ac120002"))
+                                .exercise(ExerciseToTestDataStore.example(false))
                                 .weight(60)
                                 .repetitions(10)
                                 .duration(0)
@@ -46,9 +42,7 @@ public class TestSchemaStore {
                                 .order(4)
                                 .build(),
                         Station.builder()
-                                .title("Exercise tree title")
-                                .note("Exercise tree note")
-                                .exerciseId(UUID.fromString("05bf5a98-6e5e-11ed-a1eb-0242ac120002"))
+                                .exercise(ExerciseToTestDataStore.example(false))
                                 .weight(70)
                                 .repetitions(8)
                                 .duration(0)
