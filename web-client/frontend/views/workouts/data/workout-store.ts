@@ -112,11 +112,11 @@ export class WorkoutStore implements GeneralStore<Workout> {
         }
     }
 
-    private saveLocalAfterSelected(original: Workout, copy: Workout) {
+    public saveLocalAfterSelected(original: Workout, saved: Workout) {
         const originalExists = this.data.some((c) => c.id === original.id);
         if (originalExists) {
             const dropIndex = this.data.indexOf(original) + 1;
-            this.data.splice(dropIndex, 0, copy);
+            this.data.splice(dropIndex, 0, saved);
         }
     }
 

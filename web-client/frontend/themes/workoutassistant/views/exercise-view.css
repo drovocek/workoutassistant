@@ -18,6 +18,7 @@ exercise-view .grid-wrapper {
 
 exercise-view .form {
     width: 25em;
+    padding: 10px;
 }
 
 exercise-view vaadin-grid {

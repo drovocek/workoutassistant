@@ -1,7 +1,11 @@
 import {columnBodyRenderer} from "@vaadin/grid/lit";
 import {MenuBarItemSelectedEvent} from "@vaadin/menu-bar";
 import {html} from 'lit';
+import '../icons/my-icons-svg.js'
 import WorkoutSchema from "Frontend/generated/ru/soft/common/data/elements/WorkoutSchema";
+import WorkoutElement from "Frontend/generated/ru/soft/common/data/elements/WorkoutElement";
+import Rest from "Frontend/generated/ru/soft/common/data/elements/Rest";
+import Station from "Frontend/generated/ru/soft/common/data/elements/Station";
 
 export function createIconItem(iconName: string) {
     const item = document.createElement('vaadin-context-menu-item');
@@ -34,7 +38,7 @@ export function renderTitleWithActionBar(onClick: (e: MenuBarItemSelectedEvent, 
                 {
                     component: createIconItem('ellipsis-dots-v'),
                     tooltip: 'Actions',
-                    children: [{text: 'Copy'}, {text: 'Delete'}]
+                    children: [{text: 'Copy'}, {text: 'Delete'}, {text: 'Edit'}]
                 }
             ];
             return html`
@@ -43,10 +47,53 @@ export function renderTitleWithActionBar(onClick: (e: MenuBarItemSelectedEvent, 
                             theme="icon"
                             .items="${items}"
                             @item-selected="${(e: MenuBarItemSelectedEvent) => onClick(e, entity)}">
-                        <vaadin-tooltip slot="tooltip"></vaadin-tooltip>
                     </vaadin-menu-bar>
                     <span>${entity.title}</span>
                 </vaadin-horizontal-layout>
+            `
+        });
+}
+
+export function renderWorkoutElement() {
+    return columnBodyRenderer<WorkoutElement>(
+        (element) => {
+            let anyElement = element as any;
+            let type = anyElement.type;
+            if (type === 'rest') {
+                let rest = element as Rest;
+                return html`
+                    <span theme="badge pill" title="Rest">
+                      <vaadin-icon icon="my-icons-svg:clock-solid"></vaadin-icon>
+                      <span style="margin-left: 5px">${rest.duration} ${rest.unit.toLowerCase()}</span>
+                    </span>
+                `
+            } else if (type === 'station') {
+                let station = element as Station;
+                return html`
+                    <vaadin-horizontal-layout theme="spacing">
+                         <span theme="badge success pill">
+                             <span title="Repetitions">
+                                 <vaadin-icon icon="my-icons-svg:dumbbell-solid"></vaadin-icon> 
+                                 <span title=${station.note}>${station.title}</span>
+                             </span>
+                              <span title="Weight">
+                                 <vaadin-icon icon="my-icons-svg:weight-hanging-solid"
+                                              style="margin-left: 5px"></vaadin-icon>
+                                 <span>${station.weight} kg</span>
+                              </span>
+                              <span title="Repetitions">
+                                 <vaadin-icon icon="my-icons-svg:recycle-solid" style="margin-left: 5px"></vaadin-icon>
+                                 <span>${station.repetitions} rep</span>
+                              </span>
+                              <span title="Duration">
+                                 <vaadin-icon icon="my-icons-svg:stopwatch-solid" style="margin-left: 5px"></vaadin-icon>
+                                 <span>${station.duration} ${station.unit.toLowerCase()}</span>
+                              </span>
+                        </span>
+                    </vaadin-horizontal-layout>
+                `
+            }
+            return html`
             `
         });
 }
@@ -55,3 +102,5 @@ export type ActionBarEntity = {
     title?: string;
     workoutSchema: WorkoutSchema;
 }
+
+

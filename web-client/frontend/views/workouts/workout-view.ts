@@ -19,6 +19,7 @@ import {renderTitleWithActionBar} from "Frontend/common/utils/component-factory"
 import {MenuBarItemSelectedEvent} from "@vaadin/menu-bar";
 import {gridRowDetailsRenderer} from "@vaadin/grid/lit";
 import WorkoutElement from "Frontend/generated/ru/soft/common/data/elements/WorkoutElement";
+import {randomString} from "Frontend/common/utils/app-utils";
 
 @customElement('workout-view')
 export class WorkoutView extends View {
@@ -106,7 +107,6 @@ export class WorkoutView extends View {
         }
 
         workoutStore.setSelected(item)
-        workoutStore.formVisible = item !== null;
         this.detailsOpenedItem = workoutStore.selected ? [workoutStore.selected] : [];
     }
 
@@ -118,6 +118,8 @@ export class WorkoutView extends View {
                 workoutStore.delete(id);
             } else if (command === 'Copy') {
                 workoutStore.copy(workout);
+            } else if (command === 'Edit') {
+                this.form.open(workout);
             }
         }
     }
@@ -126,6 +128,7 @@ export class WorkoutView extends View {
         return gridRowDetailsRenderer<Workout>(
             (workout) => {
                 let workoutElements = workout.workoutSchema.workoutElements as WorkoutElement[];
+                workoutElements.map(v => (v as any).id = randomString(10));
                 return html`
                     <workout-details .items=${workoutElements}></workout-details>`
             },

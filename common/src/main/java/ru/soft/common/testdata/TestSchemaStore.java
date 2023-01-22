@@ -57,7 +57,7 @@ public class TestSchemaStore {
                                 .build(),
                         Rest.builder()
                                 .duration(1)
-                                .unit(DurationUnit.HOUR)
+                                .unit(DurationUnit.MIN)
                                 .order(6)
                                 .build()
                 )

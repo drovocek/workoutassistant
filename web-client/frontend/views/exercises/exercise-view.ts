@@ -97,7 +97,6 @@ export class ExerciseView extends View {
         }
 
         exerciseStore.setSelected(item)
-        exerciseStore.formVisible = item !== null;
     }
 
     private processClick() {
@@ -108,6 +107,8 @@ export class ExerciseView extends View {
                 exerciseStore.delete(id);
             } else if (command === 'Copy') {
                 exerciseStore.copy(exercise);
+            } else if (command === 'Edit') {
+                this.form.open(exercise);
             }
         }
     }
