@@ -142,7 +142,7 @@ export class WorkoutView extends View {
         return gridRowDetailsRenderer<Workout>(
             (workout) => {
                 let workoutElements = workout.workoutSchema.workoutElements as WorkoutElement[];
-                workoutElements.map(v => (v as any).id = randomString(10));
+                workoutElements.map(v => (v as any).clientId = randomString(10));
                 return html`
                     <workout-details .items=${workoutElements}></workout-details>`
             },

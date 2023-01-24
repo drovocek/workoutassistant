@@ -140,7 +140,7 @@ export class RoundView extends View {
         return gridRowDetailsRenderer<Round>(
             (round) => {
                 let workoutElements = round.workoutSchema.workoutElements as WorkoutElement[];
-                workoutElements.map(v => (v as any).id = randomString(10));
+                workoutElements.map(v => (v as any).clientId = randomString(10));
                 return html`
                     <round-details .items=${workoutElements}></round-details>`
             },

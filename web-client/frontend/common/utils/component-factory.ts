@@ -14,11 +14,18 @@ import {field} from "@hilla/form";
 import DurationUnit from "Frontend/generated/ru/soft/common/data/elements/DurationUnit";
 import RestModel from "Frontend/generated/ru/soft/common/data/elements/RestModel";
 import {FormLayoutResponsiveStep} from "@vaadin/form-layout";
+import Round from "Frontend/generated/ru/soft/common/to/RoundTo";
 
 export function createIconItem(iconName: string) {
     const item = document.createElement('vaadin-context-menu-item');
     const icon = document.createElement('vaadin-icon');
-    icon.setAttribute('icon', `vaadin:${iconName}`);
+
+    if(iconName.startsWith('my-icons-svg')){
+        icon.setAttribute('icon', `${iconName}`);
+    } else {
+        icon.setAttribute('icon', `vaadin:${iconName}`);
+    }
+
     item.appendChild(icon);
     return item;
 }
@@ -99,6 +106,14 @@ export function renderWorkoutElement() {
                               </span>
                         </span>
                     </vaadin-horizontal-layout>
+                `
+            } else if(type === 'round'){
+                let round = element as Round;
+                return html`
+                    <span theme="badge pill" title=${round.note}>
+                      <vaadin-icon icon="my-icons-svg:draw-polygon-solid"></vaadin-icon>
+                      <span style="margin-left: 5px">${round.title}</span>
+                    </span>
                 `
             }
             return html`

@@ -9,7 +9,7 @@ import {property, query, state} from "lit/decorators";
 import {View} from "Frontend/view";
 import {PropertyValues} from "@lit/reactive-element/development/reactive-element";
 import WorkoutElement from "Frontend/generated/ru/soft/common/data/elements/WorkoutElement";
-import {renderWorkoutElement} from "Frontend/common/utils/component-factory";
+import {createIconItem, renderWorkoutElement} from "Frontend/common/utils/component-factory";
 import {dialogFooterRenderer, dialogRenderer} from "@vaadin/dialog/lit";
 import {DialogOpenedChangedEvent} from "@vaadin/dialog";
 import {Binder} from "@hilla/form";
@@ -21,7 +21,9 @@ import DurationUnit from "Frontend/generated/ru/soft/common/data/elements/Durati
 import {Button} from "@vaadin/button";
 import {deepEquals, randomString} from "Frontend/common/utils/app-utils";
 import {renderRestDialog, renderStationDialog} from "../../../common/utils/component-factory";
-import {exerciseStore, workoutStore} from "Frontend/common/stores/app-store";
+import {exerciseStore, roundStore, workoutStore} from "Frontend/common/stores/app-store";
+import {MenuBarItemSelectedEvent} from '@vaadin/menu-bar';
+import Round from "Frontend/generated/ru/soft/common/to/RoundTo";
 
 @customElement('workout-details')
 export class WorkoutDetails extends View {
@@ -90,6 +92,17 @@ export class WorkoutDetails extends View {
         this.grid.selectedItems = [];
     }
 
+    private menuBarItems = [
+        {
+            component: createIconItem('my-icons-svg:draw-polygon-solid'),
+            tooltip: 'Rounds',
+            children: roundStore.data.map(round => {
+                (round as any).text = round.title;
+                return round;
+            })
+        }
+    ];
+
     render() {
         // @ts-ignore
         return html`
@@ -109,6 +122,12 @@ export class WorkoutDetails extends View {
                                          ${renderWorkoutElement()}></vaadin-grid-sort-column>
             </vaadin-grid>
             <vaadin-horizontal-layout theme="spacing">
+                <vaadin-menu-bar
+                        theme="icon"
+                        .items="${this.menuBarItems}"
+                        @item-selected="${this.addRound}">
+                    <vaadin-tooltip slot="tooltip" text="Add round"></vaadin-tooltip>
+                </vaadin-menu-bar>
                 <vaadin-button
                         id="station-button"
                         class="station-button overlay-details-button"
@@ -172,6 +191,14 @@ export class WorkoutDetails extends View {
         `;
     }
 
+    private addRound(e: MenuBarItemSelectedEvent): void {
+        let round = e.detail.value as Round;
+        this.pushOrUpdate(round);
+        (round as any).type = 'round';
+        (round as any).clientId = randomString(10);
+        console.log(round)
+    }
+
     private onGridDrop() {
         return (event: GridDropEvent<WorkoutElement>) => {
             const {dropTargetItem, dropLocation} = event.detail;
@@ -220,7 +247,7 @@ export class WorkoutDetails extends View {
     private defaultFormRest(): Rest {
         let rest = RestModel.createEmptyValue();
         rest.unit = DurationUnit.MIN;
-        (rest as any).id = randomString(10);
+        (rest as any).clientId = randomString(10);
         return rest;
     }
 
@@ -253,7 +280,7 @@ export class WorkoutDetails extends View {
         let station = StationModel.createEmptyValue();
         station.unit = DurationUnit.MIN;
         station.exercise = exerciseStore.data[0];
-        (station as any).id = randomString(10);
+        (station as any).clientId = randomString(10);
         return station;
     }
 
@@ -286,7 +313,7 @@ export class WorkoutDetails extends View {
         let selected = this.grid.selectedItems[0];
         if (selected) {
             let copy = JSON.parse(JSON.stringify(selected));
-            copy.id = randomString(10);
+            copy.clientId = randomString(10);
             const dropIndex = this.items.indexOf(selected) + 1;
             this.items.splice(dropIndex, 0, copy);
             this.items = [...this.items];
@@ -301,10 +328,10 @@ export class WorkoutDetails extends View {
     }
 
     private pushOrUpdate(element: WorkoutElement) {
-        const exist = this.items.some((c) => (c as any).id === (element as any).id);
+        const exist = this.items.some((c) => (c as any).clientId === (element as any).clientId);
         if (exist) {
             this.items = this.items.map((existing) => {
-                if ((existing as any).id === (element as any).id) {
+                if ((existing as any).clientId === (element as any).clientId) {
                     return element;
                 } else {
                     return existing;
