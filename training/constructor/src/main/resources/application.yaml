@@ -3,13 +3,13 @@ server.port: 9000
 spring:
   application.name: exercise-constructor
   datasource:
-    url: jdbc:postgresql://localhost:5430/workoutDB
+    url: jdbc:postgresql://localhost:5432/workout_assistant
     username: usr
     password: pwd
     driver-class-name: org.postgresql.Driver
   sql:
     init:
-#      data-locations: classpath:db/data.sql
+      data-locations: classpath:db/data.sql
       schema-locations: classpath:db/schema.sql
       mode: always
 

@@ -218,6 +218,7 @@ export class RoundDetails extends View {
     private defaultFormRest(): Rest {
         let rest = RestModel.createEmptyValue();
         rest.unit = DurationUnit.MIN;
+        (rest as any).id = randomString(10);
         return rest;
     }
 
@@ -250,6 +251,7 @@ export class RoundDetails extends View {
         let station = StationModel.createEmptyValue();
         station.unit = DurationUnit.MIN;
         station.exercise = exerciseStore.data[0];
+        (station as any).id = randomString(10);
         return station;
     }
 
@@ -298,6 +300,7 @@ export class RoundDetails extends View {
 
     private pushOrUpdate(element: WorkoutElement) {
         const exist = this.items.some((c) => (c as any).id === (element as any).id);
+        console.log(exist)
         if (exist) {
             this.items = this.items.map((existing) => {
                 if ((existing as any).id === (element as any).id) {

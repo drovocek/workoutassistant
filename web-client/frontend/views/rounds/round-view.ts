@@ -20,8 +20,6 @@ import {gridRowDetailsRenderer} from "@vaadin/grid/lit";
 import WorkoutElement from "Frontend/generated/ru/soft/common/data/elements/WorkoutElement";
 import {randomString} from "Frontend/common/utils/app-utils";
 import {renderTitleWithActionBar} from "Frontend/views/rounds/components/round-component-factory";
-import {DialogOpenedChangedEvent} from "@vaadin/dialog";
-import {dialogFooterRenderer} from "@vaadin/dialog/lit";
 
 @customElement('round-view')
 export class RoundView extends View {
@@ -39,6 +37,8 @@ export class RoundView extends View {
 
     @state()
     private dialogOpened = false;
+
+    private dataBeforeDetailsOpen: WorkoutElement[] = [];
 
     async connectedCallback() {
         super.connectedCallback();
@@ -111,8 +111,23 @@ export class RoundView extends View {
             return;
         }
 
-        roundStore.setSelected(item)
-        this.detailsOpenedItem = roundStore.selected ? [roundStore.selected] : [];
+        this.detailsOpenedItem = item ? [item] : [];
+
+        if (item === null && roundStore.selected && this.dataNotEquals()) {
+            roundStore.update(roundStore.selected);
+        }
+
+        this.dataBeforeDetailsOpen = item ? [...item.workoutSchema.workoutElements as WorkoutElement[]] : [];
+
+        roundStore.setSelected(item);
+    }
+
+    private dataNotEquals(): boolean {
+        if (roundStore.selected) {
+            let currentData = roundStore.selected.workoutSchema.workoutElements as WorkoutElement[];
+            return JSON.stringify(currentData) !== JSON.stringify(this.dataBeforeDetailsOpen);
+        }
+        return false;
     }
 
     private processClick() {
