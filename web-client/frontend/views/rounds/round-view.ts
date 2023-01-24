@@ -113,21 +113,13 @@ export class RoundView extends View {
 
         this.detailsOpenedItem = item ? [item] : [];
 
-        if (item === null && roundStore.selected && this.dataNotEquals()) {
+        if (item === null && roundStore.selected) {
             roundStore.update(roundStore.selected);
         }
 
         this.dataBeforeDetailsOpen = item ? [...item.workoutSchema.workoutElements as WorkoutElement[]] : [];
 
         roundStore.setSelected(item);
-    }
-
-    private dataNotEquals(): boolean {
-        if (roundStore.selected) {
-            let currentData = roundStore.selected.workoutSchema.workoutElements as WorkoutElement[];
-            return JSON.stringify(currentData) !== JSON.stringify(this.dataBeforeDetailsOpen);
-        }
-        return false;
     }
 
     private processClick() {

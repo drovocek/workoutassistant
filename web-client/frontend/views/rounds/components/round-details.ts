@@ -22,7 +22,7 @@ import {Button} from "@vaadin/button";
 import {deepEquals, randomString} from "Frontend/common/utils/app-utils";
 import './round-component-factory';
 import {renderRestDialog, renderStationDialog} from "Frontend/views/rounds/components/round-component-factory";
-import {exerciseStore} from "Frontend/common/stores/app-store";
+import {exerciseStore, roundStore} from "Frontend/common/stores/app-store";
 
 @customElement('round-details')
 export class RoundDetails extends View {
@@ -82,6 +82,9 @@ export class RoundDetails extends View {
         super.updated(_changedProperties);
         this.deselectAll();
         this.switchButtonActive(null);
+        if (roundStore.selected) {
+            roundStore.selected.workoutSchema.workoutElements = this.items;
+        }
     }
 
     private deselectAll() {
@@ -300,7 +303,6 @@ export class RoundDetails extends View {
 
     private pushOrUpdate(element: WorkoutElement) {
         const exist = this.items.some((c) => (c as any).id === (element as any).id);
-        console.log(exist)
         if (exist) {
             this.items = this.items.map((existing) => {
                 if ((existing as any).id === (element as any).id) {
@@ -311,7 +313,6 @@ export class RoundDetails extends View {
             });
         } else {
             this.items.push(element);
-            this.items = [...this.items];
         }
     }
 }
