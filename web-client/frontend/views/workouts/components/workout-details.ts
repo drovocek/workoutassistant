@@ -21,10 +21,10 @@ import DurationUnit from "Frontend/generated/ru/soft/common/data/elements/Durati
 import {Button} from "@vaadin/button";
 import {deepEquals, randomString} from "Frontend/common/utils/app-utils";
 import {renderRestDialog, renderStationDialog} from "../../../common/utils/component-factory";
-import {exerciseStore, roundStore} from "Frontend/common/stores/app-store";
+import {exerciseStore, workoutStore} from "Frontend/common/stores/app-store";
 
-@customElement('round-details')
-export class RoundDetails extends View {
+@customElement('workout-details')
+export class WorkoutDetails extends View {
 
     @query('#grid')
     private grid!: Grid;
@@ -81,8 +81,8 @@ export class RoundDetails extends View {
         super.updated(_changedProperties);
         this.deselectAll();
         this.switchButtonActive(null);
-        if (roundStore.selected) {
-            roundStore.selected.workoutSchema.workoutElements = this.items;
+        if (workoutStore.selected) {
+            workoutStore.selected.workoutSchema.workoutElements = this.items;
         }
     }
 

@@ -1,0 +1,82 @@
+workout-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+workout-view .filter {
+    margin-left: 10px;
+}
+
+workout-view .content {
+    height: 100%;
+}
+
+workout-view .grid-wrapper {
+    width: 100%;
+}
+
+workout-view .form {
+    width: 25em;
+    padding: 10px;
+}
+
+workout-view vaadin-grid {
+    height: 100%;
+}
+
+workout-view .form-button-panel, .grid-button-panel {
+    width: 100%;
+    justify-content: flex-end;
+}
+
+workout-view workout-details {
+    height: 100%;
+}
+
+workout-view workout-details vaadin-grid {
+    height: 30em;
+}
+
+/*https://www.w3schools.com/howto/howto_css_overlay.asp*/
+workout-view .plus-button {
+    float: right;
+    position: fixed; /* Sit on top of the page content */
+    top: 95%;
+    margin-right: 10px;
+    margin-left: auto;
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+}
+
+workout-view .overlay-details-button {
+    /*float: right;*/
+    /*position: fixed ; !* Sit on top of the page content *!*/
+    /*top: 85%;*/
+    /*margin-right: 10px;*/
+    /*z-index: 2; !* Specify a stack order in case you're using a different order for other elements *!*/
+    /*cursor: pointer; !* Add a pointer on hover *!*/
+    background-color: #FFFFFF;
+}
+
+/*workout-view .station-button {*/
+/*    margin-left: 10px;*/
+/*}*/
+
+/*workout-view .rest-button {*/
+/*    margin-left: 60px;*/
+/*}*/
+
+/*workout-view .edit-button {*/
+/*    margin-left: 110px;*/
+/*}*/
+
+/*workout-view .copy-button {*/
+/*    margin-left: 160px;*/
+/*}*/
+
+/*workout-view .delete-button {*/
+/*    margin-left: 210px;*/
+/*}*/
+
+

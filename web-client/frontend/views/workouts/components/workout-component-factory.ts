@@ -2,10 +2,10 @@ import {html} from "lit";
 import {MenuBarItemSelectedEvent} from "@vaadin/menu-bar";
 import {columnBodyRenderer} from "@vaadin/grid/lit";
 import {createIconItem} from "Frontend/common/utils/component-factory";
-import RoundTo from "Frontend/generated/ru/soft/common/to/RoundTo";
+import Workout from "Frontend/generated/ru/soft/common/to/WorkoutTo";
 
-export function renderTitleWithActionBar(onClick: (e: MenuBarItemSelectedEvent, entity: RoundTo) => void) {
-    return columnBodyRenderer<RoundTo>(
+export function renderTitleWithActionBar(onClick: (e: MenuBarItemSelectedEvent, entity: Workout) => void) {
+    return columnBodyRenderer<Workout>(
         (entity) => {
             const items = [
                 {
@@ -23,6 +23,17 @@ export function renderTitleWithActionBar(onClick: (e: MenuBarItemSelectedEvent, 
                     </vaadin-menu-bar>
                     <span>${entity.title}</span>
                 </vaadin-horizontal-layout>
+            `
+        });
+}
+
+export function renderDateTime() {
+    return columnBodyRenderer<Workout>(
+        (entity) => {
+            let date = new Date(entity.dateTime);
+            console.log(date)
+            return html`
+                <span theme="badge">${date.toLocaleDateString()} ${date.toLocaleTimeString()}</span>
             `
         });
 }

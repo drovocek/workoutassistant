@@ -2,17 +2,18 @@ import {makeAutoObservable, observable, runInAction} from 'mobx';
 import {uiStore} from "Frontend/common/stores/app-store";
 import {GeneralStore} from "Frontend/common/stores/general-store";
 import {processErr, randomString} from "Frontend/common/utils/app-utils";
-import Round from "Frontend/generated/ru/soft/common/to/RoundTo";
-import RoundModel from "Frontend/generated/ru/soft/common/to/RoundToModel";
-import {RoundEndpoint} from 'Frontend/generated/endpoints';
 
-export class RoundStore implements GeneralStore<Round> {
+import Workout from "Frontend/generated/ru/soft/common/to/WorkoutTo";
+import {WorkoutEndpoint} from "Frontend/generated/endpoints";
+import WorkoutModel from "Frontend/generated/ru/soft/common/to/WorkoutToModel";
 
-    data: Round[] = [];
+export class WorkoutStore implements GeneralStore<Workout> {
+
+    data: Workout[] = [];
     filterText = '';
-    selected: Round | null = null;
+    selected: Workout | null = null;
     formVisible: boolean = false;
-    entityName: string = 'Round';
+    entityName: string = 'Workout';
 
     constructor() {
         makeAutoObservable(
@@ -30,14 +31,14 @@ export class RoundStore implements GeneralStore<Round> {
     }
 
     async initFromServer() {
-        const data = await RoundEndpoint.getAll();
+        const data = await WorkoutEndpoint.getAll();
 
         runInAction(() => {
             this.data = data;
         });
     }
 
-    setSelected(selected: Round | null) {
+    setSelected(selected: Workout | null) {
         this.selected = selected;
     }
 
@@ -60,14 +61,13 @@ export class RoundStore implements GeneralStore<Round> {
         this.filterText = e.target.value;
     }
 
-    createNew(): Round {
-        return RoundModel.createEmptyValue();
+    createNew(): Workout {
+        return WorkoutModel.createEmptyValue();
     }
 
-    public async update(updatable: Round) {
+    public async update(updatable: Workout) {
         if (!updatable.id) return;
-        (updatable as any).type = "round";
-        await RoundEndpoint.update(updatable)
+        await WorkoutEndpoint.update(updatable)
             .then(() => {
                 this.saveLocal(updatable);
                 uiStore.showSuccess(`${this.entityName} update.`);
@@ -75,9 +75,8 @@ export class RoundStore implements GeneralStore<Round> {
             .catch(processErr);
     }
 
-    public async add(stored: Round) {
-        (stored as any).type = "round";
-        await RoundEndpoint.add(stored)
+    public async add(stored: Workout) {
+        await WorkoutEndpoint.add(stored)
             .then(stored => {
                 this.saveLocal(stored);
                 uiStore.showSuccess(`${this.entityName} create.`);
@@ -85,7 +84,7 @@ export class RoundStore implements GeneralStore<Round> {
             .catch(processErr);
     }
 
-    public async copy(original: Round) {
+    public async copy(original: Workout) {
         if (!original) return;
 
         let copy = JSON.parse(JSON.stringify(original));
@@ -93,14 +92,14 @@ export class RoundStore implements GeneralStore<Round> {
         copy.id = null;
         (copy as any).type = "round";
 
-        await RoundEndpoint.add(copy)
+        await WorkoutEndpoint.add(copy)
             .then(copy => {
                 this.saveLocalAfterSelected(original, copy);
                 uiStore.showSuccess(`${this.entityName} copy.`);
             });
     }
 
-    private saveLocal(saved: Round) {
+    private saveLocal(saved: Workout) {
         const exist = this.data.some((c) => c.id === saved.id);
         if (exist) {
             this.data = this.data.map((existing) => {
@@ -115,7 +114,7 @@ export class RoundStore implements GeneralStore<Round> {
         }
     }
 
-    public saveLocalAfterSelected(original: Round, saved: Round) {
+    public saveLocalAfterSelected(original: Workout, saved: Workout) {
         const originalExists = this.data.some((c) => c.id === original.id);
         if (originalExists) {
             const dropIndex = this.data.indexOf(original) + 1;
@@ -126,7 +125,7 @@ export class RoundStore implements GeneralStore<Round> {
     async delete(id: string) {
         if (!id) return;
 
-        await RoundEndpoint.delete(id)
+        await WorkoutEndpoint.delete(id)
             .then(() => {
                 this.setSelected(null);
                 this.deleteLocal(id);

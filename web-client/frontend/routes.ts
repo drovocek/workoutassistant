@@ -16,11 +16,11 @@ export const views: ViewRoute[] = [
   // place routes below (more info https://hilla.dev/docs/routing)
   {
     path: '',
-    component: 'round-view',
+    component: 'workout-view',
     icon: 'la la-calendar',
     title: 'Workout',
     action: async (_context, _command) => {
-      await import('./views/rounds/round-view');
+      await import('./views/workouts/workout-view');
       return;
     },
   },
