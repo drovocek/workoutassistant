@@ -314,6 +314,7 @@ export class RoundDetails extends View {
         } else {
             this.items.push(element);
         }
+        this.items = [...this.items];
     }
 }
 
