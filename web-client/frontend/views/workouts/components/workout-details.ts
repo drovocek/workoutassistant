@@ -18,12 +18,13 @@ import RestModel from "Frontend/generated/ru/soft/common/data/elements/RestModel
 import Station from "Frontend/generated/ru/soft/common/data/elements/Station";
 import StationModel from "Frontend/generated/ru/soft/common/data/elements/StationModel";
 import DurationUnit from "Frontend/generated/ru/soft/common/data/elements/DurationUnit";
-import {Button} from "@vaadin/button";
 import {deepEquals, randomString} from "Frontend/common/utils/app-utils";
 import {renderRestDialog, renderStationDialog} from "../../../common/utils/component-factory";
 import {exerciseStore, roundStore, workoutStore} from "Frontend/common/stores/app-store";
 import {MenuBarItemSelectedEvent} from '@vaadin/menu-bar';
 import Round from "Frontend/generated/ru/soft/common/to/RoundTo";
+import {gridRowDetailsRenderer} from "@vaadin/grid/lit";
+import '@vaadin/grid/vaadin-grid-tree-column.js';
 
 @customElement('workout-details')
 export class WorkoutDetails extends View {
@@ -31,19 +32,10 @@ export class WorkoutDetails extends View {
     @query('#grid')
     private grid!: Grid;
 
-    @query('#edit-button')
-    private editButton!: Button;
-
-    @query('#copy-button')
-    private copyButton!: Button;
-
-    @query('#delete-button')
-    private deleteButton!: Button;
-
     private firstSelectionEvent = true;
 
     @property()
-    items: WorkoutElement[] = []
+    actionsHidden: boolean = false;
 
     @state()
     private draggedElement?: WorkoutElement;
@@ -53,6 +45,12 @@ export class WorkoutDetails extends View {
 
     @state()
     private dialogStationOpened = false;
+
+    @property()
+    public items: WorkoutElement[] = [];
+
+    @property()
+    public rootItem: Round | null = null;
 
     private clearDraggedElement = () => {
         delete this.draggedElement;
@@ -81,10 +79,12 @@ export class WorkoutDetails extends View {
 
     updated(_changedProperties: PropertyValues) {
         super.updated(_changedProperties);
-        this.deselectAll();
-        this.switchButtonActive(null);
-        if (workoutStore.selected) {
-            workoutStore.selected.workoutSchema.workoutElements = this.items;
+        if (this.rootItem === null) {
+            if (workoutStore.selected) {
+                workoutStore.selected.workoutSchema.workoutElements = this.items;
+            }
+        } else {
+            this.rootItem.workoutSchema.workoutElements = this.items;
         }
     }
 
@@ -103,6 +103,9 @@ export class WorkoutDetails extends View {
         }
     ];
 
+    @state()
+    private detailsOpenedItem: WorkoutElement[] = [];
+
     render() {
         // @ts-ignore
         return html`
@@ -113,26 +116,30 @@ export class WorkoutDetails extends View {
                     @active-item-changed=${this.handleGridSelection}
                     rows-draggable
                     drop-mode="between"
-                    @grid-dragstart="${this.storeDraggingElement}"
-                    @grid-dragend="${this.clearDraggedElement}"
-                    @grid-drop="${this.onGridDrop()}">
+                    @grid-dragstart=${this.storeDraggingElement}
+                    @grid-dragend=${this.clearDraggedElement}
+                    @grid-drop=${this.onGridDrop()}
+                    .detailsOpenedItems=${this.detailsOpenedItem}
+                    ${this.renderDetails()}>
                 <vaadin-grid-sort-column path="title"
                                          header="Workout element"
                                          auto-width
                                          ${renderWorkoutElement()}></vaadin-grid-sort-column>
             </vaadin-grid>
-            <vaadin-horizontal-layout theme="spacing">
+            <vaadin-horizontal-layout theme="spacing" ?hidden="${this.actionsHidden}">
                 <vaadin-menu-bar
                         theme="icon"
-                        .items="${this.menuBarItems}"
-                        @item-selected="${this.addRound}">
+                        .items=${this.menuBarItems}
+                        @item-selected=${this.addRound}
+                        ?disabled=${workoutStore.selectedWorkoutElement}>
                     <vaadin-tooltip slot="tooltip" text="Add round"></vaadin-tooltip>
                 </vaadin-menu-bar>
                 <vaadin-button
                         id="station-button"
                         class="station-button overlay-details-button"
                         theme="secondary success icon"
-                        @click="${this.openStationDialog}">
+                        @click=${this.openStationDialog}
+                        ?disabled=${workoutStore.selectedWorkoutElement}>
                     <vaadin-tooltip slot="tooltip" text="Add station"></vaadin-tooltip>
                     <vaadin-icon icon="my-icons-svg:dumbbell-solid" slot="prefix"></vaadin-icon>
                 </vaadin-button>
@@ -140,7 +147,8 @@ export class WorkoutDetails extends View {
                         id="rest-button"
                         class="rest-button overlay-details-button"
                         theme="secondary icon"
-                        @click="${this.openRestDialog}">
+                        @click=${this.openRestDialog}
+                        ?disabled=${workoutStore.selectedWorkoutElement}>
                     <vaadin-tooltip slot="tooltip" text="Add rest"></vaadin-tooltip>
                     <vaadin-icon icon="my-icons-svg:clock-solid" slot="prefix"></vaadin-icon>
                 </vaadin-button>
@@ -148,7 +156,7 @@ export class WorkoutDetails extends View {
                         id="edit-button"
                         class="edit-button overlay-details-button"
                         theme="secondary icon"
-                        ?disabled=${true}
+                        ?disabled=${!workoutStore.hasSelectedWorkoutElement()}
                         @click=${this.edit}>
                     <vaadin-tooltip slot="tooltip" text="Edit"></vaadin-tooltip>
                     <vaadin-icon icon="my-icons-svg:edit-solid" slot="prefix"></vaadin-icon>
@@ -157,7 +165,7 @@ export class WorkoutDetails extends View {
                         id="copy-button"
                         class="copy-button overlay-details-button"
                         theme="tertiary icon"
-                        ?disabled=${true}
+                        ?disabled=${!workoutStore.hasSelectedWorkoutElement()}
                         @click=${this.copy}>
                     <vaadin-tooltip slot="tooltip" text="Copy"></vaadin-tooltip>
                     <vaadin-icon icon="my-icons-svg:copy-solid" slot="prefix"></vaadin-icon>
@@ -166,7 +174,7 @@ export class WorkoutDetails extends View {
                         id="delete-button"
                         class="delete-button overlay-details-button"
                         theme="error icon"
-                        ?disabled=${true}
+                        ?disabled=${!workoutStore.hasSelectedWorkoutElement()}
                         @click=${this.delete}>
                     <vaadin-tooltip slot="tooltip" text="Delete"></vaadin-tooltip>
                     <vaadin-icon icon="my-icons-svg:trash-alt-solid" slot="prefix"></vaadin-icon>
@@ -191,23 +199,28 @@ export class WorkoutDetails extends View {
         `;
     }
 
+    private getData() {
+        return this.rootItem ? this.rootItem.workoutSchema.workoutElements : this.items;
+    }
+
     private addRound(e: MenuBarItemSelectedEvent): void {
         let round = e.detail.value as Round;
-        this.pushOrUpdate(round);
         (round as any).type = 'round';
         (round as any).clientId = randomString(10);
-        console.log(round)
+        this.items.push(round);
+        this.items = [...this.items];
     }
 
     private onGridDrop() {
         return (event: GridDropEvent<WorkoutElement>) => {
+            let items = this.items;
             const {dropTargetItem, dropLocation} = event.detail;
             if (this.draggedElement && dropTargetItem !== this.draggedElement) {
-                const draggedItemIndex = this.items.indexOf(this.draggedElement);
-                this.items.splice(draggedItemIndex, 1);
-                const dropIndex = this.items.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
-                this.items.splice(dropIndex, 0, this.draggedElement);
-                this.items = [...this.items];
+                const draggedItemIndex = items.indexOf(this.draggedElement);
+                items.splice(draggedItemIndex, 1);
+                const dropIndex = items.indexOf(dropTargetItem) + (dropLocation === 'below' ? 1 : 0);
+                items.splice(dropIndex, 0, this.draggedElement);
+                this.items = [...items];
             }
         }
     }
@@ -216,18 +229,18 @@ export class WorkoutDetails extends View {
         const item: WorkoutElement = event.detail.value as WorkoutElement;
         this.grid.selectedItems = item ? [item] : [];
 
+        workoutStore.setSelectedWorkoutElement(item);
+
+        if (item !== null && (item as any).type === 'round') {
+            this.detailsOpenedItem = item ? [item] : [];
+        } else {
+            this.detailsOpenedItem = [];
+        }
+
         if (this.firstSelectionEvent) {
             this.firstSelectionEvent = false;
             return;
         }
-
-        this.switchButtonActive(item);
-    }
-
-    private switchButtonActive(selected: WorkoutElement | null) {
-        this.editButton.disabled = selected === null;
-        this.copyButton.disabled = selected === null;
-        this.deleteButton.disabled = selected === null;
     }
 
     private renderRestDialog() {
@@ -296,7 +309,7 @@ export class WorkoutDetails extends View {
     }
 
     private edit(): void {
-        let selected = this.grid.selectedItems[0] as any;
+        let selected = workoutStore.selectedWorkoutElement as any;
         if (selected) {
             let type = selected.type;
             if (type === 'rest') {
@@ -310,27 +323,32 @@ export class WorkoutDetails extends View {
     }
 
     private copy(): void {
-        let selected = this.grid.selectedItems[0];
+        let selected = workoutStore.selectedWorkoutElement;
         if (selected) {
             let copy = JSON.parse(JSON.stringify(selected));
             copy.clientId = randomString(10);
-            const dropIndex = this.items.indexOf(selected) + 1;
-            this.items.splice(dropIndex, 0, copy);
-            this.items = [...this.items];
+            let items = this.items;
+            const dropIndex = items.indexOf(selected) + 1;
+            items.splice(dropIndex, 0, copy);
+            this.items = [...items];
         }
     }
 
     private delete(): void {
-        let selected = this.grid.selectedItems[0];
+        let selected = workoutStore.selectedWorkoutElement;
         if (selected) {
-            this.items = this.items.filter((element) => !deepEquals(selected, element));
+            let items = this.items;
+            items = items.filter((element) => !deepEquals(selected, element));
+            this.items = [...items];
+            workoutStore.setSelectedWorkoutElement(null);
         }
     }
 
     private pushOrUpdate(element: WorkoutElement) {
-        const exist = this.items.some((c) => (c as any).clientId === (element as any).clientId);
+        let items = this.items;
+        const exist = items.some((c) => (c as any).clientId === (element as any).clientId);
         if (exist) {
-            this.items = this.items.map((existing) => {
+            items = items.map((existing) => {
                 if ((existing as any).clientId === (element as any).clientId) {
                     return element;
                 } else {
@@ -338,9 +356,30 @@ export class WorkoutDetails extends View {
                 }
             });
         } else {
-            this.items.push(element);
+            items.push(element);
         }
-        this.items = [...this.items];
+        this.items = [...items];
+        workoutStore.setSelectedWorkoutElement(null);
+    }
+
+    private renderDetails() {
+        return gridRowDetailsRenderer<WorkoutElement>(
+            (workoutElement) => {
+                if ((workoutElement as any).type === 'round') {
+                    let round = workoutElement as Round;
+                    let workoutElements = (workoutElement as Round).workoutSchema.workoutElements as WorkoutElement[];
+                    workoutElements.map(v => (v as any).clientId = randomString(10));
+                    return html`
+                        <workout-details .rootItem=${round}
+                                         .items=${workoutElements}
+                                         .actionsHidden=${true}></workout-details>`
+                } else {
+                    return html`
+                    `
+                }
+            },
+            []
+        );
     }
 }
 

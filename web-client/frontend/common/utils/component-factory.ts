@@ -110,7 +110,7 @@ export function renderWorkoutElement() {
             } else if(type === 'round'){
                 let round = element as Round;
                 return html`
-                    <span theme="badge pill" title=${round.note}>
+                    <span theme="badge success primary pill" title=${round.note}>
                       <vaadin-icon icon="my-icons-svg:draw-polygon-solid"></vaadin-icon>
                       <span style="margin-left: 5px">${round.title}</span>
                     </span>

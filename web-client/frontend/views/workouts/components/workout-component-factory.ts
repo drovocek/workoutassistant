@@ -31,7 +31,6 @@ export function renderDateTime() {
     return columnBodyRenderer<Workout>(
         (entity) => {
             let date = new Date(entity.dateTime);
-            console.log(date)
             return html`
                 <span theme="badge">${date.toLocaleDateString()} ${date.toLocaleTimeString()}</span>
             `

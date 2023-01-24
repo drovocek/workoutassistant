@@ -6,12 +6,14 @@ import {processErr, randomString} from "Frontend/common/utils/app-utils";
 import Workout from "Frontend/generated/ru/soft/common/to/WorkoutTo";
 import {WorkoutEndpoint} from "Frontend/generated/endpoints";
 import WorkoutModel from "Frontend/generated/ru/soft/common/to/WorkoutToModel";
+import WorkoutElement from "Frontend/generated/ru/soft/common/data/elements/WorkoutElement";
 
 export class WorkoutStore implements GeneralStore<Workout> {
 
     data: Workout[] = [];
     filterText = '';
     selected: Workout | null = null;
+    selectedWorkoutElement: WorkoutElement | null = null;
     formVisible: boolean = false;
     entityName: string = 'Workout';
 
@@ -20,6 +22,7 @@ export class WorkoutStore implements GeneralStore<Workout> {
             this,
             {
                 selected: observable.ref,
+                selectedWorkoutElement: observable.ref,
                 formVisible: observable.ref,
                 filterText: observable.ref,
                 initFromServer: false,
@@ -40,6 +43,14 @@ export class WorkoutStore implements GeneralStore<Workout> {
 
     setSelected(selected: Workout | null) {
         this.selected = selected;
+    }
+
+    setSelectedWorkoutElement(selected: WorkoutElement | null) {
+        this.selectedWorkoutElement = selected;
+    }
+
+    hasSelectedWorkoutElement(): boolean {
+        return this.selectedWorkoutElement !== null;
     }
 
     hasSelected(): boolean {

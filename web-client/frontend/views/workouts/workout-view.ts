@@ -144,7 +144,7 @@ export class WorkoutView extends View {
                 let workoutElements = workout.workoutSchema.workoutElements as WorkoutElement[];
                 workoutElements.map(v => (v as any).clientId = randomString(10));
                 return html`
-                    <workout-details .items=${workoutElements}></workout-details>`
+                    <workout-details .items="${workoutElements}"></workout-details>`
             },
             []
         );
