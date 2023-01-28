@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    api 'jakarta.validation:jakarta.validation-api'
+    api 'com.fasterxml.jackson.core:jackson-databind'
+    api 'org.hibernate.validator:hibernate-validator'
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.data:spring-data-commons:3.0.1'
+}

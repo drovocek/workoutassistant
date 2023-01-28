@@ -1,0 +1,35 @@
+//https://github.com/vaadin/base-starter-spring-gradle
+//https://vaadin.com/docs/latest/guide/start/gradle#build-file
+
+plugins {
+    id 'java'
+    id 'com.vaadin'
+}
+
+apply plugin: 'com.vaadin'
+
+dependencies {
+    implementation project(':common')
+
+    implementation('dev.hilla:hilla-spring-boot-starter')
+    implementation('dev.hilla:hilla')
+
+    implementation('org.springframework.boot:spring-boot-starter-validation')
+    implementation('org.springframework.cloud:spring-cloud-starter-openfeign')
+    implementation('org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j')
+
+    developmentOnly('org.springframework.boot:spring-boot-devtools')
+
+    //TESTS//
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-stub-runner-boot'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
+}
+
+// https://vaadin.com/docs/latest/guide/start/gradle/#all-options
+vaadin {
+    pnpmEnable = false
+}

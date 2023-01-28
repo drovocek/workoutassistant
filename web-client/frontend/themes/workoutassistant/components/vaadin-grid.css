@@ -1,0 +1,3 @@
+:host([theme~="hide-filter-header-row"]) thead :nth-child(1)[part="row"] {
+    display: none;
+}
