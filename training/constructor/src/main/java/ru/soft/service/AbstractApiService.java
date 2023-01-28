@@ -1,10 +1,12 @@
 package ru.soft.service;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import ru.soft.common.data.HasId;
 import ru.soft.data.model.BaseEntity;
 import ru.soft.data.repository.common.BaseRepository;
@@ -17,12 +19,11 @@ import static ru.soft.utils.ValidationUtil.checkNew;
 import static ru.soft.utils.ValidationUtil.checkNotNew;
 
 @Slf4j
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class AbstractApiService<T extends BaseEntity, TO extends HasId> implements BaseApiService<TO> {
 
-    @Autowired
-    protected BaseRepository<T> repository;
-    @Autowired
-    protected TOMapper<T, TO> mapper;
+    protected final BaseRepository<T> repository;
+    protected final TOMapper<T, TO> mapper;
 
     @Override
     public TO get(UUID id) {
@@ -72,6 +73,7 @@ abstract class AbstractApiService<T extends BaseEntity, TO extends HasId> implem
     }
 
     @Override
+    @Transactional
     public void update(TO to) {
         log.info("update by {}", to);
         checkNotNew(to);

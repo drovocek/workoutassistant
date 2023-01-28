@@ -67,11 +67,6 @@ public class ExerciseToTestDataStore implements TestDataStore<ExerciseTo> {
                         .id(isNew ? null : newId())
                         .title("")
                         .note("request exercise note")
-                        .build(),
-                ExerciseTo.builder()
-                        .id(isNew ? newId() : null)
-                        .title("request exercise title")
-                        .note("request exercise note")
                         .build()
         );
     }

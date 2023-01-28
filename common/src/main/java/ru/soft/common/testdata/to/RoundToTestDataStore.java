@@ -67,12 +67,6 @@ public class RoundToTestDataStore implements TestDataStore<RoundTo> {
                         .note("request plan note")
                         .build(),
                 RoundTo.builder()
-                        .id(isNew ? newId() : null)
-                        .workoutSchema(workoutSchema())
-                        .title("request plan title")
-                        .note("request plan note")
-                        .build(),
-                RoundTo.builder()
                         .id(isNew ? null : newId())
                         .workoutSchema(workoutSchema())
                         .title("")

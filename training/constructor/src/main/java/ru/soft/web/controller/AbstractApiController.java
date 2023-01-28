@@ -1,11 +1,11 @@
 package ru.soft.web.controller;
 
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import ru.soft.common.api.ApiController;
 import ru.soft.common.data.HasId;
 import ru.soft.service.BaseApiService;
@@ -14,13 +14,12 @@ import java.util.List;
 import java.util.UUID;
 
 import static ru.soft.utils.ValidationUtil.checkNew;
-import static ru.soft.utils.ValidationUtil.checkNotNew;
 
 @Slf4j
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class AbstractApiController<TO extends HasId> implements ApiController<TO> {
 
-    @Autowired
-    protected BaseApiService<TO> service;
+    protected final BaseApiService<TO> service;
 
     @Override
     public TO get(UUID id) {
@@ -59,12 +58,9 @@ abstract class AbstractApiController<TO extends HasId> implements ApiController<
         return this.service.add(to);
     }
 
-    @Valid
     @Override
-    @Transactional
     public void update(@Valid TO to) {
         log.info("update by {}", to);
-        checkNotNew(to);
         this.service.update(to);
     }
 }

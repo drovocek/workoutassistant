@@ -3,8 +3,9 @@ package ru.soft.webclient.endpoint;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.hilla.EndpointExposed;
 import dev.hilla.Nonnull;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.soft.common.api.ApiController;
@@ -19,12 +20,12 @@ import java.util.UUID;
  * @see <a href="https://hilla.dev/docs/lit/guides/endpoints">Endpoints Dcoumentation</a>
  */
 @Slf4j
-@AnonymousAllowed
 @EndpointExposed
+@AnonymousAllowed
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseEndpoint<TO extends HasId> implements WebApi<TO> {
 
-    @Autowired
-    protected ApiController<TO> controller;
+    protected final ApiController<TO> controller;
 
     @Nonnull
     @Override
