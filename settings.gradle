@@ -14,9 +14,6 @@ pluginManagement {
 
 rootProject.name = 'workoutassistant'
 include 'web-client'
-include 'training'
-include 'training:constructor'
-include 'training:statistic'
-include 'training:planning'
+include 'constructor'
 include 'common'
 
