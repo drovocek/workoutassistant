@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Table;
 import ru.soft.data.load.ConsistencyViolationException;
+import ru.soft.data.load.elements.Rest;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class Workout extends BaseUserEntity {
 
     private final List<StationsSet> stationsSets;
+    private final List<Rest> rests;
 
     @Builder
     public Workout(UUID userId, UUID id, String name, String note, List<StationsSet> stationsSets, boolean isNew) {

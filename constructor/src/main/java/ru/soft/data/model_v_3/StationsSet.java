@@ -9,7 +9,7 @@ import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
 import ru.soft.common.data.HasOrder;
-import ru.soft.data.load.Station;
+import ru.soft.data.load.elements.Station;
 
 import java.util.List;
 import java.util.UUID;

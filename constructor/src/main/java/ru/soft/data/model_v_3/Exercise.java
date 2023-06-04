@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Table;
-import ru.soft.data.load.TrainingType;
+import ru.soft.data.load.LoadType;
 
 import java.util.UUID;
 
@@ -15,20 +15,20 @@ import java.util.UUID;
 @Table(name = "exercise")
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@JsonIncludeProperties({"id", "userId", "name", "note", "trainingType"})
+@JsonIncludeProperties({"id", "userId", "name", "note", "loadType"})
 public class Exercise extends BaseUserEntity {
 
-    private final TrainingType trainingType;
+    private final LoadType loadType;
 
     @Builder
-    public Exercise(UUID userId, UUID id, String name, String note, TrainingType trainingType, boolean isNew) {
+    public Exercise(UUID userId, UUID id, String name, String note, LoadType loadType, boolean isNew) {
         super(userId, id, name, note, isNew);
-        this.trainingType = trainingType;
+        this.loadType = loadType;
     }
 
     @PersistenceCreator
-    public Exercise(UUID userId, UUID id, String name, String note, TrainingType trainingType) {
-        this(userId, id, name, note, trainingType, false);
+    public Exercise(UUID userId, UUID id, String name, String note, LoadType loadType) {
+        this(userId, id, name, note, loadType, false);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class Exercise extends BaseUserEntity {
                 .isNew(isNew)
                 .name(this.getName())
                 .note(this.getNote())
-                .trainingType(this.getTrainingType())
+                .loadType(this.getLoadType())
                 .build();
     }
 }
