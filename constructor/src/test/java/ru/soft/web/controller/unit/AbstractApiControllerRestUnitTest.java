@@ -44,7 +44,7 @@ import static ru.soft.utils.ValidationUtil.ENTITY_NOT_FOUND_TEMPLATE;
 //https://www.baeldung.com/spring-boot-testing
 @WebMvcTest
 @AutoConfigureMockMvc
-abstract class AbstractApiControllerUnitTest<TO extends HasId> {
+abstract class AbstractApiControllerRestUnitTest<TO extends HasId> {
 
     @Autowired
     protected MockMvc mockMvc;

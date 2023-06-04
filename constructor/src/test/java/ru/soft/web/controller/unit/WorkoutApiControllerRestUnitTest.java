@@ -6,7 +6,7 @@ import ru.soft.common.testdata.to.WorkoutToTestDataStore;
 import ru.soft.common.to.WorkoutTo;
 import ru.soft.utils.MatcherFactory;
 
-class WorkoutApiControllerUnitTest extends AbstractApiControllerUnitTest<WorkoutTo> {
+class WorkoutApiControllerRestUnitTest extends AbstractApiControllerRestUnitTest<WorkoutTo> {
 
     @Override
     protected String getApiUrl() {

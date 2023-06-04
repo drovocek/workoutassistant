@@ -8,7 +8,7 @@ import ru.soft.common.testdata.to.RoundToTestDataStore;
 import ru.soft.utils.MatcherFactory;
 
 @WebMvcTest
-class RoundApiControllerUnitTest extends AbstractApiControllerUnitTest<RoundTo> {
+class RoundApiControllerRestUnitTest extends AbstractApiControllerRestUnitTest<RoundTo> {
 
     @Override
     protected String getApiUrl() {

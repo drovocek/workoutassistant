@@ -6,7 +6,7 @@ import ru.soft.common.testdata.to.ExerciseToTestDataStore;
 import ru.soft.common.to.ExerciseTo;
 import ru.soft.utils.MatcherFactory;
 
-class ExerciseApiControllerUnitTest extends AbstractApiControllerUnitTest<ExerciseTo> {
+class ExerciseApiControllerRestUnitTest extends AbstractApiControllerRestUnitTest<ExerciseTo> {
 
     @Override
     protected TestDataStore<ExerciseTo> toStore() {

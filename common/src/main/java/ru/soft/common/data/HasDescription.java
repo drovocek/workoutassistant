@@ -2,7 +2,7 @@ package ru.soft.common.data;
 
 public interface HasDescription {
 
-    String title();
+    String getName();
 
-    String note();
+    String getNote();
 }
