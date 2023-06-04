@@ -6,7 +6,7 @@ import ru.soft.common.testdata.to.RoundToTestDataStore;
 import ru.soft.data.model.Round;
 import ru.soft.data.test.RoundDataStore;
 
-class RoundTOMapperTest extends AbstractTOMapperTest<Round, RoundTo> {
+class StationSetTOMapperTest extends AbstractTOMapperTest<Round, RoundTo> {
 
     @Override
     TOMapper<Round, RoundTo> mapper() {

@@ -8,7 +8,6 @@ import lombok.ToString;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Table;
 import ru.soft.data.load.ConsistencyViolationException;
-import ru.soft.data.load.Station;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,23 +16,23 @@ import java.util.UUID;
 @Table(name = "workout")
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@JsonIncludeProperties({"id", "userId", "name", "note", "stations"})
+@JsonIncludeProperties({"id", "userId", "name", "note", "stationsSets"})
 public class Workout extends BaseUserEntity {
 
-    private final List<Station> stations;
+    private final List<StationsSet> stationsSets;
 
     @Builder
-    public Workout(UUID userId, UUID id, String name, String note, List<Station> stations, boolean isNew) {
+    public Workout(UUID userId, UUID id, String name, String note, List<StationsSet> stationsSets, boolean isNew) {
         super(userId, id, name, note, isNew);
-        this.stations = stations;
-        if (this.stations.isEmpty()) {
-            throw new ConsistencyViolationException("stations can't be empty");
+        this.stationsSets = stationsSets;
+        if (this.stationsSets.isEmpty()) {
+            throw new ConsistencyViolationException("station sets can't be empty");
         }
     }
 
     @PersistenceCreator
-    public Workout(UUID userId, UUID id, String name, String note, List<Station> stations) {
-        this(userId, id, name, note, stations, false);
+    public Workout(UUID userId, UUID id, String name, String note, List<StationsSet> stationsSets) {
+        this(userId, id, name, note, stationsSets, false);
     }
 
     @Override
@@ -43,7 +42,7 @@ public class Workout extends BaseUserEntity {
                 .isNew(isNew)
                 .name(this.getName())
                 .note(this.getNote())
-                .stations(this.getStations())
+                .stationsSets(this.getStationsSets())
                 .build();
     }
 }

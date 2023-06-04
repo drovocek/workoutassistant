@@ -8,7 +8,7 @@ import ru.soft.data.model.Round;
 import ru.soft.data.test.RoundDataStore;
 import ru.soft.utils.MatcherFactory;
 
-class RoundApiControllerIntegrationTest extends AbstractApiControllerIntegrationTest<Round, RoundTo> {
+class StationSetApiControllerIntegrationTest extends AbstractApiControllerIntegrationTest<Round, RoundTo> {
 
     @Override
     protected String getApiUrl() {

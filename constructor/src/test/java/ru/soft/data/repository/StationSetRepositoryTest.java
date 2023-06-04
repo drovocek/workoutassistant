@@ -5,7 +5,7 @@ import ru.soft.data.model.Round;
 import ru.soft.data.test.RoundDataStore;
 import ru.soft.utils.MatcherFactory;
 
-class RoundRepositoryTest extends BaseRepositoryTest<Round> {
+class StationSetRepositoryTest extends BaseRepositoryTest<Round> {
 
     @Override
     protected TestDataStore<Round> entityStore() {
